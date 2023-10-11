@@ -1,0 +1,19 @@
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://121.37.215.14:3306/susdorm?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false
+    username: susdorm
+    password: erKYTHTMJWDZGbGy
+
+server:
+  port: 9090
+mybatis:
+  mapper-locations: classpath:mapper/*.xml #扫描所有mabatisxml文件
+
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
