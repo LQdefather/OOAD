@@ -2,7 +2,7 @@
   <div class="">
     <label :for="id" class="block text-gray-700 font-bold">{{ label }}</label>
       <label class="block text-gray-700 font-bold">Select a location:</label>
-        <Slider @option-selected="handleChange" :images="optionsTree" @reset-options="resetOptions"/>
+        <SliderCust @option-selected="handleChange" :images="optionsTree" @reset-options="resetOptions"/>
     <div v-if="selectedOption" class="space-y-4 form-select">
       <label for="building" class="block text-gray-700 font-bold">Select a building:</label>
       <el-select v-model="selectedOption2" value-key="id" id="selectOption" placeholder="Select building">
@@ -13,9 +13,6 @@
           :value="option.value"
         />
       </el-select>
-<!--      <select v-model="selectedOption2" id="selectOption">-->
-<!--        <option v-for="option in optionsTree[selectedOption-1].Building" :key="option.label" :value="option.value">{{ option.label }}</option>-->
-<!--      </select>-->
     </div>
     <div v-if="selectedOption && selectedOption2" class="space-y-4 form-select">
       <label for="building" class="block text-gray-700 font-bold">Select a Floor:</label>
@@ -75,7 +72,11 @@
 
 
 <script>
+import data from '@/static/data.json';
+import SliderCust from "@/components/SliderCust.vue";
 export default {
+  components: {SliderCust},
+
   option1: 0,
   props: {
     id: String, // ID for the dropdown element
@@ -91,290 +92,10 @@ export default {
   data() {
 
     //During refresh, dummy data route may change to /Dorm/sustech/.... , hence returning 404
-    const roomTypes = {
-      single: {
-        label: 'Single Room',
-        image: './dorm/dorm1.jpg',
-      },
-      double: {
-        label: 'Double Room',
-        image: './dorm/dorm2.jpg',
-      },
-      quad: {
-        label: 'Suite',
-        image: './dorm/dorm3.jpg',
-      },
-    };
-
+    const roomTypes = data.roomTypes
     return {
 
-      optionsTree: [
-        {
-          label: "Residential College",
-          url: "./sustech/lakeside_dorm.jpg",
-          value: 1,
-          Building: [
-            {
-              label: "B1",
-              value: 1,
-              Floors: [
-                {
-                  label: "F1",
-                  value: 1,
-                  Room: [
-                    {
-                      roomNumber: 101,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 102,
-                      roomType: roomTypes.double,
-                    },
-                    {
-                      roomNumber: 130,
-                      roomType: roomTypes.quad,
-                    },
-                    {
-                      roomNumber: 135,
-                      roomType: roomTypes.quad,
-                    },
-                  ],
-                },
-                {
-                  label: "F2",
-                  value: 2,
-                  Room: [
-                    {
-                      roomNumber: 201,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 204,
-                      roomType: roomTypes.quad,
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              label: "B2",
-              value: 2,
-              Floors: [
-                {
-                  label: "F1",
-                  value: 1,
-                  Room: [
-                    {
-                      roomNumber: 101,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 111,
-                      roomType: roomTypes.double,
-                    },
-                    {
-                      roomNumber: 112,
-                      roomType: roomTypes.double,
-                    },
-                  ],
-                },
-                {
-                  label: "F2",
-                  value: 2,
-                  Room: [
-                    {
-                      roomNumber: 201,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 209,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 212,
-                      roomType: roomTypes.quad,
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              label: "B3",
-              value: 3,
-              Floors: [
-                {
-                  label: "F1",
-                  value: 1,
-                  Room: [
-                    {
-                      roomNumber: 201,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 209,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 212,
-                      roomType: roomTypes.quad,
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              label: "B4",
-              value: 4,
-              Floors: [
-                {
-                  label: "F1",
-                  value: '1',
-                  Room: [
-                    {
-                      roomNumber: 201,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 209,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 212,
-                      roomType: roomTypes.quad,
-                    },
-                  ],
-                },
-                {
-                  label: "F2",
-                  value: 2,
-                  Room: [
-                    {
-                      roomNumber: 201,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 209,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 212,
-                      roomType: roomTypes.quad,
-                    },
-                  ],
-                },
-                {
-                  label: "F2",
-                  value: 3,
-                  Room: [
-                    {
-                      roomNumber: 212,
-                      roomType: roomTypes.quad,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: "Lychee Hills",
-          url: "./sustech/lychee.jpg",
-          value: 2,
-          Building: [
-            {
-              label: "B1",
-              value: 1,
-              Floors: [
-                {
-                  label: "F1",
-                  value: 1,
-                  Room: [
-                    {
-                      roomNumber: 1,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 2,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 3,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 4,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 5,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 6,
-                      roomType: roomTypes.single,
-                    },
-                  ],
-                },
-                {
-                  label: "F2",
-                  value: 2,
-                  Room: [
-                    {
-                      roomNumber: 1,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 2,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 3,
-                      roomType: roomTypes.single,
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              label: "B2",
-              value: 2,
-              Floors: [
-                {
-                  label: "F1",
-                  value: 1,
-                  Room: [
-                    {
-                      roomNumber: 1,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 2,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 3,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 4,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 5,
-                      roomType: roomTypes.single,
-                    },
-                    {
-                      roomNumber: 6,
-                      roomType: roomTypes.single,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-
+      optionsTree: data.optionsTree,
       selectedOption: null,
       selectedOption2: null,
       selectedOption3: null,

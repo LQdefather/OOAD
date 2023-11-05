@@ -9,12 +9,14 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@smplrspace/smplr-loader": "^2.10.0",
     "core-js": "^3.25.3",
-    "element-ui": "^2.15.10",
+    "element-ui": "^2.15.14",
     "nuxt": "^2.15.8",
+    "ramda": "^0.29.1",
+    "swiper": "^11.0.3",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10"
-  },
-  "devDependencies": {}
+  }
 }

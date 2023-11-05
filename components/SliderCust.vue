@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  name: "Slider",
+  name: "SliderCust",
   props: {
     // Define a prop for images
     images: Array,
