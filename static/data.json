@@ -1,0 +1,152 @@
+{
+  "roomTypes": {
+    "single": {
+      "label": "Single Room",
+      "image": "./dorm/dorm1.jpg"
+    },
+    "double": {
+      "label": "Double Room",
+      "image": "./dorm/dorm2.jpg"
+    },
+    "quad": {
+      "label": "Suite",
+      "image": "./dorm/dorm3.jpg"
+    }
+  },
+  "optionsTree": [
+    {
+      "label": "Residential College",
+      "url": "./sustech/lakeside_dorm.jpg",
+      "value": 1,
+      "Building": [
+        {
+          "label": "B1", "value": 1,
+          "Floors": [
+            {"label": "F1", "value": 1,
+              "Room": [
+                {"roomNumber": 101, "roomType": "single"},
+                {"roomNumber": 102, "roomType": "double"},
+                {"roomNumber": 130, "roomType": "quad"},
+                {"roomNumber": 135, "roomType": "quad"}]
+            },
+            {
+              "label": "F2", "value": 2,
+              "Room": [
+                {"roomNumber": 201, "roomType": "single"},
+                {"roomNumber": 204, "roomType": "quad"}
+              ]
+            }
+          ]
+        },
+        {
+          "label": "B2",
+          "value": 2,
+          "Floors": [
+            {
+              "label": "F1",
+              "value": 1,
+              "Room": [
+                {"roomNumber": 101, "roomType": "single"},
+                {"roomNumber": 111, "roomType": "double"},
+                {"roomNumber": 112, "roomType": "double"}
+              ]
+            },
+            {
+              "label": "F2", "value": 2,
+              "Room": [
+                {"roomNumber": 201, "roomType": "single"},
+                {"roomNumber": 209, "roomType": "single"},
+                {"roomNumber": 212, "roomType": "quad"}
+              ]
+            }
+          ]
+        },
+        {
+          "label": "B3", "value": 3,
+          "Floors": [
+            {
+              "label": "F1", "value": 1,
+              "Room": [
+                {"roomNumber": 201, "roomType": "single"},
+                {"roomNumber": 209, "roomType": "single"},
+                {"roomNumber": 212, "roomType": "quad"}
+              ]
+            }
+          ]
+        },
+        {
+          "label": "B4",
+          "value": 4,
+          "Floors": [
+            {
+              "label": "F1", "value": "1", "Room": [
+                {"roomNumber": 201, "roomType": "single"},
+                {"roomNumber": 209, "roomType": "single"},
+                {"roomNumber": 212, "roomType": "quad"}
+              ]
+            },
+            {
+              "label": "F2", "value": 2,
+              "Room": [
+                {"roomNumber": 201, "roomType": "single"},
+                {"roomNumber": 209, "roomType": "single"},
+                {"roomNumber": 212, "roomType": "quad"}
+              ]
+            },
+            {
+              "label": "F2",
+              "value": 3,
+              "Room": [
+                {"roomNumber": 212, "roomType": "quad"}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Lychee Hills", "url": "./sustech/lychee.jpg", "value": 2, "Building": [
+        {
+          "label": "B1", "value": 1,
+          "Floors": [
+            {
+              "label": "F1", "value": 1,
+              "Room": [
+                {"roomNumber": 1, "roomType": "single"},
+                {"roomNumber": 2, "roomType": "single"},
+                {"roomNumber": 3, "roomType": "single"},
+                {"roomNumber": 4, "roomType": "single"},
+                {"roomNumber": 5, "roomType": "single"},
+                {"roomNumber": 6, "roomType": "single"}
+              ]
+            },
+            {
+              "label": "F2", "value": 2,
+              "Room": [
+                {"roomNumber": 1, "roomType": "single"},
+                {"roomNumber": 2, "roomType": "single"},
+                {"roomNumber": 3, "roomType": "single"}
+              ]
+            }
+          ]
+        },
+        {
+          "label": "B2", "value": 2,
+          "Floors": [
+            {
+              "label": "F1", "value": 1,
+              "Room": [
+                {"roomNumber": 1, "roomType": "single"},
+                {"roomNumber": 2, "roomType": "single"},
+                {"roomNumber": 3, "roomType": "single"},
+                {"roomNumber": 4, "roomType": "single"},
+                {"roomNumber": 5, "roomType": "single"},
+                {"roomNumber": 6, "roomType": "single"}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
