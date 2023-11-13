@@ -12,6 +12,9 @@
       </div>
     </div>
 
+    <!-- 上传头像按钮 -->
+    <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
+
     <!-- 修改信息按钮 -->
     <el-button type="primary" @click="showEditInfoDialog">修改信息</el-button>
 
@@ -23,18 +26,7 @@
     >
       <div class="edit-info-form">
         <el-form ref="editInfoForm" :model="editedUserInfo">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="editedUserInfo.name"></el-input>
-          </el-form-item>
-          <el-form-item label="性别" prop="gender">
-            <el-input v-model="editedUserInfo.gender"></el-input>
-          </el-form-item>
-          <el-form-item label="联系方式" prop="contact">
-            <el-input v-model="editedUserInfo.contact"></el-input>
-          </el-form-item>
-          <el-form-item label="个人简介" prop="bio">
-            <el-input type="textarea" v-model="editedUserInfo.bio"></el-input>
-          </el-form-item>
+          <!-- ... 其他表单项 ... -->
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -54,17 +46,39 @@
     >
       <div class="change-password-form">
         <el-form ref="changePasswordForm" :model="passwordChange">
-          <el-form-item label="原密码" prop="oldPassword">
-            <el-input type="password" v-model="passwordChange.oldPassword"></el-input>
-          </el-form-item>
-          <el-form-item label="新密码" prop="newPassword">
-            <el-input type="password" v-model="passwordChange.newPassword"></el-input>
-          </el-form-item>
+          <!-- ... 其他表单项 ... -->
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="cancelChangePassword">取消</el-button>
         <el-button type="primary" @click="saveChangedPassword">保存</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 上传头像弹窗 -->
+    <el-dialog
+      title="上传头像"
+      :visible.sync="uploadAvatarDialogVisible"
+      width="30%"
+    >
+      <div class="upload-avatar-form">
+        <!-- 这里添加上传头像的表单或组件 -->
+        <!-- 例如，可以使用 <el-upload> 组件来实现文件上传 -->
+        <!-- 注意更新 avatarUrl 的值 -->
+        <el-upload
+          class="avatar-uploader"
+          action="/upload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img v-if="avatarUrl" :src="avatarUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelUploadAvatar">取消</el-button>
+        <el-button type="primary" @click="uploadAvatar">保存</el-button>
       </span>
     </el-dialog>
   </div>
@@ -93,6 +107,7 @@ export default {
         oldPassword: '',
         newPassword: '',
       },
+      uploadAvatarDialogVisible: false,
     };
   },
   methods: {
@@ -121,11 +136,43 @@ export default {
       this.passwordChange.newPassword = '';
       this.changePasswordDialogVisible = false;
     },
+    showUploadAvatarDialog() {
+      this.uploadAvatarDialogVisible = true;
+    },
+    cancelUploadAvatar() {
+      this.uploadAvatarDialogVisible = false;
+    },
+    handleAvatarSuccess(response, file) {
+      // 上传成功后更新 avatarUrl 的值
+      this.avatarUrl = response.url;
+    },
+    beforeAvatarUpload(file) {
+      // 验证上传的文件格式等
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+
+      return isJPG && isLt2M;
+    },
+    uploadAvatar() {
+      // 在这里实现上传头像的逻辑
+      // 可以使用第三方库或服务，也可以直接调用后端接口
+      // 在上传成功后，更新 avatarUrl 的值
+      // this.avatarUrl = '新的头像地址';
+      this.uploadAvatarDialogVisible = false;
+    },
   },
 };
 </script>
 
 <style scoped>
+
 .profile {
   text-align: center;
   padding: 10px;
