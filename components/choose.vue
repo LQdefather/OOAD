@@ -21,9 +21,17 @@
           <i class="el-icon-info"></i>
           <span slot="title">宿舍选择</span>
         </el-menu-item>
+        <el-menu-item index="/DormView">
+          <i class="el-icon-search"></i>
+          <span slot="title">查看宿舍</span>
+        </el-menu-item>
         <el-menu-item index="/Group">
           <i class="el-icon-phone"></i>
           <span slot="title">加入群聊</span>
+        </el-menu-item>
+        <el-menu-item index="/Map">
+          <i class="el-icon-phone"></i>
+          <span slot="title">查看地图</span>
         </el-menu-item>
       </el-menu>
     </el-header>
