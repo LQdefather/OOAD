@@ -13,6 +13,167 @@
       "image": "./dorm/dorm3.jpg"
     }
   },
+  "comments": [
+    {
+      "id": 1,
+      "author": "trollolol",
+      "rating": 0,
+      "text": "This is the first comment",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "Reply to the first comment"
+        },
+        {
+          "id": 2,
+          "text": "Another reply to the first comment"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "author": "ryant",
+      "rating": 5,
+      "text": "This is the second comment",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "Reply to the second comment"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "author": "han",
+      "rating": 4,
+      "text": "This room smells like eggs",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "Reply to the second comment"
+        },
+        {
+          "id": 2,
+          "text": "Yes!"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "author": "Martin",
+      "rating": 2,
+      "text": "Great post!",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "Thanks!"
+        },
+        {
+          "id": 2,
+          "text": "I agree!"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "author": "johnny00",
+      "rating": 4,
+      "text": "Interesting room!",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "Yes, it is!"
+        },
+        {
+          "id": 2,
+          "text": "Tell me more!"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "author": "ronnie_ng",
+      "rating": 3,
+      "text": "nan ke da su she taikula",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "que shi queshi!"
+        },
+        {
+          "id": 2,
+          "text": "I appreciate it."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "author": "jt_12",
+      "rating": 2,
+      "text": "Keep it up!",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "I will!"
+        },
+        {
+          "id": 2,
+          "text": "You're doing great!"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "author": "pinoy88",
+      "rating": 5,
+      "text": "Nice Room!",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "I will rent this!"
+        },
+        {
+          "id": 2,
+          "text": "Yeehawwww!"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "author": "pinoybenar123",
+      "rating": 3,
+      "text": "Nak tukar wang lama, DM sya, old coin need now",
+      "showreply": false,
+      "addreply": false,
+      "replies": [
+        {
+          "id": 1,
+          "text": "DM"
+        },
+        {
+          "id": 2,
+          "text": "DM jga"
+        }
+      ]
+    }
+
+  ],
   "optionsTree": [
     {
       "label": "Residential College",
@@ -20,20 +181,25 @@
       "value": 1,
       "Building": [
         {
-          "label": "B1", "value": 1,
+          "label": "B1",
+          "value": 1,
           "Floors": [
             {"label": "F1", "value": 1,
               "Room": [
-                {"roomNumber": 101, "roomType": "single"},
-                {"roomNumber": 102, "roomType": "double"},
-                {"roomNumber": 130, "roomType": "quad"},
-                {"roomNumber": 135, "roomType": "quad"}]
+                {"roomNumber": 101, "roomType": "single", "roomStatus":  true, "roomFor": "postdoc",
+                  "comment": [1]
+                },
+                {"roomNumber": 102, "roomType": "double","roomStatus":  false,"roomFor": "postdoc",
+                  "comment": [2,3]
+                },
+                {"roomNumber": 130, "roomType": "quad" ,"roomStatus":  true,"roomFor": "master"},
+                {"roomNumber": 135, "roomType": "quad" ,"roomStatus":  true,"roomFor": "doctorate"}]
             },
             {
               "label": "F2", "value": 2,
               "Room": [
-                {"roomNumber": 201, "roomType": "single"},
-                {"roomNumber": 204, "roomType": "quad"}
+                {"roomNumber": 201, "roomType": "single", "comment": [4],"roomStatus":  true ,"roomFor": "master"},
+                {"roomNumber": 204, "roomType": "quad","roomStatus": false,"roomFor": "postdoc"}
               ]
             }
           ]
@@ -46,17 +212,17 @@
               "label": "F1",
               "value": 1,
               "Room": [
-                {"roomNumber": 101, "roomType": "single"},
-                {"roomNumber": 111, "roomType": "double"},
-                {"roomNumber": 112, "roomType": "double"}
+                {"roomNumber": 101, "roomType": "single","roomStatus":  true,"roomFor": "postdoc"},
+                {"roomNumber": 111, "roomType": "double", "comment": [5],"roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 112, "roomType": "double","roomStatus":  false,"roomFor": "master"}
               ]
             },
             {
               "label": "F2", "value": 2,
               "Room": [
-                {"roomNumber": 201, "roomType": "single"},
-                {"roomNumber": 209, "roomType": "single"},
-                {"roomNumber": 212, "roomType": "quad"}
+                {"roomNumber": 201, "roomType": "single","roomStatus":  false,"roomFor": "master"},
+                {"roomNumber": 209, "roomType": "single","roomStatus":  false,"roomFor": "doctorate"},
+                {"roomNumber": 212, "roomType": "quad", "comment":  [6,7],"roomStatus":  true,"roomFor": "master"}
               ]
             }
           ]
@@ -67,9 +233,9 @@
             {
               "label": "F1", "value": 1,
               "Room": [
-                {"roomNumber": 201, "roomType": "single"},
-                {"roomNumber": 209, "roomType": "single"},
-                {"roomNumber": 212, "roomType": "quad"}
+                {"roomNumber": 201, "roomType": "single","roomStatus":  true,"roomFor": "master"},
+                {"roomNumber": 209, "roomType": "single","comment":  [8],"roomStatus":  true,"roomFor": "master"},
+                {"roomNumber": 212, "roomType": "quad","roomStatus":  true,"roomFor": "master"}
               ]
             }
           ]
@@ -80,24 +246,24 @@
           "Floors": [
             {
               "label": "F1", "value": "1", "Room": [
-                {"roomNumber": 201, "roomType": "single"},
-                {"roomNumber": 209, "roomType": "single"},
-                {"roomNumber": 212, "roomType": "quad"}
+                {"roomNumber": 201, "roomType": "single","comment":  [9],"roomStatus":  true,"roomFor": "master"},
+                {"roomNumber": 209, "roomType": "single","roomStatus":  false,"roomFor": "postdoc"},
+                {"roomNumber": 212, "roomType": "quad","roomStatus":  true,"roomFor": "doctorate"}
               ]
             },
             {
               "label": "F2", "value": 2,
               "Room": [
-                {"roomNumber": 201, "roomType": "single"},
-                {"roomNumber": 209, "roomType": "single"},
-                {"roomNumber": 212, "roomType": "quad"}
+                {"roomNumber": 201, "roomType": "single","roomStatus":  true,"roomFor": "postdoc"},
+                {"roomNumber": 209, "roomType": "single","roomStatus":  false,"roomFor": "postdoc"},
+                {"roomNumber": 212, "roomType": "quad","roomStatus":  false,"roomFor": "doctorate"}
               ]
             },
             {
               "label": "F2",
               "value": 3,
               "Room": [
-                {"roomNumber": 212, "roomType": "quad"}
+                {"roomNumber": 212, "roomType": "quad","roomStatus":  true,"roomFor": "doctorate"}
               ]
             }
           ]
@@ -107,25 +273,25 @@
     {
       "label": "Lychee Hills", "url": "./sustech/lychee.jpg", "value": 2, "Building": [
         {
-          "label": "B1", "value": 1,
+          "label": "B1", "value": 1,"position": [113.99913918407441, 22.60212445711336],
           "Floors": [
             {
               "label": "F1", "value": 1,
               "Room": [
-                {"roomNumber": 1, "roomType": "single"},
-                {"roomNumber": 2, "roomType": "single"},
-                {"roomNumber": 3, "roomType": "single"},
-                {"roomNumber": 4, "roomType": "single"},
-                {"roomNumber": 5, "roomType": "single"},
-                {"roomNumber": 6, "roomType": "single"}
+                {"roomNumber": 1, "roomType": "single","roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 2, "roomType": "single","roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 3, "roomType": "single","comment":  [6,7],"roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 4, "roomType": "single","roomStatus":  true,"roomFor": "postdoc"},
+                {"roomNumber": 5, "roomType": "single","roomStatus":  true,"roomFor": "masters"},
+                {"roomNumber": 6, "roomType": "single","comment":  [6,7],"roomStatus":  false,"roomFor": "doctorate"}
               ]
             },
             {
               "label": "F2", "value": 2,
               "Room": [
-                {"roomNumber": 1, "roomType": "single"},
-                {"roomNumber": 2, "roomType": "single"},
-                {"roomNumber": 3, "roomType": "single"}
+                {"roomNumber": 1, "roomType": "single","roomStatus":  true,"roomFor": "psotdoc"},
+                {"roomNumber": 2, "roomType": "single","roomStatus":  false,"roomFor": "master"},
+                {"roomNumber": 3, "roomType": "single","roomStatus":  true,"roomFor": "doctorate"}
               ]
             }
           ]
@@ -136,12 +302,12 @@
             {
               "label": "F1", "value": 1,
               "Room": [
-                {"roomNumber": 1, "roomType": "single"},
-                {"roomNumber": 2, "roomType": "single"},
-                {"roomNumber": 3, "roomType": "single"},
-                {"roomNumber": 4, "roomType": "single"},
-                {"roomNumber": 5, "roomType": "single"},
-                {"roomNumber": 6, "roomType": "single"}
+                {"roomNumber": 1, "roomType": "single","roomStatus":  false,"roomFor": "doctorate"},
+                {"roomNumber": 2, "roomType": "single","roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 3, "roomType": "single","roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 4, "roomType": "single","roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 5, "roomType": "single","roomStatus":  true,"roomFor": "doctorate"},
+                {"roomNumber": 6, "roomType": "single","comment":  [6,7],"roomStatus":  true,"roomFor": "doctorate"}
               ]
             }
           ]

@@ -9,7 +9,7 @@
     </transition-group>
     <button class="next" @click.prevent="nextSlide">&#10095;</button>
   </div>
-  <div v-else class="el-row" >
+  <div v-else>
     <el-col :span="6">
     <p>{{ selectedOption }}</p>
     </el-col>

@@ -8,8 +8,6 @@
 </style>
 
 <script>
-import PopupWindow from "@/components/PopupWindow.vue";
-
 export default{
   data() {
     return {
