@@ -343,7 +343,6 @@ export default {
 <style scoped>
 .el-header {
   background-color: #B3C0D1;
-//background-image: url("@/assets/header2.jpg");
   background-size: cover;
   color: #333;
   line-height: 60px;

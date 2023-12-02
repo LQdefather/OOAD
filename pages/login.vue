@@ -6,7 +6,7 @@
         <el-form :model="loginForm" label-width="100px"
                  :rules="rules" ref="loginForm">
           <el-form-item label="名字" prop="name">
-            <el-input style="width: 200px" type="text" v-model="loginForm.name"
+            <el-input style="width: 200px" type="text" v-model="loginForm.studentId"
                       autocomplete="off" size="small"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
@@ -33,12 +33,14 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "login",
   data(){
     return{
       loginForm:{
-        name:'',
+        studentId:'',
         password:'',
         identity:''
       },
@@ -51,7 +53,39 @@ export default {
       }
     }
   },
+  devServer: {
+    devServer: {
+      proxy: {
+        '/login': {
+          target: 'http://localhost:8080/', // Replace with your Spring server address
+          ws: true,
+        },
+      },
+    },
+  },
   methods:{
+    // async confirm() {
+    //
+    //   const apiUrl = `http://localhost:8080/login`;
+    //
+    //   try {
+    //     // Get file tree
+    //
+    //     await axios.post(apiUrl, this.loginForm);
+    //     const response = await axios.get(tokenUrl);
+    //
+    //     console.log(response.data);
+    //
+    //     if(this.loginForm.identity == 1)
+    //       this.$router.replace('/person');
+    //     else if(this.loginForm.identity == 2)
+    //       this.$message.error("请从管理员端登录！");
+    //     else this.$message.error("请选择身份！");
+    //
+    //   } catch (error) {
+    //     console.error('Error fetching files:', error);
+    //   }
+    // },
     confirm(){
       if(this.loginForm.identity == 1)
       this.$router.replace('/person');
