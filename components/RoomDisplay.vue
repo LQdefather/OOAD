@@ -137,20 +137,24 @@ export default {
     },
     collectRoom(roomID){
       axios.defaults.withCredentials = true
-      axios.post('https://backend.susdorm.online/api/book-dorm/',{id: roomID}
-        //   {
-        //   headers: headers
-        // }
-
-      ).then(response => {
-        MessageBox.alert('Room successfully collected to user！.', 'Alert', {
+      axios.post('https://backend.susdorm.online/api/book-dorm/', { id: roomID }, { withCredentials: true })
+        .then(response => {
+          // Successful response
+          MessageBox.alert('Room successfully collected to user！.', 'Alert', {
             confirmButtonText: 'Back',
             type: 'warning'
-          }
-        );
-      })
-
-
+          });
+        })
+        .catch(error => {
+          // Error handling
+          console.error('Error:', error);
+          // You can also extract more information from the error if needed
+          // For example, error.response contains the server response
+          MessageBox.alert('An error occurred while processing your request.', 'Error', {
+            confirmButtonText: 'OK',
+            type: 'error'
+          });
+        });
     },
 
     // hasBuilding(location,building){
