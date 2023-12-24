@@ -147,10 +147,10 @@ export default {
         })
         .catch(error => {
           // Error handling
-          console.error('Error:', error);
+          console.error('Error:', error.response.data);
           // You can also extract more information from the error if needed
           // For example, error.response contains the server response
-          MessageBox.alert('Error '+ error.non_field_errors[0], 'Error', {
+          MessageBox.alert('Error '+ error.response.data.non_field_errors[0], 'Error', {
             confirmButtonText: 'OK',
             type: 'error'
           });
