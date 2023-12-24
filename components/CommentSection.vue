@@ -86,14 +86,6 @@ export default {
     roomId: Number, // Specify the type of roomId prop
 
   },
-  // devServer: {
-  //   proxy: {
-  //     '/api': {
-  //       target: 'http://8.138.105.61',  // Replace with your Django server URL
-  //       changeOrigin: true,
-  //     },
-  //   },
-  // },
   watch: {
     roomId: function (newVal, oldVal) {
       console.log('Prop changed for selectedRoomId for comment: ', newVal, ' | was: ', oldVal);
@@ -154,9 +146,8 @@ export default {
       }
 
       if((params.comment!=null && params.comment!=='') && params.dormitory!=null ){
-
-        // axios.defaults.withCredentials = true
-        client.post('https://backend.susdorm.online/api/create-comment/',params, {withCredentials: true}
+        axios.defaults.withCredentials = true
+        client.post('https://backend.susdorm.online/api/create-comment/',params,
 
         ).then(response => {
             this.getComments();
