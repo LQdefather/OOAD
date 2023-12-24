@@ -69,16 +69,6 @@ export default {
       selectedOption: {},
 
       progressNum: 0,
-      devServer: {
-        devServer: {
-          proxy: {
-            '/login': {
-              target: 'http://8.138.105.61/api/', // Replace with your Spring server address
-              ws: true,
-            },
-          },
-        },
-      },
       submitted: false,
       showForm: false,
       uniqueFormKey: "submit-form"
@@ -95,7 +85,7 @@ export default {
   mounted() {
     // Set showForm to true after the component has been mounted
     setTimeout(() => {
-      axios.get('http://8.138.105.61/api/dorm-room/')
+      axios.get('https://backend.susdorm.online/api/dorm-room/')
         .then(response => {
           // Handle successful response
           this.APIFormData = response.data;
