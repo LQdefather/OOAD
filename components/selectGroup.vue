@@ -288,34 +288,7 @@ export default {
     this.getAllTeam();
   },
   methods: {
-    // async getUserDetailsById(userId) {
-    //   const apiUrl = 'http://localhost:8080/users/${userId}'
-    //   try {
-    //     const response = await axios.get(apiUrl,{
-    //       headers: {
-    //         token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InJvb3QifQ.0Ia3eD-FWd4Ik2bfP3AGoGjcpupkBqo9_OQqxWB9ksA"
-    //       }
-    //     });
-    //     // console.log(response.data);
-    //     let list = response.data;
-    //     for (let i = 0; i < list.length; i++) {
-    //       const user = await this.getUserDetailsById(list[i].leaderId);
-    //
-    //       const combinedItem = {
-    //         name: list[i].name,
-    //         description: user.name,
-    //       };
-    //
-    //       list[i] = combinedItem;
-    //     }
-    //     this.groups = list;
-    //     this.$message.info("success");
-    //   } catch (error) {
-    //     this.$message.error(error.toString());
-    //     console.error('Error fetching files:', error);
-    //   }
-    //   return response.data;
-    // },
+
     async getAllTeam(){
       const apiUrl = 'http://localhost:8080/getTeam';
       try {

@@ -1,14 +1,31 @@
 <template>
+  <div class="map-container">
+    <h1 class="title-style">Search Dormitory on This Map!</h1>
   <div class="map-container-wrapper">
     <!-- The container element for the map -->
 <!--    <div id="map-container" :style="{ width: mapWidth, height: mapHeight }"></div>-->
     <div v-show="dormArea == null || dormBuilding == null" id="map-container" :style="{ width: mapWidth, height: mapHeight }"></div>
     <!-- Display information when a label is clicked -->
+    <el-dialog  :visible.sync="showBuilding"   :close-on-click-modal="true"
+                :close-on-press-escape="true"
+                :before-close="handleCloseBuilding">
+      <div class="floor-plan-image">
+        <div>
+        <h1 class="header-style">{{ currentZone + " " +currentBuilding }}</h1>
+        <img  :src="currentImage" alt="@/static/dorm/noimage.png">
+          <p>{{currentDescription}}</p>
+        </div>
+        <el-button @click="handleRoute">Details</el-button>
+      </div>
 
+    </el-dialog>
+  </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "AMap",
   props :{
@@ -23,8 +40,13 @@ export default {
       mapHeight: "600px", // Set the initial height of the map container
       margin: "0", // Center the map horizontally
       position:"justify",
-
-      isLoaded: false
+      newLabelsData: [],
+      isLoaded: false,
+      showBuilding: false,
+      currentBuilding: '',
+      currentZone: '',
+      currentDescription: '',
+      currentImage: null
     };
   },
   mounted() {
@@ -33,19 +55,91 @@ export default {
     window._AMapSecurityConfig = {
       securityJsCode:'6dcf279b3051f93ca87a74cf70cca816',
     }
+    axios.get('https://backend.susdorm.online/api/builds/')
+      .then(response => {
+        this.APIFormData = response.data;
+        this.APIFormData.forEach(item => {
+          console.log("Received data")
+          console.log(response.data)
+          const { id,name,photo,zone, buildingDetails, xlocation,ylocation } = item
+
+          var houseIcon = {
+            // 图标类型，现阶段只支持 image 类型
+            type: 'image',
+            // 图片 url
+            image: require('@/static/house.png'),
+            // 图片尺寸
+            size: [64, 64],
+            // 图片相对 position 的锚点，默认为 bottom-center
+            anchor: 'center',
+          };
+
+          var textStyeLabel = {
+            backgroundColor: 'white',
+            borderColor: '#fff',
+            fontSize: 16,
+            fontWeight: 'bold',
+            fillColor: 'black',
+            strokeWidth: 2,
+
+          };
+
+
+          const newDataItem = {
+            name: zone+ " " + name,
+            area: zone,
+            building: name, // You can set this to a specific value or extract it from the original data if available
+            position: [xlocation, ylocation],
+            zooms: [3, 20], // Set the desired zoom values
+            opacity: 1, // Set the desired opacity value
+            zIndex: 5, // Set the desired zIndex value
+            visible: true,
+            icon: houseIcon, // Set the desired icon
+            photo: photo,
+            buildingDetails: buildingDetails,
+            text: {
+              content: zone+ " " + name + " Building", // Set content to the name
+              direction: 'right',
+              offset: [-100, 40],
+              style: textStyeLabel,
+            },
+          };
+
+
+          this.newLabelsData.push(newDataItem);
+
+        });
+
+        this.showForm = true;
+      })
+      .catch(error => {
+        this.APIFormData = '';
+        this.error = error.message || 'An error occurred';
+      });
   },
   methods: {
     loadMap:function() {
       this.isLoaded = true
     },
+    handleRoute:function (){
+      this.$router.push({ name: 'DormView', params: { zone: this.currentZone, building: this.currentBuilding } });
+    },
+    handleCloseBuilding:function(){
+      this.showBuilding = false
+    },
     selectDorm: function(curData){
+      this.showBuilding = true
+      this.currentZone = curData.area
+      this.currentBuilding = curData.building
+      this.currentImage = curData.photo
+      this.currentDescription = curData.buildingDetails
       console.log(curData.area, curData.building)
-      this.$emit('dorm-selected', curData.area, curData.building);
+      // this.$emit('dorm-selected', curData.area, curData.building);
 
     },
     resetSelection: function() {
 
-      this.$emit('reset-selection');
+      // this.$emit('reset-selection');
     },
 
     initMap() {
@@ -83,141 +177,9 @@ export default {
             });
             toolBar.addTo(map);
 
-            //Variables for label marker
-            var textStyeLabel = {
-              fontSize: 12,
-              fontWeight: 'normal',
-              fillColor: '#22886f',
-              strokeColor: '#fff',
-              strokeWidth: 2,
-              fold: true,
-              padding: '2, 5',
-            };
+            var LabelsData = this.newLabelsData
 
-            var houseIcon = {
-              // 图标类型，现阶段只支持 image 类型
-              type: 'image',
-              // 图片 url
-              image: 'https://a.amap.com/jsapi_demos/static/demo-center/marker/express2.png',
-              // 图片尺寸
-              size: [64, 30],
-              // 图片相对 position 的锚点，默认为 bottom-center
-              anchor: 'center',
-            };
-
-            var LabelsData = [
-              {
-                name: '湖畔11栋',
-                area: 'Residential College',
-                building: 11,
-                position: [113.99913918407441, 22.60212445711336],
-                zooms: [10, 20],
-                opacity: 1,
-                zIndex: 10,
-                fold: true,
-                icon: houseIcon,
-                text: {
-                  // 要展示的文字内容
-                  content: '湖畔11栋',
-                  // 文字方向，有 icon 时为围绕文字的方向，没有 icon 时，则为相对 position 的位置
-                  direction: 'right',
-                  // 在 direction 基础上的偏移量
-                  offset: [-20, -5],
-                  // 文字样式
-                  style: {
-                    // 字体大小
-                    fontSize: 12,
-                    // 字体颜色
-                    fillColor: '#22886f',
-                    //
-                    strokeColor: '#fff',
-                    strokeWidth: 2,
-                    fold: true,
-                    padding: '2, 5',
-                  },
-                },
-              },
-              {
-                name: '湖畔12栋',
-                area: 'Residential College',
-                building: 12,
-                position: [113.99970781238557, 22.60249588729417],
-                zooms: [10, 20],
-                opacity: 1,
-                zIndex: 16,
-                icon: houseIcon,
-                text: {
-                  content: '湖畔12栋',
-                  direction: 'right',
-                  offset: [-20, -5],
-                  style: textStyeLabel,
-                },
-              },
-              {
-                name: '湖畔13栋',
-                area: 'Residential College',
-                building: 13,
-                position: [113.99953078659058, 22.601594548320616],
-                zooms: [10, 20],
-                opacity: 1,
-                zIndex: 8,
-                icon: houseIcon,
-                text: {
-                  content: '湖畔13栋',
-                  direction: 'right',
-                  offset: [-20, -5],
-                  style: textStyeLabel,
-                },
-              },
-              {
-                name: '湖畔15栋',
-                area: 'Residential College',
-                building: 15,
-                position: [114.0004159155655, 22.602169028788456],
-                zooms: [10, 20],
-                opacity: 1,
-                zIndex: 23,
-                icon: houseIcon,
-                text: {
-                  content: '湖畔15栋',
-                  direction: 'right',
-                  offset: [-20, -5],
-                  style: textStyeLabel,
-                },
-              },
-              {
-                name: '荔园1栋',
-                area: 'Lychee Hills',
-                building: 1,
-                position: [114.00006186397553, 22.604060835446735],
-                zooms: [10, 20],
-                opacity: 1,
-                zIndex: 6,
-                icon: houseIcon,
-                text: {
-                  content: '荔园1栋',
-                  direction: 'right',
-                  offset: [-20, -5],
-                  style: textStyeLabel,
-                },
-              },
-              {
-                name: '荔园2栋',
-                area: 'Lychee Hills',
-                building: 2,
-                position: [114.00012623699189, 22.604387689460186],
-                zooms: [10, 20],
-                opacity: 1,
-                zIndex: 5,
-                icon: houseIcon,
-                text: {
-                  content: '荔园2栋',
-                  direction: 'right',
-                  offset: [-20, -5],
-                  style: textStyeLabel,
-                },
-              }
-            ];
+            console.log(LabelsData)
 
             var markers = [];
             var allowCollision = false;
@@ -237,9 +199,11 @@ export default {
               //must be const!!
 
               const curData = LabelsData[i];
+              // console.log(curData)
               curData.extData = {
                 index: i,
               };
+              console.log(curData)
 
               var labelMarker = new AMap.LabelMarker(curData);
               // 绑定click事件到图标对象上
@@ -259,6 +223,7 @@ export default {
           document.head.appendChild(script);
     },
   },
+
 };
 </script>
 
@@ -267,6 +232,21 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.map-container{
+  background-color: white;
+  border: #b3d1c8;
+}
+
+.header-style{
+  background-color: white;
+  text-transform: capitalize;
+}
+
+.title-style{
+  color: darkgreen;
+
 }
 
 </style>

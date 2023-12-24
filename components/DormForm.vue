@@ -1,6 +1,12 @@
 
 <template>
   <div class="max-w-md bg-gray-100 p-6">
+    <el-steps :active="progressNum" align-center>
+      <el-step title="Select Student Type" />
+      <el-step title="Select Zone" />
+      <el-step title="Select Building" />
+      <el-step title="Select Room" />
+    </el-steps>
     <transition name="fade">
       <form v-if="showForm" @submit="submitForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md bordered-form" :key="uniqueFormKey">
         <h2 class="text-2xl font-semibold mb-4">Select Dorm</h2>
@@ -9,9 +15,8 @@
           <label class="block text-gray-700 font-bold" for="academic-position">
             Select current academic position:
           </label>
-          <select v-model="formData.academicPosition" class="form-select w-full p-2 rounded-lg border border-gray-300">
+          <select v-model="academicPosition" class="form-select w-full p-2 rounded-lg border border-gray-300">
             <option disabled value="">Select type</option>
-            <option>Undergraduate</option>
             <option>Doctorate</option>
             <option>Masters</option>
           </select>
@@ -21,10 +26,9 @@
 
         <div class="mb-2">
           <!--Note that selected-options is defined in Dropdown to emit data-->
-          <Dropdown id="dropdown1" @selected-options="handleSelectedOptions"/>
+          <Dropdown id="dropdown1" :hierarchicalData="hierarchicalData" @selected-options="handleSelectedOptions"/>
         </div>
-
-        <div class="text-center">
+        <div class="submit-button">
           <button
             type="submit"
             class="mx-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
@@ -32,7 +36,9 @@
             Submit
           </button>
         </div>
+
       </form>
+
     </transition>
     <div v-if="submitted" class="mt-4 text-green-600">
       <p>Form submitted successfully!</p>
@@ -42,29 +48,93 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   name: 'DormForm',
+  build: {
+    extend(config, { isClient }) {
+      // Extend only webpack config for client-bundle
+      if (isClient) {
+        config.devtool = 'source-map'
+      }
+    }
+  },
   data() {
     return {
-      formData: {
-        academicPosition: '',
-        selectedOption: {},
+      APIFormData: '',
+      hierarchicalData: [],
 
+      academicPosition: '',
+      selectedOption: {},
+
+      progressNum: 0,
+      devServer: {
+        devServer: {
+          proxy: {
+            '/login': {
+              target: 'http://8.138.105.61/api/', // Replace with your Spring server address
+              ws: true,
+            },
+          },
+        },
       },
       submitted: false,
       showForm: false,
       uniqueFormKey: "submit-form"
     };
   },
+  watch: {
+    academicPosition(newValue, oldValue) {
+      // This function will be called whenever myValue changes
+      console.log('myValue changed from', oldValue, 'to', newValue);
+      this.progressNum = 0
+      // You can perform any actions or checks here
+    },
+  },
   mounted() {
     // Set showForm to true after the component has been mounted
     setTimeout(() => {
+      axios.get('http://8.138.105.61/api/dorm-room/')
+        .then(response => {
+          // Handle successful response
+          this.APIFormData = response.data;
+          this.APIFormData.forEach(item => {
+            const { id,zone, building, type, floor, roomNumber } = item;
+
+            if (!this.hierarchicalData[zone]) {
+              this.hierarchicalData[zone] = {};
+            }
+            if (!this.hierarchicalData[zone][building]) {
+              this.hierarchicalData[zone][building] = {};
+            }
+
+            if (!this.hierarchicalData[zone][building][floor]) {
+              this.hierarchicalData[zone][building][floor] = [];
+            }
+
+            this.hierarchicalData[zone][building][floor].push({
+              id, roomNumber, type
+            })
+            console.log(this.hierarchicalData)
+
+
+          });
+          console.log(this.hierarchicalData)
+          this.error = null;
+        })
+        .catch(error => {
+          // Handle error
+          this.APIFormData = '';
+          this.error = error.message || 'An error occurred';
+        });
       this.showForm = true;
     }, 1000);
   },
   methods: {
+
     handleSelectedOptions(options) {
-      this.formData.selectedOption =options
+      this.selectedOption =options
       // Handle the selected options received from the child component
       console.log('Received selected options:', options);
       // You can do further processing or update the parent component state here
@@ -137,6 +207,10 @@ button[type="submit"]:hover {
   font-weight: bold;
   text-align: center;
   margin-top: 16px; /* Add space above the success message */
+}
+
+.submit-button{
+  width: 100%;
 }
 
 .fade-enter-active{
