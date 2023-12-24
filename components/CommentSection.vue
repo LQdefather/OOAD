@@ -154,7 +154,8 @@ export default {
       }
 
       if((params.comment!=null && params.comment!=='') && params.dormitory!=null ){
-        axios.defaults.withCredentials = true
+
+        // axios.defaults.withCredentials = true
         client.post('https://backend.susdorm.online/api/create-comment/',params, {withCredentials: true}
 
         ).then(response => {
