@@ -111,5 +111,4 @@ export default {
 .login_button{
   text-align: center;
 }
-
 </style>
