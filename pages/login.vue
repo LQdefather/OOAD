@@ -65,7 +65,7 @@ export default {
         .then(response => {
           // 处理响应
 
-          this.$cookies.set('sessionid', response.data.sessionid, '7d','/','www.susdorm.online',true,null);
+          this.$cookies.set('sessionid', response.data.sessionid, '7d',null,null,true,null);
           this.$router.replace('/person');
         })
         .catch(error => {
