@@ -64,7 +64,7 @@ export default {
       )
         .then(response => {
           // 处理响应
-
+          console.log(response.data)
           this.$cookies.set('sessionid', response.data.sessionid, '7d',null,null,true,null);
           this.$router.replace('/person');
         })
