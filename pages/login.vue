@@ -67,6 +67,7 @@ export default {
           console.log(response.data)
           // this.$cookies.set('sessionid', response.data.sessionid, '7d','/','backend.susdorm.online',null,'Lax');
           this.$router.replace('/person');
+
         })
         .catch(error => {
           // 处理错误
