@@ -36,6 +36,7 @@ Vue.use(VueCookies);
 // const client = wrapper(axios.create({ jar }));
 export default {
   name: "login",
+
   data(){
     return{
       loginForm:{
@@ -64,7 +65,7 @@ export default {
         .then(response => {
           // 处理响应
 
-          this.$cookies.set('sessionid', response.data, '7d',null,null,true,'Lax');
+          this.$cookies.set('sessionid', response.data.sessionid, '7d','/','www.susdorm.online',true,null);
           this.$router.replace('/person');
         })
         .catch(error => {
