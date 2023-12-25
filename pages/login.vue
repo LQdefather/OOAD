@@ -59,12 +59,12 @@ export default {
   //   },
   // },
   methods:{
-    confirm(){
-      axios.post('https://backend.susdorm.online/api/login/', this.loginForm,
-      )
+    async confirm(){
+      await axios.post('https://backend.susdorm.online/api/login/', this.loginForm,{withCredentials: true})
         .then(response => {
           // 处理响应
-          this.$cookies.set('sessionid', response.data.sessionid);
+          console.log(response)
+          // this.$cookies.set('sessionid', response.data.sessionid);
           this.$router.replace('/person');
 
         })
