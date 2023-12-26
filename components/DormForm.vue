@@ -1,33 +1,32 @@
 
 <template>
   <div class="max-w-md bg-gray-100 p-6">
-    <el-steps :active="progressNum" align-center>
-      <el-step title="Select Student Type" />
-      <el-step title="Select Zone" />
-      <el-step title="Select Building" />
-      <el-step title="Select Room" />
-    </el-steps>
     <transition name="fade">
       <form v-if="showForm" @submit="submitForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md bordered-form" :key="uniqueFormKey">
-        <h2 class="text-2xl font-semibold mb-4">Select Dorm</h2>
+        <h1 style="text-align: center" class="text-2xl font-semibold mb-4">Select Dorm</h1>
 
-        <div class="mb-4">
-          <label class="block text-gray-700 font-bold" for="academic-position">
-            Select current academic position:
-          </label>
-          <select v-model="academicPosition" class="form-select w-full p-2 rounded-lg border border-gray-300">
-            <option disabled value="">Select type</option>
-            <option>Doctorate</option>
-            <option>Masters</option>
-          </select>
+<!--        <p class="block text-gray-700 font-bold">Current Room Gender: Male</p>-->
+        <h2>Collected Dorms by Group</h2>
+        <div class="card-grid">
+          <!-- Use v-for to iterate over cards and display them in the grid -->
+          <div v-for="room in bookMarkedRooms">
+          <el-card :body-style="{ padding: '0px' }" >
+            <div  class="card-content-container">
+              <img
+                :src="room.roomLayout"
+                class="image"
+                alt=""/>
+              <h2>{{ room.roomNumber }}</h2>
+              <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
+              <p style="text-transform: capitalize">{{room.degree}} Students</p>
+            </div>
+          </el-card>
+          </div>
         </div>
-
-        <p class="block text-gray-700 font-bold">Current Room Gender: Male</p>
-
-        <div class="mb-2">
-          <!--Note that selected-options is defined in Dropdown to emit data-->
-          <Dropdown id="dropdown1" :hierarchicalData="hierarchicalData" @selected-options="handleSelectedOptions"/>
-        </div>
+<!--        <div class="mb-2">-->
+<!--          &lt;!&ndash;Note that selected-options is defined in Dropdown to emit data&ndash;&gt;-->
+<!--          <Dropdown id="dropdown1" :hierarchicalData="hierarchicalData" @selected-options="handleSelectedOptions"/>-->
+<!--        </div>-->
         <div class="submit-button">
           <button
             type="submit"
@@ -66,7 +65,7 @@ export default {
     return {
       APIFormData: '',
       hierarchicalData: [],
-
+      bookMarkedRooms: [],
       academicPosition: '',
       selectedOption: null,
 
@@ -120,6 +119,45 @@ export default {
           this.APIFormData = '';
           this.error = error.message || 'An error occurred';
         });
+
+      axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+        .then(response => {
+          console.log(response.data)
+          response.data.forEach(item => {
+
+            const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
+            this.bookMarkedRooms.push(item)
+
+          });
+          const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
+
+          console.log("Bookmarked Rooms");
+          console.log(bookmarkedRoomsArray);
+        })
+        .catch(error => {
+
+          this.error = error.message || 'Error getting book mark dorm';
+        });
+
+      // axios.get('https://backend.susdorm.online/api/user-information/')
+      //   .then(response => {
+      //     console.log(response.data)
+      //     response.data.forEach(item => {
+      //
+      //       const { team } = item;
+      //       this.bookMarkedRooms.push(item)
+      //
+      //     });
+      //     const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
+      //
+      //     console.log("Bookmarked Rooms");
+      //     console.log(bookmarkedRoomsArray);
+      //   })
+      //   .catch(error => {
+      //
+      //     this.error = error.message || 'Error getting book mark dorm';
+      //   });
+
       this.showForm = true;
     }, 1000);
   },
@@ -130,6 +168,11 @@ export default {
       // Handle the selected options received from the child component
       console.log('Received selected options:', options);
       // You can do further processing or update the parent component state here
+    },
+    removeUnderscore(text) {
+      // Your custom text transformation logic
+      // For example, converting "room_number" to "roomNumber"
+      return text.replace(/_/g, ' ');
     },
     submitForm(event) {
       event.preventDefault();
@@ -204,6 +247,31 @@ button[type="submit"] {
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s; /* Add a smooth transition for the button */
+}
+
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.el-card {
+  width: 150px;
+  margin: 10px;
+}
+
+.card-content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 80px;
 }
 
 /* Style the submit button on hover */

@@ -5,7 +5,7 @@
       <h1 class="header-style">Comment</h1>
       <el-collapse class="">
         <el-collapse-item title="Room Layout" name="1" >
-      <img src="../static/sustech/roomlayout/sample2.png" alt="@/static/sampleroomlayout.png" class="centered-image">
+      <img :src="roomImage" :alt="roomImage" class="centered-image">
         </el-collapse-item>
       </el-collapse>
       <div v-for="comment in commentsMap" :key="comment[1].id" class="comment-item " >

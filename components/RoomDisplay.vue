@@ -5,11 +5,11 @@
       <div v-for="location in Object.keys(this.filteredData)">
         <div class="title-container">
           <el-row class="title-styles">
-            <el-col :span="2">
+            <el-col :span="0.5">
               <img class="icon-style" src="@/static/dorm/location.png" alt="@/static/dorm/location.png">
             </el-col>
-            <el-col  :span="6">
-          <h1 class="location-head-style">{{ location }}</h1>
+            <el-col style="text-align: left" :span="22">
+            <h1 class="location-head-style">{{ location }}</h1>
             </el-col>
           </el-row>
         </div>
@@ -22,11 +22,11 @@
                   <ElCarouselItem v-for="floor in Object.keys(filteredData[location][building])" :key="floor">
                     <div>
                     <el-row>
-                      <el-col :span="4">
+                      <el-col :span="22">
                         <h2 class="floor-header">Floor {{ floor }}</h2>
                       </el-col>
-                      <el-col class="show-floor-plan" :span="18">
-                      <el-button @click="showFloorPlan = true">View Floor plan</el-button>
+                      <el-col class="show-floor-plan" :span="2">
+                        <el-button @click="showFloorPlan = true">View Floor plan</el-button>
                       </el-col>
                     </el-row>
                     <!-- Iterate over rooms in the current floor -->
@@ -40,14 +40,16 @@
                         <el-card  :body-style="{ padding: '0px' }" >
                           <div  class="card-content-container">
                             <img
-                              @click="handleComment(room.id)"
+                              @click="handleComment(room.id, room.roomLayout)"
                               :src="getImageSrc(room.type)"
                               class="image"
                               alt=""/>
                               <h2>{{ room.roomNumber }}</h2>
-                              <h2>{{ room.type }}</h2>
-                            <p @click="collectRoom(room.id)" class="collection-header">收藏</p>
+                              <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
+                              <p style="text-transform: capitalize">{{room.degree}} Students</p>
 
+                            <p v-if="!isBookmarked(room.id)" @click="collectRoom(room.id)" class="collection-header">收藏</p>
+                            <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
                           </div>
                         </el-card>
                       </el-col>
@@ -65,7 +67,7 @@
       <p class="desc">No results :(</p>
     </div>
 
-    <CommentSection  @closeComment="handleReceiveComment" :dialogVisible="this.showComment" :room-id="this.roomId"/>
+    <CommentSection  @closeComment="handleReceiveComment" :room-image="this.roomLayout" :dialogVisible="this.showComment" :room-id="this.roomId"/>
     <el-dialog  :visible.sync="showFloorPlan" :close-on-click-modal="true"
                 :close-on-press-escape="true"
                 :before-close="handleCloseFloorPlan">
@@ -96,11 +98,33 @@ export default {
     return {
       data: this.filteredData,
       roomId: null,
+      bookMarkedRooms:[],
+      roomLayout: null,
       showComment: false,
       showFloorPlan:false,
       showGroups: false,
       displayRoom: true
     };
+  },
+  mounted(){
+    axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+      .then(response => {
+        console.log(response.data)
+        response.data.forEach(item => {
+
+          const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
+          this.bookMarkedRooms.push(id)
+
+        });
+        const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
+
+        console.log("Bookmarked Rooms");
+        console.log(bookmarkedRoomsArray);
+      })
+      .catch(error => {
+
+        this.error = error.message || 'Error getting book mark dorm';
+      });
   },
   watch: {
     filteredData: function (newVal, oldVal) {
@@ -116,12 +140,55 @@ export default {
       this.handleDataChange(newVal);
     },
   },
-  computed:{
-    handleRoom(){
-
-    }
-  },
   methods: {
+    isBookmarked(roomId){
+      return this.bookMarkedRooms.includes(roomId)
+    },
+    removeUnderscore(text) {
+      // Your custom text transformation logic
+      // For example, converting "room_number" to "roomNumber"
+      return text.replace(/_/g, ' ');
+    },
+    undoCollect(id){
+      axios.post('https://backend.susdorm.online/api/unbook-dorm/', { id: id }, { withCredentials: true })
+        .then(response => {
+          // Successful response
+          MessageBox.alert('Room successfully uncollected！.', 'Alert', {
+            confirmButtonText: 'Back',
+            type: 'warning'
+          });
+          this.bookMarkedRooms = []
+
+          axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+            .then(response => {
+              console.log(response.data)
+              response.data.forEach(item => {
+
+                const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
+                this.bookMarkedRooms.push(id)
+
+              });
+              const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
+
+              console.log("Bookmarked Rooms");
+              console.log(bookmarkedRoomsArray);
+            })
+            .catch(error => {
+
+              this.error = error.message || 'Error getting book mark dorm';
+            });
+        })
+        .catch(error => {
+          // Error handling
+          console.error('Error:', error.response.data);
+          // You can also extract more information from the error if needed
+          // For example, error.response contains the server response
+          MessageBox.alert('Error '+ error.response.data.non_field_errors[0], 'Error', {
+            confirmButtonText: 'OK',
+            type: 'error'
+          });
+        });
+    },
     handleCloseFloorPlan(done) {
       // Additional logic before closing the dialog (if needed)
       console.log('Closing floor plan dialog.');
@@ -144,6 +211,27 @@ export default {
             confirmButtonText: 'Back',
             type: 'warning'
           });
+
+          this.bookMarkedRooms = []
+
+          axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+            .then(response => {
+              console.log(response.data)
+              response.data.forEach(item => {
+
+                const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
+                this.bookMarkedRooms.push(id)
+
+              });
+              const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
+
+              console.log("Bookmarked Rooms");
+              console.log(bookmarkedRoomsArray);
+            })
+            .catch(error => {
+
+              this.error = error.message || 'Error getting book mark dorm';
+            });
         })
         .catch(error => {
           // Error handling
@@ -166,9 +254,10 @@ export default {
     //
     // },
 
-    handleComment(roomId){
+    handleComment(roomId,roomImage){
       console.log("selected Room",roomId)
       this.showComment = true,
+      this.roomLayout = roomImage
       this.roomId = roomId
     },
     getImageSrc(type) {
@@ -177,6 +266,9 @@ export default {
         return require('@/dist/dorm/dorm1.jpg');
       } else if (type === 'single_room') {
         return require('@/dist/dorm/dorm2.jpg');
+      }else if(type === 'double_room'){
+        return require('@/dist/dorm/dorm3.jpg');
+
       }
     },
     handleDataChange(newData) {
@@ -185,6 +277,7 @@ export default {
 
     },
   },
+
 };
 </script>
 
@@ -224,6 +317,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
   height: 100%;
 }
 
@@ -267,7 +361,8 @@ export default {
 
 .floor-header{
   font-size: 20px;
-  display: inline-block; /* Ensure the underline only spans the width of the text */
+  text-align: center;
+  //display: inline-block; /* Ensure the underline only spans the width of the text */
   margin-bottom: 20px; /* Add some space between the text and the underline */
 }
 
