@@ -71,7 +71,7 @@ export default {
           // this.$router.replace('/person');
           // this.$cookies.config(-1, response.data.sessionid,'backend.susdorm.online',null,null)
 
-          this.$cookies.set('sessionid', response.data.sessionid, '7d','/', 'localhost',true, 'None')
+          this.$cookies.set('sessionid', response.data.sessionid, '7d','/', 'www.susdorm.online',true, 'None')
           this.$router.replace('/person');
           return true
         })
