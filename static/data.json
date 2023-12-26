@@ -193,9 +193,9 @@
   ],
   "optionsTree": [
     {
-      "label": "Residential College",
+      "label": "first phase",
       "url": "./sustech/lakeside_dorm.jpg",
-      "value": 1,
+      "value": "first phase",
       "Building": [
         {
           "label": "B1",
@@ -288,7 +288,13 @@
       ]
     },
     {
-      "label": "Lychee Hills", "url": "./sustech/lychee.jpg", "value": 2, "Building": [
+      "label": "Li Yuan", "url": "./sustech/lychee.jpg", "value": "Li Yuan"
+    },
+    {
+      "label": "Xin Yuan", "url": "./sustech/joy_highland.png", "value": "Xin Yuan"
+    },
+    {
+      "label": "second phase", "url": "./sustech/student_condo.jpg", "value": "second phase", "Building": [
         {
           "label": "B1", "value": 1,"position": [113.99913918407441, 22.60212445711336],
           "Floors": [
@@ -333,3 +339,5 @@
     }
   ]
 }
+
+

@@ -60,13 +60,15 @@ export default {
   // },
   methods:{
     async confirm(){
-      await axios.post('https://backend.susdorm.online/api/login/', this.loginForm,{withCredentials: true})
+      await axios.post('https://backend.susdorm.online/api/login/', this.loginForm)
         .then(response => {
           // 处理响应
           console.log(response)
-          // this.$cookies.set('sessionid', response.data.sessionid);
-          this.$router.replace('/person');
+          this.$cookies.set('sessionid', response.data.sessionid,'7d','/','backend.susdorm.online',null,'None');
 
+          this.$router.replace('/person');
+          // this.$cookies.config(-1, response.data.sessionid,'backend.susdorm.online',null,null)
+          return true
         })
         .catch(error => {
           // 处理错误

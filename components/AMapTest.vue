@@ -12,8 +12,9 @@
       <div class="floor-plan-image">
         <div>
         <h1 class="header-style">{{ currentZone + " " +currentBuilding }}</h1>
-        <img  :src="currentImage" alt="@/static/dorm/noimage.png">
-          <p>{{currentDescription}}</p>
+          <img v-if="currentImage" :src="currentImage" alt="@/static/dorm/noimage.png" style="max-width: 100%; height: auto;">
+          <img v-else :src="require('@/static/dorm/noimage.png')" alt="@/static/dorm/noimage.png">
+          <h1>{{currentDescription}}</h1>
         </div>
         <el-button @click="handleRoute">Details</el-button>
       </div>

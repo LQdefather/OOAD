@@ -3,7 +3,7 @@
     <label :for="id" class="block text-gray-700 font-bold">{{ label }}</label>
       <label class="block text-gray-700 font-bold">Select a location:</label>
         <SliderCust @option-selected="handleChange" :hierarchical-data="hierarchicalData" :images="optionsTree" @reset-options="resetOptions"/>
-    <div v-if="selectedZone && hierarchicalData.length >0" class="space-y-4 form-select">
+    <div v-if="selectedZone && Object.keys(hierarchicalData).length >0 && hierarchicalData[selectedZone]" class="space-y-4 form-select">
       <label for="building" class="block text-gray-700 font-bold">Select a building:</label>
       <el-select v-model="selectedOption2" value-key="id" id="selectOption" placeholder="Select building">
         <el-option
@@ -13,7 +13,7 @@
         />
       </el-select>
     </div>
-    <div v-if="selectedZone && selectedOption2 && hierarchicalData" class="space-y-4 form-select">
+    <div v-if="selectedZone && selectedOption2 && Object.keys(hierarchicalData).length >0" class="space-y-4 form-select">
       <label for="building" class="block text-gray-700 font-bold">Select a Floor:</label>
       <el-select v-model="selectedOption3" id="selectOption2" value-key="id" placeholder="Select Floor">
         <el-option
@@ -35,7 +35,7 @@
               :span="8"
 
             >
-            <el-card @click.native="selectRoom(item.id)" class="box-card" >
+            <el-card @click.native="selectRoom(item)" class="box-card" >
               <img :src="getImageSrc(item.type)" class="list-image" />
               <div class="list-description">
                 <h3>{{ item.roomNumber }}</h3>
@@ -121,10 +121,10 @@ export default {
       console.log('Contents of hierarchicalData[selectedZone]:', this.hierarchicalData[this.selectedZone]);
       console.log('Selected Location:', this.selectedZone);
     },
-    selectRoom(roomID) {
+    selectRoom(room) {
       // Set the selectedOption4 when a room is clicked
-      console.log("roomNumber: "+ roomID)
-      this.selectedOption4 = roomID;
+      console.log("roomNumber: "+ room)
+      this.selectedOption4 = room;
     },
     resetSelection: function() {
       this.selectedOption4 = null;

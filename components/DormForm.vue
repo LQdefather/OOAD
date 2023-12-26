@@ -49,6 +49,8 @@
 <script>
 
 import axios from "axios";
+import {validate} from "tough-cookie/lib/validators";
+import {MessageBox} from "element-ui";
 
 export default {
   name: 'DormForm',
@@ -66,7 +68,7 @@ export default {
       hierarchicalData: [],
 
       academicPosition: '',
-      selectedOption: {},
+      selectedOption: null,
 
       progressNum: 0,
       submitted: false,
@@ -131,9 +133,27 @@ export default {
     },
     submitForm(event) {
       event.preventDefault();
-      console.log('Form Data:', JSON.stringify(this.formData, null, 2));
-      this.showForm = false;
-      this.submitted = true;
+
+      if(this.selectedOption){
+
+        // Add axios post later....
+
+
+        // Add axios post later....
+        MessageBox.alert('Successfully submit group on behalf of group！.', 'Alert', {
+          confirmButtonText: 'Back',
+          type: 'warning'
+        });
+        console.log('Form Data:', JSON.stringify(this.formData, null, 2));
+        this.showForm = false;
+        this.submitted = true;
+      }else {
+        MessageBox.alert('Havent selected a room yet！.', 'Alert', {
+          confirmButtonText: 'Back',
+          type: 'warning'
+        });
+      }
+
     },
   },
 };

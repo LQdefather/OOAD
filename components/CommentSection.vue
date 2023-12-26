@@ -5,19 +5,19 @@
       <h1 class="header-style">Comment</h1>
       <el-collapse class="">
         <el-collapse-item title="Room Layout" name="1" >
-      <img src="@/static/sampleroomlayout.png" alt="@/static/sampleroomlayout.png" class="centered-image">
+      <img src="../static/sustech/roomlayout/sample2.png" alt="@/static/sampleroomlayout.png" class="centered-image">
         </el-collapse-item>
       </el-collapse>
       <div v-for="comment in commentsMap" :key="comment[1].id" class="comment-item " >
 <!--        <p>{{comment}}</p>-->
         <el-row>
-          <el-col :span="2">
+          <el-col :span="2" >
             <el-avatar :src="comment[1].avatar"/>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="17">
             <p class="comment-info"><strong> {{ comment[1].name }}</strong></p>
           </el-col >
-          <el-col class="comment-right" :span="6">
+          <el-col class="comment-right" :span="5">
             <el-rate v-model="comment[1].rating" size="large" disabled/>
           </el-col>
         </el-row>
@@ -29,8 +29,8 @@
             <p @click="handleReply(comment[1].id)">{{ (addReply && reply.replyTo === comment[1].id) ? 'Cancel Reply' : 'Reply' }}</p>
           </el-col>
         </el-row>
-        <div v-if="addReply && reply.replyTo === comment[1].id">
-          <el-input v-model="reply.comment" placeholder="Please input reply" style="margin: 10px;"/>
+        <div v-if="addReply && reply.replyTo === comment[1].id" style="display: flex; flex-direction: column; align-items: flex-start;">
+          <el-input v-model="reply.comment" placeholder="Please input reply" style="margin-top: 10px;"/>
           <button @click="submitComment(true)" >Submit Reply</button>
         </div>
         <div>
@@ -84,7 +84,7 @@ export default {
   props: {
     dialogVisible: Boolean,
     roomId: Number, // Specify the type of roomId prop
-
+    roomImage: String
   },
   devServer: {
     https: true
@@ -135,7 +135,7 @@ export default {
         params = {
           "dormitory": this.roomId,
           "comment": this.reply.comment,
-          "rating": null,
+          "rating": 0,
           "parent": this.reply.replyTo
 
         }
@@ -149,7 +149,7 @@ export default {
       }
 
       if((params.comment!=null && params.comment!=='') && params.dormitory!=null ){
-        client.post('https://backend.susdorm.online/api/create-comment/',params,{withCredentials:true}
+        axios.post('https://backend.susdorm.online/api/create-comment/',params,{withCredentials:true}
 
         ).then(response => {
             this.getComments();
@@ -310,6 +310,8 @@ button {
 }
 
 .replycontainer{
+  margin-top: 20px;
+  margin-bottom: 20px;
   margin-left: 20px;
 }
 
