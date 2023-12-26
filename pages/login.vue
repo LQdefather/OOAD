@@ -79,7 +79,6 @@ export default {
           // 处理错误
           console.error("Error:", error);
         });
-       // this.$router.replace('/person');
 
     }
   }
