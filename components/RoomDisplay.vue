@@ -263,11 +263,11 @@ export default {
     getImageSrc(type) {
       // Add your logic here to determine the image source based on the type
       if (type === 'quadruple_room') {
-        return require('@/dist/dorm/dorm1.jpg');
+        return require('../static/dorm/dorm1.jpg');
       } else if (type === 'single_room') {
-        return require('@/dist/dorm/dorm2.jpg');
+        return require('../static/dorm/dorm2.jpg');
       }else if(type === 'double_room'){
-        return require('@/dist/dorm/dorm3.jpg');
+        return require('../static/dorm/dorm3.jpg');
 
       }
     },

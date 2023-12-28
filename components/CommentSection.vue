@@ -76,7 +76,6 @@
 
 <script>
 import axios from "axios"
-import {client} from "/client"
 import {MessageBox} from "element-ui";
 
 export default {
