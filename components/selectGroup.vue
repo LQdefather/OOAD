@@ -2,7 +2,7 @@
   <div class="select-group">
     <el-container style="width:75%; justify-content: center; align-items: center; margin:auto">
       <el-main
-        style="border-radius: 20px; margin:auto; border: 5px solid #C0C0C0"
+        style="margin:auto; border: 0px"
       >
         <el-row>
           <el-col :span="6" class="grid" align="left">
@@ -34,7 +34,7 @@
               <div>
                 <el-avatar :size="150" icon="el-icon-plus" style="font-size: 80px;"></el-avatar>
               </div>
-              <div style="font-family: 'Calibri',serif; font-size: 28px;font-weight: normal; color:#eee;">
+              <div style="font-family: 'Calibri',serif; font-size: 28px;font-weight: normal; color:#000;">
                 <span>Create Your Group!</span>
               </div>
             </el-card>
@@ -44,10 +44,10 @@
               <div>
                 <el-avatar :size="150" style="font-weight: bold;font-size: 40px" :src="group.avatar"></el-avatar>
               </div>
-              <div style="font-family: '微软雅黑',serif; font-size: 40px;font-weight: bold; color:#F5F5DC;">
+              <div style="font-family: '微软雅黑',serif; font-size: 40px;font-weight: bold; color:#000;">
                 <span>{{ group.name }}</span>
               </div>
-              <div style="font-family: '微软雅黑',serif; font-size: 17px;font-weight: normal; color:#eee;">
+              <div style="font-family: '微软雅黑',serif; font-size: 17px;font-weight: normal; color:#323131;">
                 <span>{{ group.room }}</span>
                 <span>{{ group.type }}</span>
               </div>
@@ -245,13 +245,13 @@
 
       <div align="center">
         <span slot="footer" class="dialog-footer">
-          <el-button
-            type="info" icon="el-icon-chat-dot-round"
-            @click="closeGroupDetail"
-            v-if="isAbleChat"
-          >
-            Chat
-          </el-button>
+<!--          <el-button-->
+<!--            type="info" icon="el-icon-chat-dot-round"-->
+<!--            @click="closeGroupDetail"-->
+<!--            v-if="isAbleChat"-->
+<!--          >-->
+<!--            Chat-->
+<!--          </el-button>-->
           <el-button
             type="warning"
             icon="el-icon-s-release"
@@ -789,8 +789,9 @@ export default {
   margin-right: 20px;
   transition: all .5s;
   height: 300px;
-  border-radius: 12px;
-  background-color: #426B1F;
+  border-radius: 8px;
+  //background-color: #eeeeee;
+  border: 3px solid #173a3e;
 }
 .el-card:hover{
 //margin: 5px;
