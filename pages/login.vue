@@ -50,14 +50,15 @@ export default {
   },
   methods:{
     confirm(){
-      axios.post('https://backend.susdorm.online/api/login/', this.loginForm,
+      axios.post('http://8.138.105.61/api/login/', this.loginForm,
 
         )
         .then(response => {
           // 处理响应
-          // this.$cookies.set('sessionid', response.data.sessionid, '7d')
-          document.cookie = 'sessionid=' + response.data.sessionid
-          // this.$cookies.set('sessionid', response.data.sessionid, '7d','/', 'www.susdorm.online',true, 'None')
+          print(response)
+          this.$cookies.set('sessionid', response.data.sessionid, '7d')
+          // document.cookie = 'sessionid=' + response.data.sessionid
+          // this.$cookies.set('sessionid', response.data.sessionid, '7d','/', 'backend.susdorm.online',true, 'None')
           alert(response.data.sessionid)
 
           localStorage.setItem('pk', response.data.pk);
