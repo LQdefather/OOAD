@@ -44,7 +44,7 @@ export default {
   methods: {
     async fetchMessages() {
       try {
-        const response = await axios.get('https://backend.susdorm.online/api/messages/',
+        const response = await axios.get('https://backend.susdorm.online/api/messages/',{withCredentials:true}
         );
         this.messages = response.data;
       } catch (error) {
@@ -58,7 +58,7 @@ export default {
       try {
         const response = await axios.post('https://backend.susdorm.online/api/send-message/', {
           text: this.currentMessage,
-        });
+        },{withCredentials:true});
         this.messages.push(response.data);
         this.currentMessage = '';
         this.fetchMessages();

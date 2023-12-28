@@ -164,7 +164,7 @@ export default {
         // Add axios post later....
         axios.post('https://backend.susdorm.online/api/select-dorm/', {
           'id': this.selectedOption
-        })
+        },{withCredentials:true})
           .then(response => {
             console.log(response.data)
             MessageBox.alert('Successfully submit group on behalf of group！.', 'Alert', {
@@ -251,7 +251,7 @@ button[type="submit"] {
 }
 
 .el-card {
-  width: 150px;
+  width: 200px;
   margin: 10px;
 }
 

@@ -148,7 +148,7 @@ export default {
       }
 
       if((params.comment!=null && params.comment!=='') && params.dormitory!=null ){
-        axios.post('http://8.138.105.61/api/create-comment/',params,{withCredentials:true}
+        axios.post('https://backend.susdorm.online/api/create-comment/',params,{withCredentials:true}
 
         ).then(response => {
             this.getComments();
