@@ -2,40 +2,53 @@
 <template>
   <div class="max-w-md bg-gray-100 p-6">
     <transition name="fade">
-      <form v-if="showForm" @submit="submitForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md bordered-form" :key="uniqueFormKey">
+      <form v-if="showForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md bordered-form" :key="uniqueFormKey">
         <h1 style="text-align: center" class="text-2xl font-semibold mb-4">Select Dorm</h1>
 
-<!--        <p class="block text-gray-700 font-bold">Current Room Gender: Male</p>-->
+        <!--        <p class="block text-gray-700 font-bold">Current Room Gender: Male</p>-->
         <h2>Collected Dorms by Group</h2>
         <div class="card-grid">
           <!-- Use v-for to iterate over cards and display them in the grid -->
-          <div v-for="room in bookMarkedRooms">
-          <el-card :body-style="{ padding: '0px' }" >
-            <div  class="card-content-container">
-              <img
-                :src="room.roomLayout"
-                class="image"
-                alt=""/>
-              <h2>{{ room.roomNumber }}</h2>
-              <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
-              <p style="text-transform: capitalize">{{room.degree}} Students</p>
-            </div>
-          </el-card>
+          <div v-if="showCard" v-for="room in bookMarkedRooms">
+            <el-card  :body-style="{ padding: '0px' }" >
+              <div @click="handleSelectedOptions(room.id, room)" class="card-content-container">
+                <img
+                  :src="room.roomLayout"
+                  class="image"
+                  alt=""/>
+                <h2>{{ room.roomNumber }}</h2>
+                <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
+                <p style="text-transform: capitalize">{{room.degree}} Students</p>
+              </div>
+            </el-card>
           </div>
+
         </div>
-<!--        <div class="mb-2">-->
-<!--          &lt;!&ndash;Note that selected-options is defined in Dropdown to emit data&ndash;&gt;-->
-<!--          <Dropdown id="dropdown1" :hierarchicalData="hierarchicalData" @selected-options="handleSelectedOptions"/>-->
-<!--        </div>-->
-        <div class="submit-button">
-          <button
-            type="submit"
-            class="mx-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"
+        <!--        <div class="mb-2">-->
+        <!--          &lt;!&ndash;Note that selected-options is defined in Dropdown to emit data&ndash;&gt;-->
+        <!--          <Dropdown id="dropdown1" :hierarchicalData="hierarchicalData" @selected-options="handleSelectedOptions"/>-->
+        <!--        </div>-->
+        <div style="margin-bottom: 10px; margin-top: 10px" v-if="selectedOption">
+          <el-row>
+            <el-col :span="6">
+              <p>Selected room : {{selectedRoomInfo.roomNumber}}</p>
+            </el-col>
+            <el-col :span="4">
+              <el-button @click="selectedOption=null">Select Another Room</el-button>
+            </el-col>
+          </el-row>
+        </div>
+        <div v-if="selectedOption">
+          <el-button @click="submitForm"
           >
             Submit
-          </button>
+          </el-button>
         </div>
-
+        <div v-else>
+          <el-button disabled>
+            Submit
+          </el-button>
+        </div>
       </form>
 
     </transition>
@@ -67,8 +80,9 @@ export default {
       hierarchicalData: [],
       bookMarkedRooms: [],
       academicPosition: '',
+      selectedRoomInfo: null,
       selectedOption: null,
-
+      showCard: true,
       progressNum: 0,
       submitted: false,
       showForm: false,
@@ -86,41 +100,8 @@ export default {
   mounted() {
     // Set showForm to true after the component has been mounted
     setTimeout(() => {
-      axios.get('https://backend.susdorm.online/api/dorm-room/')
-        .then(response => {
-          // Handle successful response
-          this.APIFormData = response.data;
-          this.APIFormData.forEach(item => {
-            const { id,zone, building, type, floor, roomNumber } = item;
 
-            if (!this.hierarchicalData[zone]) {
-              this.hierarchicalData[zone] = {};
-            }
-            if (!this.hierarchicalData[zone][building]) {
-              this.hierarchicalData[zone][building] = {};
-            }
-
-            if (!this.hierarchicalData[zone][building][floor]) {
-              this.hierarchicalData[zone][building][floor] = [];
-            }
-
-            this.hierarchicalData[zone][building][floor].push({
-              id, roomNumber, type
-            })
-            console.log(this.hierarchicalData)
-
-
-          });
-          console.log(this.hierarchicalData)
-          this.error = null;
-        })
-        .catch(error => {
-          // Handle error
-          this.APIFormData = '';
-          this.error = error.message || 'An error occurred';
-        });
-
-      axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+      axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
         .then(response => {
           console.log(response.data)
           response.data.forEach(item => {
@@ -163,9 +144,10 @@ export default {
   },
   methods: {
 
-    handleSelectedOptions(options) {
-      this.selectedOption =options
-      // Handle the selected options received from the child component
+    handleSelectedOptions(options, room) {
+      console.log('Method called')
+      this.selectedOption = options
+      this.selectedRoomInfo = room
       console.log('Received selected options:', options);
       // You can do further processing or update the parent component state here
     },
@@ -180,16 +162,29 @@ export default {
       if(this.selectedOption){
 
         // Add axios post later....
+        axios.post('https://backend.susdorm.online/api/select-dorm/', {
+          'id': this.selectedOption
+        })
+          .then(response => {
+            console.log(response.data)
+            MessageBox.alert('Successfully submit group on behalf of group！.', 'Alert', {
+              confirmButtonText: 'Back',
+              type: 'warning'
+            });
+            this.$router.replace('/DormView');
 
+          })
+          .catch(error => {
+
+            console.error('Error:', error.response.data);
+            MessageBox.alert('Error storing room: ' + error.response.data.non_field_errors, 'Alert', {
+              confirmButtonText: 'Back',
+              type: 'warning'
+            });
+          });
 
         // Add axios post later....
-        MessageBox.alert('Successfully submit group on behalf of group！.', 'Alert', {
-          confirmButtonText: 'Back',
-          type: 'warning'
-        });
-        console.log('Form Data:', JSON.stringify(this.formData, null, 2));
-        this.showForm = false;
-        this.submitted = true;
+
       }else {
         MessageBox.alert('Havent selected a room yet！.', 'Alert', {
           confirmButtonText: 'Back',

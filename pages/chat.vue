@@ -44,7 +44,7 @@ export default {
   methods: {
     async fetchMessages() {
       try {
-        const response = await axios.get('https://backend.susdorm.online/api/messages/');
+        const response = await axios.get('https://backend.susdorm.online/api/messages/',{withCredentials:true});
         this.messages = response.data;
       } catch (error) {
         console.error('Error fetching messages:', error);
