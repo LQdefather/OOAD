@@ -39,10 +39,20 @@
       <div class="edit-info-form">
         <el-form ref="editInfoForm" :model="editedUserInfo">
           <el-form-item label="睡觉时间" prop="sleep">
-            <el-input v-model="editedUserInfo.sleep"></el-input>
+            <el-time-picker
+              v-model="selectedTimeS"
+              :picker-options="pickerOptions"
+              format="HH:mm:ss"
+              placeholder="选择时间">
+            </el-time-picker>
           </el-form-item>
           <el-form-item label="起床时间" prop="wake">
-            <el-input v-model="editedUserInfo.wake"></el-input>
+            <el-time-picker
+              v-model="selectedTimeW"
+              :picker-options="pickerOptions"
+              format="HH:mm:ss"
+              placeholder="选择时间">
+            </el-time-picker>
           </el-form-item>
           <el-form-item label="个人简介" prop="habits">
             <el-input type="textarea" v-model="editedUserInfo.habits"></el-input>
@@ -118,6 +128,9 @@ import axios from "axios";
 export default {
   data() {
     return {
+      pickerOptions: {
+        selectableRange: '00:00:00 - 23:59:59'
+      },
       avatarUrl: '',
       userInfo: {
         name: 'John Doe',
@@ -130,6 +143,8 @@ export default {
       avatarPreview: null,
       editInfoDialogVisible: false,
       selectedFile: null,
+      selectedTimeS: null,
+      selectedTimeW: null,
       editedUserInfo: {
         wake: '',
         sleep:'',
@@ -150,6 +165,13 @@ export default {
     this.getUserInfo();
   },
   methods: {
+    formatTime(time) {
+      // 格式化时间为 HH:mm:ss 字符串
+      const hours = time.getHours().toString().padStart(2, '0');
+      const minutes = time.getMinutes().toString().padStart(2, '0');
+      const seconds = time.getSeconds().toString().padStart(2, '0');
+      return `${hours}:${minutes}:${seconds}`;
+    },
     getUserInfo(){
       axios.get('https://backend.susdorm.online/api/user-information?pk=' + localStorage.getItem('pk'))
         .then((response) => {  // 使用箭头函数
@@ -176,6 +198,8 @@ export default {
     },
     saveEditedInfo() {
       // 在这里保存修改后的用户信息
+      this.editedUserInfo.wake = this.formatTime(this.selectedTimeW)
+      this.editedUserInfo.sleep = this.formatTime(this.selectedTimeS)
       axios.post('https://backend.susdorm.online/api/change-profile/', this.editedUserInfo)
         .then(response => {
           // 处理响应
@@ -267,7 +291,7 @@ export default {
 }
 
 .info-card {
-  width: 50%;
+  width: 40%;
   margin: auto; /* Center card in the middle of the page */
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); /* Slight shadow for depth */
   margin-top: 30px;

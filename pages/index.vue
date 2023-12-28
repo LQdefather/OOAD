@@ -4,7 +4,7 @@
     <div class="main">
       <!-- 第一个Element UI按钮 -->
       <el-button type="primary" @click="handleOption1">学生登录</el-button>
-
+      <el-button type="primary" @click="handleOption1">用户手册</el-button>
       <!-- 第二个Element UI按钮 -->
     </div>
   </div>
