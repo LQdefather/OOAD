@@ -552,7 +552,7 @@ export default {
     leaveGroup() {
       try{
         // 发送POST请求
-        const response = axios.post('https://backend.susdorm.online/api/leave-team/', '');
+        const response = axios.post('https://backend.susdorm.online/api/leave-team/', '',{withCredentials:true});
         // 处理后端响应
         console.log('Backend Response:', response);
         this.$message.success("You left the team.");
@@ -569,7 +569,7 @@ export default {
             id: id,
         };
         // 发送POST请求
-        const response = await axios.post('https://backend.susdorm.online/api/join-team/', dataToSend);
+        const response = await axios.post('https://backend.susdorm.online/api/join-team/', dataToSend,{withCredentials:true});
         if (response.status === 200){
           this.$message.success("Your application to this team had been sent.");
         }
@@ -586,7 +586,7 @@ export default {
     async deleteGroup() {
       try{
         // 发送POST请求
-        const response = await axios.post('https://backend.susdorm.online/api/leave-team/', '');
+        const response = await axios.post('https://backend.susdorm.online/api/leave-team/', '',{withCredentials:true});
         // 处理后端响应
         console.log('Backend Response:', response.data);
         if (response.status === 200){
@@ -668,7 +668,7 @@ export default {
               name: this.newGroup.name
             };
             // 发送POST请求
-            axios.post('https://backend.susdorm.online/api/create-team/', dataToSend)
+            axios.post('https://backend.susdorm.online/api/create-team/', dataToSend,{withCredentials:true})
           .then(response => {
               console.log('Backend Response:', response.data);
               if (response.status === 200){
@@ -715,7 +715,7 @@ export default {
               name: this.newGroup.name
             };
             // 发送POST请求
-            const response = axios.post('https://backend.susdorm.online/api/update-team/', dataToSend);
+            const response = axios.post('https://backend.susdorm.online/api/update-team/', dataToSend,{withCredentials:true});
             // 处理后端响应
             console.log('Backend Response:', response);
           } catch (error) {

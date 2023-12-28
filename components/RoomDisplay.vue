@@ -104,7 +104,7 @@ export default {
     };
   },
   mounted(){
-    axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+    axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
       .then(response => {
         console.log(response.data)
         response.data.forEach(item => {
@@ -156,7 +156,7 @@ export default {
           });
           this.bookMarkedRooms = []
 
-          axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+          axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
             .then(response => {
               console.log(response.data)
               response.data.forEach(item => {
@@ -211,7 +211,7 @@ export default {
 
           this.bookMarkedRooms = []
 
-          axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+          axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
             .then(response => {
               console.log(response.data)
               response.data.forEach(item => {

@@ -6,6 +6,9 @@
 <!--    <div id="map-container" :style="{ width: mapWidth, height: mapHeight }"></div>-->
     <div v-show="dormArea == null || dormBuilding == null" id="map-container" :style="{ width: mapWidth, height: mapHeight }"></div>
     <!-- Display information when a label is clicked -->
+    <div v-if="showRoute">
+      <div id="my-panel"/>
+    </div>
     <el-dialog  :visible.sync="showBuilding"   :close-on-click-modal="true"
                 :close-on-press-escape="true"
                 :before-close="handleCloseBuilding">
@@ -17,9 +20,12 @@
           <h1>{{currentDescription}}</h1>
         </div>
         <el-button @click="handleRoute">Details</el-button>
+        <el-button @click="showRoute = true; showBuilding = false;initMap()">Show Route</el-button>
       </div>
 
     </el-dialog>
+
+
   </div>
   </div>
 </template>
@@ -47,7 +53,10 @@ export default {
       currentBuilding: '',
       currentZone: '',
       currentDescription: '',
-      currentImage: null
+      currentImage: null,
+      currentCoordinates: null,
+      currentUserPosition: null,
+      showRoute: false,
     };
   },
   mounted() {
@@ -56,12 +65,14 @@ export default {
     window._AMapSecurityConfig = {
       securityJsCode:'6dcf279b3051f93ca87a74cf70cca816',
     }
-    axios.get('https://backend.susdorm.online/api/builds/')
+
+    axios.get('https://backend.susdorm.online/api/builds/',{withCredentials:true})
       .then(response => {
         this.APIFormData = response.data;
         this.APIFormData.forEach(item => {
-          console.log("Received data")
-          console.log(response.data)
+
+          // console.log("Received data")
+          // console.log(response.data)
           const { id,name,photo,zone, buildingDetails, xlocation,ylocation } = item
 
           var houseIcon = {
@@ -134,6 +145,7 @@ export default {
       this.currentBuilding = curData.building
       this.currentImage = curData.photo
       this.currentDescription = curData.buildingDetails
+      this.currentCoordinates = curData.position
       console.log(curData.area, curData.building)
       // this.$emit('dorm-selected', curData.area, curData.building);
 
@@ -147,7 +159,7 @@ export default {
       // Load the AMap API script
           const script = document.createElement('script');
 
-          script.src = '//webapi.amap.com/maps?v=2.0&key=20db94d3028c1d2472ae4f29ab518e4b&plugin=AMap.ControlBar,AMap.ToolBar';
+          script.src = '//webapi.amap.com/maps?v=2.0&key=20db94d3028c1d2472ae4f29ab518e4b&plugin=AMap.ControlBar,AMap.ToolBar,AMap.Walking,AMap.Geolocation';
           script.async = true;
           script.onload = () => {
             // Create the map instance
@@ -161,6 +173,24 @@ export default {
               zooms:[2,20],
               center:[113.99913918407441, 22.60212445711336]
             });
+
+            const geolocation = new AMap.Geolocation({
+              enableHighAccuracy: true, // 是否使用高精度定位，默认：true
+              timeout: 10000, // 设置定位超时时间，默认：无穷大
+              offset: [10, 20],  // 定位按钮的停靠位置的偏移量
+              zoomToAccuracy: true,  //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+              position: 'RB' //  定位按钮的排放位置,  RB表示右下
+            })
+
+            geolocation.getCurrentPosition((status, result) => {
+              if (status === 'complete') {
+                console.log(result);
+                this.currentUserPosition = [result.position.KL, result.position.kT];
+              } else {
+                console.log("Error");
+              }
+            });
+
 
             var controlBar = new AMap.ControlBar({
               position:{
@@ -178,9 +208,32 @@ export default {
             });
             toolBar.addTo(map);
 
+            if(this.showRoute){
+              //获取起终点规划线路
+              const driving = new AMap.Walking({
+                map: map,
+                panel: "my-panel",
+              });
+
+              console.log(this.currentUserPosition)
+              console.log(this.currentCoordinates)
+
+              driving.search(this.currentUserPosition,this.currentCoordinates, function (status, result) {
+                if (status === "complete") {
+                  //status：complete 表示查询成功，no_data 为查询无结果，error 代表查询错误
+                  //查询成功时，result 即为对应的驾车导航信息
+                  console.log(result);
+                } else {
+                  console.log("获取驾车数据失败：" + result);
+                }
+              });
+
+            };
+
+
             var LabelsData = this.newLabelsData
 
-            console.log(LabelsData)
+            // console.log(LabelsData)
 
             var markers = [];
             var allowCollision = false;
@@ -204,7 +257,7 @@ export default {
               curData.extData = {
                 index: i,
               };
-              console.log(curData)
+              // console.log(curData)
 
               var labelMarker = new AMap.LabelMarker(curData);
               // 绑定click事件到图标对象上
@@ -219,7 +272,8 @@ export default {
             map.add(layer);
             // 将 marker 添加到图层
 
-          };
+            }
+
 
           document.head.appendChild(script);
     },

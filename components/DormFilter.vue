@@ -337,7 +337,7 @@ export default {
   },
 
   mounted() {
-      axios.get('https://backend.susdorm.online/api/dorm-room/')
+      axios.get('https://backend.susdorm.online/api/dorm-room/',{withCredentials:true})
         .then(response => {
           this.APIFormData = response.data;
           this.APIFormData.forEach(item => {
