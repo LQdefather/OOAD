@@ -19,14 +19,14 @@
           <p><strong>兴趣爱好:</strong> {{ userInfo.interests }}</p>
         </div>
       </div>
+      <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
+
+      <!-- 修改信息按钮 -->
+      <el-button type="primary" @click="showEditInfoDialog">修改信息</el-button>
+      <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
     </el-card>
-
     <!-- 上传头像按钮 -->
-    <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
-
-    <!-- 修改信息按钮 -->
-    <el-button type="primary" @click="showEditInfoDialog">修改信息</el-button>
-    <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
+    <basis/>
 
     <!-- 其他弹窗和逻辑保持不变 -->
 
@@ -279,6 +279,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 20px;
+  margin-bottom: 40px;
 }
 
 .avatar {

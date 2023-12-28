@@ -8,6 +8,9 @@
 
       <DormFilter :receivedZone="zone" :receivedBuilding="building"/>
     </div>
+    <div>
+      <basis />
+    </div>
   </div>
 </template>
 
@@ -44,6 +47,7 @@ export default {
 }
 
 .flex-item {
-  margin-bottom: 20px; /* Adjust the spacing between the divs */
+  margin-bottom: 50px;
+  margin-top: 50px;/* Adjust the spacing between the divs */
 }
 </style>

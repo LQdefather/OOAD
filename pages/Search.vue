@@ -143,6 +143,9 @@
       </div>
 
     </el-dialog>
+    <div class="bot">
+      <basis/>
+    </div>
   </div>
 </template>
 
@@ -551,6 +554,9 @@ export default {
   width: 70%;
   height: 80%;
   border-radius: 20px;
+}
+.bot{
+  margin-top: 50px;
 }
 </style>
 

@@ -6,6 +6,7 @@
     <div class="flex-item">
       <selectGroup />
     </div>
+    <basis/>
   </div>
 </template>
 
@@ -37,6 +38,6 @@ export default {
 }
 
 .flex-item {
-  margin-bottom: 20px; /* Adjust the spacing between the divs */
+  margin-bottom: 50px; /* Adjust the spacing between the divs */
 }
 </style>
