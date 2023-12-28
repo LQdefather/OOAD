@@ -1,31 +1,24 @@
 <template>
-  <div class="loginBody">
+  <div class="background-image-container">
+    <div class="logo">
+
+    </div>
     <div class="loginDiv">
       <div class="login-content">
         <h1 class="login-title">用户登录</h1>
         <el-form :model="loginForm" label-width="100px"
                  :rules="rules" ref="loginForm">
-          <el-form-item label="名字" prop="name">
-            <el-input style="width: 200px" type="text" v-model="loginForm.name"
+          <el-form-item label="学号" prop="name">
+            <el-input style="width: 200px" type="text" v-model="loginForm.username"
                       autocomplete="off" size="small"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input style="width: 200px" type="password" v-model="loginForm.password"
                       show-password autocomplete="off" size="small"></el-input>
           </el-form-item>
-          <el-form-item label="身份" prop="identity">
-            <el-select style="width: 200px" type="text" v-model="loginForm.identity" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item>
+          <div class="login_button">
             <el-button type="primary" @click="confirm">确 定</el-button>
-          </el-form-item>
+          </div>
         </el-form>
       </div>
     </div>
@@ -33,14 +26,18 @@
 </template>
 
 <script>
+
+import Vue from "vue";
+import axios from "axios";
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies);
 export default {
   name: "login",
   data(){
     return{
       loginForm:{
-        name:'',
+        username:'',
         password:'',
-        identity:''
       },
       options: [
         { value: '1', label: '学生' },
@@ -53,33 +50,45 @@ export default {
   },
   methods:{
     confirm(){
-      if(this.loginForm.identity == 1)
-      this.$router.replace('/person');
-      else if(this.loginForm.identity == 2)
-        this.$message.error("请从管理员端登录！");
-      else this.$message.error("请选择身份！");
+      axios.post('https://backend.susdorm.online/api/login/', this.loginForm)
+        .then(response => {
+          // 处理响应
+          this.$cookies.set('sessionid', response.data.sessionid, 7);
+          alert(response.data.sessionid)
+          localStorage.setItem('pk', response.data.pk);
+          this.$router.replace('/person');
+        })
+        .catch(error => {
+          // 处理错误
+          console.error("Error:", error);
+        });
+       // this.$router.replace('/person');
+
     }
   }
 }
 </script>
 
 <style scoped >
-.loginBody {
-  width: 100%;
-  height: 100%;
-  background-color: #ffffff;
+.background-image-container {
+  background-image: url('static/assets/bg2.png');
+  background-size: cover; /* 背景图片覆盖整个元素 */
+  background-position: center; /* 背景图片居中 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 430px;
 }
 .loginDiv {
   position: absolute;
   top: 50%;
   left: 50%;
   margin-top: -200px;
-  margin-left: -250px;
+  margin-left: -230px;
   width: 450px;
-  height: 430px;
-  background: #b3d1c8;
+  height: 360px;
+  background-color: rgba(232, 229, 229, 0.8); /* 设置背景透明度为 0.5 */
   border-radius: 5%;
-
 }
 .login-title {
   margin: 20px 0;
@@ -91,5 +100,8 @@ export default {
   position: absolute;
   top: 25px;
   left: 25px;
+}
+.login_button{
+  text-align: center;
 }
 </style>

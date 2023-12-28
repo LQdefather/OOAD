@@ -1,142 +1,59 @@
 <template>
-  <div class="selectGroup">
-    <el-container style="border: 1px solid #eee">
-      <!--      <el-aside width="200px" style="background-color: rgb(238, 241, 246)">-->
-      <!--        <el-menu :default-openeds="['1', '3']">-->
-      <!--          <el-submenu index="1">-->
-      <!--            <template slot="title"><i class="el-icon-message"></i>1</template>-->
-      <!--            <el-menu-item-group>-->
-      <!--              <template slot="title">1</template>-->
-      <!--              <el-menu-item index="1-1">1.1</el-menu-item>-->
-      <!--              <el-menu-item index="1-2">1.2</el-menu-item>-->
-      <!--            </el-menu-item-group>-->
-      <!--            <el-menu-item-group title="2">-->
-      <!--              <el-menu-item index="1-3">1.3</el-menu-item>-->
-      <!--            </el-menu-item-group>-->
-      <!--            <el-submenu index="1-4">-->
-      <!--              <template slot="title">1.4</template>-->
-      <!--              <el-menu-item index="1-4-1">1.4.1</el-menu-item>-->
-      <!--            </el-submenu>-->
-      <!--          </el-submenu>-->
-      <!--          <el-submenu index="2">-->
-      <!--            <template slot="title"><i class="el-icon-menu"></i>2</template>-->
-      <!--            <el-menu-item-group>-->
-      <!--              <template slot="title">2.1</template>-->
-      <!--              <el-menu-item index="2-1">2.1.1</el-menu-item>-->
-      <!--              <el-menu-item index="2-2">2.1.2</el-menu-item>-->
-      <!--            </el-menu-item-group>-->
-      <!--            <el-menu-item-group title="2.2">-->
-      <!--              <el-menu-item index="2-3">2.2.3</el-menu-item>-->
-      <!--            </el-menu-item-group>-->
-      <!--            <el-submenu index="2-4">-->
-      <!--              <template slot="title">2.2.4</template>-->
-      <!--              <el-menu-item index="2-4-1">2.2.4-1</el-menu-item>-->
-      <!--            </el-submenu>-->
-      <!--          </el-submenu>-->
-      <!--          <el-submenu index="3">-->
-      <!--            <template slot="title"><i class="el-icon-setting"></i>3</template>-->
-      <!--            <el-menu-item-group>-->
-      <!--              <template slot="title">3.1</template>-->
-      <!--              <el-menu-item index="3-1">3.1.1</el-menu-item>-->
-      <!--              <el-menu-item index="3-2">3.1.2</el-menu-item>-->
-      <!--            </el-menu-item-group>-->
-      <!--            <el-menu-item-group title="3.2">-->
-      <!--              <el-menu-item index="3-3">3.2.3</el-menu-item>-->
-      <!--            </el-menu-item-group>-->
-      <!--            <el-submenu index="3-4">-->
-      <!--              <template slot="title">3.2.4</template>-->
-      <!--              <el-menu-item index="3-4-1">3.2.4-1</el-menu-item>-->
-      <!--            </el-submenu>-->
-      <!--          </el-submenu>-->
-      <!--        </el-menu>-->
-      <!--      </el-aside>-->
-
-      <el-container>
-        <el-header
-          style="text-align: right; font-size: 12px;width: 80%; margin:auto"
-        >
-          <el-dropdown trigger="click" @command = "handleCommand">
-            <i class="el-icon-setting" style="margin-right: 15px"></i>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command= "create">New Group</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
-          <span>Example</span>
-        </el-header>
-        <el-main
-          style="width: 80%; margin:auto"
-        >
-          <el-col :span="6" class="grid">
+  <div class="select-group">
+    <el-container style="width:75%; justify-content: center; align-items: center; margin:auto">
+      <el-main
+        style="border-radius: 20px; margin:auto; border: 5px solid #C0C0C0"
+      >
+        <el-row>
+          <el-col :span="6" class="grid" align="left">
+          <span style="font-family: 'Ink Free',serif;
+             font-weight: bolder;
+             font-size: 40px;
+             color: #000">Joined Group</span>
+          </el-col>
+          <el-col :span="12" class="grid" align="left">
             <el-input placeholder="Search by group id or name…"
                       v-model="input"
                       prefix-icon="el-icon-search"
-                      size="mini"
+                      size="medium"
             >
             </el-input>
           </el-col>
-          <el-table
-            ref="groupsTable"
-            :data="groupShow"
-            stripe
-          >
-            <el-table-column prop="id" label="Group ID"></el-table-column>
-            <el-table-column prop="name" label="Group Name"></el-table-column>
-            <el-table-column
-              prop="room"
-              label="Group Room"
-              :filters="[{ text: 'Single Room', value: 'Single Room' },
-               { text: 'Double Room', value: 'Double Room' },
-               { text: 'Triple Room', value: 'Triple Room' },
-               { text: 'Quadruple Room', value: 'Quadruple Room' } ]"
-              :filter-method="filterHandler"
-            ></el-table-column>
-            <el-table-column prop="members" label="Group Members">
-              <template #default="{ row }">
-                <el-tag v-for="member in row.members" :key="member">{{ member }}</el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column label="Group Actions" type="action">
-              <template #default="{ row }">
-                <el-button-group>
-                  <el-button
-                    type="primary"
-                    icon="el-icon-s-promotion"
-                    @click.stop="chatGroup(row)"
-                  >
-                    Chat
-                  </el-button>
-
-                  <el-button
-                    type="success"
-                    icon="el-icon-circle-plus-outline"
-                    @click.stop="joinGroup(row)"
-                  >
-                    Join
-                  </el-button>
-
-                  <el-button
-                    type="danger"
-                    icon="el-icon-delete"
-                    @click.stop="deleteGroup(row)"
-                    disabled
-                  >
-                    Delete
-                  </el-button>
-                </el-button-group>
-              </template>
-            </el-table-column>
-            <el-table-column type="expand">
-              <template #default="{ row }">
-                <el-descriptions class="margin-top" title="Group Detail" :column="1">
-                  <el-descriptions-item label="Description">{{row.description}}</el-descriptions-item>
-                  <el-descriptions-item label="**">*****</el-descriptions-item>
-                  <el-descriptions-item label="**">*****</el-descriptions-item>
-                </el-descriptions>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-main>
-      </el-container>
+          <el-col :span="6" class="grid" align="right">
+            <el-button
+              type="primary"
+              icon="el-icon-s-operation"
+              @click.native="openFilter()">
+              Filter
+            </el-button>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10" :justify="'center'" offset="10">
+          <el-col :span="6" class="grid" >
+            <el-card shadow="hover" @click.native="handleCommand()">
+              <div>
+                <el-avatar :size="150" icon="el-icon-plus" style="font-size: 80px;"></el-avatar>
+              </div>
+              <div style="font-family: 'MV Boli',serif; font-size: 28px;font-weight: normal; color:#eee;">
+                <span>Create Your Group!</span>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="6" class="grid" v-for="(group,index) in groupShow" :key="index" align="middle">
+            <el-card shadow="hover" @click.native="handleGroupCommand(group)">
+              <div>
+                <el-avatar :size="150" style="font-weight: bold;font-size: 40px">Group</el-avatar>
+              </div>
+              <div style="font-family: 'MV Boli',serif; font-size: 40px;font-weight: bold; color:#F5F5DC;">
+                <span>{{ group.name }}</span>
+              </div>
+              <div style="font-family: 'Times New Roman',serif; font-size: 17px;font-weight: normal; color:#eee;">
+                <span>{{ group.room }}</span>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </el-main>
     </el-container>
     <el-dialog
       title="Create a Group"
@@ -191,12 +108,91 @@
         </el-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="Filter"
+      :visible.sync="filterDialogVisible"
+      width="50%"
+      :before-close="closeFilter"
+    >
+      <el-form :model="newFilter" ref="newFilterForm" label-width="120px">
+        <el-form-item
+          label="Room Type"
+          prop="room"
+        >
+          <el-select v-model="newFilter.room" placeholder="Select a room type">
+            <el-option label="Single Room" value="Single Room"></el-option>
+            <el-option label="Double Room" value="Double Room"></el-option>
+            <el-option label="Triple Room" value="Triple Room"></el-option>
+            <el-option label="Quadruple Room" value="Quadruple Room"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="Type"
+          prop="type"
+        >
+          <el-select v-model="newFilter.type" placeholder="Select your identity">
+            <el-option label="master" value="master"></el-option>
+            <el-option label="PhD" value="PhD"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeCreateFilter">Cancel</el-button>
+        <el-button
+          type="danger"
+          @click="clearFilterForm"
+        >
+          Clear
+        </el-button>
+        <el-button
+          type="primary"
+          @click="createNewFilter"
+          :loading="loading"
+        >
+          OK
+        </el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="ifOpenGroupDetail"
+      custom-class="customDialog"
+    >
+      <el-container>
+        <el-col span="6" align="center">
+          <el-avatar :size="100" style="font-size: 20px;">Group</el-avatar>
+        </el-col>
+        <el-main>{{newGroup.name}}</el-main>
+      </el-container>
+      <el-row>
+        <span>{{newGroup.id}}</span>
+      </el-row>
+      <el-row>
+        <span>{{newGroup.description}}</span>
+      </el-row>
+      <el-row>
+        <span>{{newGroup.members}}</span>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            icon="el-icon-s-home"
+            @click="closeGroupDetail"
+          >
+            Chat
+          </el-button>
+          <el-button
+            type="danger"
+            @click="closeGroupDetail"
+          >
+            Done
+          </el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'selectGroup',
   data() {
     return {
       groups: [
@@ -223,6 +219,8 @@ export default {
         },
       ],
       createGroupDialogVisible: false,
+      filterDialogVisible: false,
+      ifOpenGroupDetail:false,
       newGroup: {
         id:"",
         name:"",
@@ -230,14 +228,33 @@ export default {
         members: [],
         description:"",
       },
+      newFilter: {
+        room:"",
+        type:"",
+      },
       loading: false,
       input: '',
-      // img: require('@/assets/header1.jpg'),
     };
   },
   methods: {
-    handleCommand(command) {
+    handleCommand() {
       this.createGroupDialogVisible = true;
+    },
+    handleGroupCommand(group){
+      this.newGroup = {id:group.id, name:group.name,
+        description:group.description, room:group.room,
+        members: group.members }
+      this.ifOpenGroupDetail = true;
+    },
+    openFilter() {
+      this.filterDialogVisible = true;
+    },
+    clearFilterForm() {
+      this.resetNewFilter();
+    },
+    closeFilter(done) {
+      this.resetNewFilter();
+      done();
     },
     handleClose(done){
       this.resetNewGroupForm();
@@ -259,8 +276,33 @@ export default {
       this.createGroupDialogVisible = false;
       this.resetNewGroupForm();
     },
+    closeCreateFilter() {
+      this.filterDialogVisible = false;
+      this.clearFilterForm();
+    },
+    closeGroupDetail() {
+      this.ifOpenGroupDetail = false;
+      this.newGroup = {
+        id:"",
+        name:"",
+        room:"",
+        members: [],
+        description:"",
+      }
+    },
     resetNewGroupForm() {
       this.$refs.newGroupForm.resetFields();
+    },
+    resetNewFilter() {
+      this.$refs.newFilterForm.resetFields();
+    },
+    createNewFilter() {
+      this.loading = true;
+      //TODO: implement the logic for filtering
+      let filter = {room: this.newFilter.room, type:this.newFilter.type}
+      alert("You select " + this.newFilter.type + ", " + this.newFilter.room);
+      this.closeCreateFilter()
+      this.loading = false;
     },
     createNewGroup() {
       // TODO: implement the logic for creating a new group
@@ -278,13 +320,6 @@ export default {
           this.$message.error("Please fill in all the required fields.");
         }
       });
-    },
-    filterHandler(value, row, column) {
-      const property = column['property'];
-      return row[property] === value;
-    },
-    clearFilter() {
-      this.$refs.groupsTable.clearFilter();
     },
   },
   computed: {
@@ -312,7 +347,7 @@ export default {
   line-height: 60px;
 }
 .el-aside {
-  color: #333;
+  background-color: #333;
 }
 .select-group {
   margin-top: 20px;
@@ -330,6 +365,31 @@ export default {
   flex-wrap: wrap;
   gap: 10px;
 }
+.el-card {
+  margin-right: 20px;
+  transition: all .5s;
+  height: 300px;
+  border-radius: 12px;
+  background-color: #426B1F;
+}
+.el-card:hover{
+//margin: 5px;
+  padding-left: 10px;
+}
+.el-main {
+  text-align: center;
+}
+.el-row {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
 </style>
-
+<style>
+.customDialog {
+  background: #F5EFEC;
+  width: 70%;
+  height: 80%;
+  border-radius: 20px;
+}
+</style>
 

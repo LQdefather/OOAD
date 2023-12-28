@@ -2,21 +2,31 @@
   <div class="profile">
     <!-- 个人信息展示部分 -->
     <choose/>
-    <div class="profile-info">
-      <el-avatar class="avatar" :src="avatarUrl" alt="User Avatar"></el-avatar>
-      <div class="info">
-        <p><strong>姓名:</strong> {{ userInfo.name }}</p>
-        <p><strong>性别:</strong> {{ userInfo.gender }}</p>
-        <p><strong>联系方式:</strong> {{ userInfo.contact }}</p>
-        <p><strong>个人简介:</strong> {{ userInfo.bio }}</p>
+    <el-card class="info-card">
+      <div slot="header" class="clearfix">
+        <span>个人信息</span>
       </div>
-    </div>
+      <div class="profile-info">
+        <el-avatar class="avatar" :src="avatarUrl" alt="User Avatar"></el-avatar>
+        <div class="info">
+          <p><strong>姓名:</strong> {{ userInfo.name }}</p>
+          <p><strong>性别:</strong> {{ userInfo.gender }}</p>
+          <p><strong>作息时间:</strong> {{ userInfo.day }}</p>
+          <p><strong>个人简介:</strong> {{ userInfo.habits }}</p>
+          <p><strong>联系方式:</strong> {{ userInfo.contact }}</p>
+          <p><strong>兴趣爱好:</strong> {{ userInfo.interests }}</p>
+        </div>
+      </div>
+    </el-card>
 
     <!-- 上传头像按钮 -->
     <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
 
     <!-- 修改信息按钮 -->
     <el-button type="primary" @click="showEditInfoDialog">修改信息</el-button>
+    <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
+
+    <!-- 其他弹窗和逻辑保持不变 -->
 
     <!-- 修改信息弹窗 -->
     <el-dialog
@@ -26,7 +36,21 @@
     >
       <div class="edit-info-form">
         <el-form ref="editInfoForm" :model="editedUserInfo">
-          <!-- ... 其他表单项 ... -->
+          <el-form-item label="睡觉时间" prop="sleep">
+            <el-input v-model="editedUserInfo.sleep"></el-input>
+          </el-form-item>
+          <el-form-item label="起床时间" prop="wake">
+            <el-input v-model="editedUserInfo.wake"></el-input>
+          </el-form-item>
+          <el-form-item label="个人简介" prop="habits">
+            <el-input type="textarea" v-model="editedUserInfo.habits"></el-input>
+          </el-form-item>
+          <el-form-item label="联系方式" prop="contact">
+            <el-input v-model="editedUserInfo.contact"></el-input>
+          </el-form-item>
+          <el-form-item label="兴趣爱好" prop="interests">
+            <el-input v-model="editedUserInfo.interests"></el-input>
+          </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -36,7 +60,6 @@
     </el-dialog>
 
     <!-- 修改密码按钮 -->
-    <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
 
     <!-- 修改密码弹窗 -->
     <el-dialog
@@ -46,7 +69,15 @@
     >
       <div class="change-password-form">
         <el-form ref="changePasswordForm" :model="passwordChange">
-          <!-- ... 其他表单项 ... -->
+          <el-form-item label="原密码" prop="old_password">
+            <el-input type="password" v-model="passwordChange.old_password"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码" prop="password">
+            <el-input type="password" v-model="passwordChange.password"></el-input>
+          </el-form-item>
+          <el-form-item label="确认新密码" prop="password2">
+            <el-input type="password" v-model="passwordChange.password2"></el-input>
+          </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -62,17 +93,13 @@
       width="30%"
     >
       <div class="upload-avatar-form">
-        <!-- 这里添加上传头像的表单或组件 -->
-        <!-- 例如，可以使用 <el-upload> 组件来实现文件上传 -->
-        <!-- 注意更新 avatarUrl 的值 -->
         <el-upload
           class="avatar-uploader"
           action="/upload"
           :show-file-list="false"
-          :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
         >
-          <img v-if="avatarUrl" :src="avatarUrl" class="avatar">
+          <img v-if="avatarPreview" :src="avatarPreview" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
       </div>
@@ -85,43 +112,78 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
-      avatarUrl: 'https://example.com/avatar.jpg',
+      avatarUrl: '',
       userInfo: {
         name: 'John Doe',
         gender: 'Male',
+        day: '11:00-7:00',
         contact: 'john.doe@example.com',
-        bio: 'Hello, I am John Doe.',
+        habits: 'Hello, I am John Doe.',
+        interests: [],
       },
+      avatarPreview: null,
       editInfoDialogVisible: false,
+      selectedFile: null,
       editedUserInfo: {
-        name: '',
-        gender: '',
+        wake: '',
+        sleep:'',
         contact: '',
-        bio: '',
+        habits: '',
+        interests: [],
       },
       changePasswordDialogVisible: false,
       passwordChange: {
-        oldPassword: '',
-        newPassword: '',
+        old_password: '',
+        password: '',
+        password2: '',
       },
       uploadAvatarDialogVisible: false,
     };
   },
+  mounted() {
+    this.getUserInfo();
+  },
   methods: {
+    getUserInfo(){
+      axios.get('https://backend.susdorm.online/api/user-information?pk=' + localStorage.getItem('pk'))
+        .then((response) => {  // 使用箭头函数
+          this.avatarUrl = response.data[0]['avatar']; // this 现在正确指向 Vue 实例
+          this.userInfo.name = response.data[0]['name'];
+          this.userInfo.contact = response.data[0]['contact'];
+          this.userInfo.gender = response.data[0]['sex'];
+          this.userInfo.interests = response.data[0]['interests'];
+          this.userInfo.day = response.data[0]['sleep']+'-'+response.data[0]['wake'];
+          this.userInfo.habits = response.data[0]['habits'];
+
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
     showEditInfoDialog() {
       this.editInfoDialogVisible = true;
       // 将用户信息复制到编辑表单中
-      this.editedUserInfo = { ...this.userInfo };
+
     },
     cancelEditInfo() {
       this.editInfoDialogVisible = false;
     },
     saveEditedInfo() {
       // 在这里保存修改后的用户信息
-      this.userInfo = { ...this.editedUserInfo };
+      axios.post('https://backend.susdorm.online/api/change-profile/', this.editedUserInfo)
+        .then(response => {
+          // 处理响应
+          alert('修改成功');
+        })
+        .catch(error => {
+          // 处理错误
+          console.error("Error:", error);
+        });
+      this.getUserInfo();
       this.editInfoDialogVisible = false;
     },
     showChangePasswordDialog() {
@@ -132,8 +194,15 @@ export default {
     },
     saveChangedPassword() {
       // 在这里保存修改后的密码
-      this.passwordChange.oldPassword = '';
-      this.passwordChange.newPassword = '';
+      axios.put('https://backend.susdorm.online/api/change-password/'+localStorage.getItem('pk')+'/', this.passwordChange)
+        .then(response => {
+          // 处理响应
+          alert('修改成功');
+        })
+        .catch(error => {
+          // 处理错误
+          console.error("Error:", error);
+        });
       this.changePasswordDialogVisible = false;
     },
     showUploadAvatarDialog() {
@@ -141,30 +210,48 @@ export default {
     },
     cancelUploadAvatar() {
       this.uploadAvatarDialogVisible = false;
-    },
-    handleAvatarSuccess(response, file) {
-      // 上传成功后更新 avatarUrl 的值
-      this.avatarUrl = response.url;
+      this.avatarPreview = null;
+      this.selectedFile = null;
     },
     beforeAvatarUpload(file) {
-      // 验证上传的文件格式等
-      const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG) {
-        this.$message.error('上传头像图片只能是 JPG 格式!');
+      const isImage = file.type.startsWith('image/');
+      if (!isImage) {
+        this.$message.error('您只能上传图片文件！');
+        return false;
       }
+
+      const isLt2M = file.size / 1024 / 1024 < 20;
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!');
+        this.$message.error('上传的图片大小不能超过 20MB！');
+        return false;
       }
 
-      return isJPG && isLt2M;
+      // 创建一个 URL 用于预览
+      this.avatarPreview = URL.createObjectURL(file);
+      this.selectedFile = file;
+      return false; // 阻止 el-upload 自动上传
     },
     uploadAvatar() {
-      // 在这里实现上传头像的逻辑
-      // 可以使用第三方库或服务，也可以直接调用后端接口
-      // 在上传成功后，更新 avatarUrl 的值
-      // this.avatarUrl = '新的头像地址';
+      if (!this.selectedFile) {
+        this.$message.error('请先选择一个文件');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('avatar', this.selectedFile);
+
+      axios.post('https://backend.susdorm.online/api/change-avatar/', formData)
+        .then(response => {
+          // 处理响应
+          alert("修改成功")
+          this.getUserInfo();
+        })
+        .catch(error => {
+          // 处理错误
+          console.error("Error:", error);
+        });
+
+      // 关闭对话框
       this.uploadAvatarDialogVisible = false;
     },
   },
@@ -172,31 +259,42 @@ export default {
 </script>
 
 <style scoped>
-
 .profile {
   text-align: center;
-  padding: 10px;
+  padding: 20px;
+}
+
+.info-card {
+  width: 80%;
+  margin: auto; /* Center card in the middle of the page */
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); /* Slight shadow for depth */
 }
 
 .profile-info {
-  text-align: center;
-  padding: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .avatar {
-  width: 100px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
+  border: 2px solid #f2f2f2; /* Slight border around avatar for depth */
   margin-right: 20px;
 }
 
 .info {
   text-align: left;
-  display: inline-block;
-  vertical-align: top;
 }
 
-.edit-info-form,
-.change-password-form {
-  padding: 20px;
+.info p {
+  line-height: 1.5; /* More readable line spacing */
+  margin: 0 0 10px 0; /* Space out the paragraphs */
+}
+
+/* Adjustments for buttons */
+.el-button {
+  margin: 10px 5px;
 }
 </style>
