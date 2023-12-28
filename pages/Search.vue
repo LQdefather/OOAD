@@ -447,7 +447,7 @@ export default {
   transition: all .5s;
   height: 300px;
   border-radius: 12px;
-  background-color: #426B1F;
+  background-color: #ffffff;
 }
 .el-card:hover{
 //margin: 5px;
