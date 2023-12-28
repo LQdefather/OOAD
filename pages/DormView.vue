@@ -5,7 +5,8 @@
       <choose />
     </div>
     <div class="flex-item">
-      <ButtonGrids />
+
+      <DormFilter :receivedZone="zone" :receivedBuilding="building"/>
     </div>
   </div>
 </template>
@@ -13,21 +14,33 @@
 <script>
 
 export default {
+  data(){
+    return{
+      zone: null,
+      building: null
+    }
 
+  },
+  mounted() {
+    console.log("Current params in View Dorm")
+    console.log(this.$route.params);
+    this.zone = this.$route.params.zone
+    this.building = this.$route.params.building
+  }
 };
 </script>
 
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 
 .flex-container {
   display: flex;
   flex-direction: column; /* Stack items vertically */
+
 }
 
 .flex-item {

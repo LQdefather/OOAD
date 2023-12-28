@@ -6,10 +6,10 @@
       >
         <el-row>
           <el-col :span="6" class="grid" align="left">
-            <span style="font-family: 'Times New Roman',serif;
-               font-weight: bolder;
-               font-size: 40px;
-               color: #000">Joined Group</span>
+          <span style="font-family: 'Ink Free',serif;
+             font-weight: bolder;
+             font-size: 40px;
+             color: #000">Joined Group</span>
           </el-col>
           <el-col :span="12" class="grid" align="left">
             <el-input placeholder="Search by group id or name…"
@@ -34,7 +34,7 @@
               <div>
                 <el-avatar :size="150" icon="el-icon-plus" style="font-size: 80px;"></el-avatar>
               </div>
-              <div style="font-family: 'Calibri',serif; font-size: 28px;font-weight: normal; color:#eee;">
+              <div style="font-family: 'MV Boli',serif; font-size: 28px;font-weight: normal; color:#eee;">
                 <span>Create Your Group!</span>
               </div>
             </el-card>
@@ -44,16 +44,16 @@
               <div>
                 <el-avatar :size="150" style="font-weight: bold;font-size: 40px">Group</el-avatar>
               </div>
-              <div style="font-family: '微软雅黑',serif; font-size: 40px;font-weight: bold; color:#F5F5DC;">
+              <div style="font-family: 'MV Boli',serif; font-size: 40px;font-weight: bold; color:#F5F5DC;">
                 <span>{{ group.name }}</span>
               </div>
-              <div style="font-family: '微软雅黑',serif; font-size: 17px;font-weight: normal; color:#eee;">
+              <div style="font-family: 'Times New Roman',serif; font-size: 17px;font-weight: normal; color:#eee;">
                 <span>{{ group.room }}</span>
               </div>
             </el-card>
           </el-col>
         </el-row>
-      </el-main>
+    </el-main>
     </el-container>
     <el-dialog
       title="Create a Group"
@@ -156,53 +156,23 @@
     <el-dialog
       :visible.sync="ifOpenGroupDetail"
       custom-class="customDialog"
-      :before-close="clearNew"
     >
-      <el-main class="el-dialog__header">
-        <el-row style="margin-top: 2px; margin-bottom: 2px">
-          <el-col span="4" align="left">
-            <el-avatar :size="120" style="font-size: 30px;">Group</el-avatar>
-          </el-col>
-          <el-col span="18" align="left">
-            <el-row style="margin-top: 2px; margin-bottom: 2px">
-              <span style="font-family: 'Calibri',serif;
-             font-weight: bolder;
-             font-size: 40px;
-             color: #000">{{newGroup.name}}</span>
-            </el-row>
-            <el-row style="margin-top: 2px; margin-bottom: 2px">
-              <span style="font-family: '微软雅黑', serif;
-                font-weight: lighter;
-                font-size: 18px;
-                color: #000"
-              >{{newGroup.description}}</span>
-            </el-row>
-          </el-col>
-        </el-row>
-      </el-main>
-      <el-main class="el-dialog__body">
-        <el-row>
-          <el-col span="4" align="center">
-            <span style="font-size: 20px; font-weight: bold">GroupID:</span>
-          </el-col>
-          <el-col span="16" align="left">
-            <span style="font-size: 18px;"> {{newGroup.id}}</span>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col span="4" align="center">
-            <div>
-              <span style="font-size: 20px; font-weight: bold">Member:</span>
-            </div>
-          </el-col>
-          <el-col span="2" align="left"  v-for="(k, index) in newGroup.members" :key="index">
-            <li style="font-size: 18px;">{{ k }}</li>
-          </el-col>
-        </el-row>
-      </el-main>
-
-      <div align="center">
-        <span slot="footer" class="dialog-footer">
+      <el-container>
+        <el-col span="6" align="center">
+          <el-avatar :size="100" style="font-size: 20px;">Group</el-avatar>
+        </el-col>
+        <el-main>{{newGroup.name}}</el-main>
+      </el-container>
+      <el-row>
+        <span>{{newGroup.id}}</span>
+      </el-row>
+      <el-row>
+        <span>{{newGroup.description}}</span>
+      </el-row>
+      <el-row>
+        <span>{{newGroup.members}}</span>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
           <el-button
             type="primary"
             icon="el-icon-s-home"
@@ -216,16 +186,12 @@
           >
             Done
           </el-button>
-        </span>
-      </div>
-
+      </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import axios from "axios";
-// axios.defaults.baseURL = '/proxy_url'
 export default {
   data() {
     return {
@@ -268,55 +234,10 @@ export default {
       },
       loading: false,
       input: '',
-      filter:{
-        room:"",
-        type:"",
-        isTrue: false,
-      }
+      // img: require('@/assets/header1.jpg'),
     };
   },
-  // devServer: {
-  //   proxy: {
-  //     '/getTeam': {
-  //       target: 'http://localhost:8080/', // Replace with your Flask server address
-  //       changeOrigin: true,
-  //       ws: true,
-  //     },
-  //   },
-  // },
-  created() {
-    this.getAllTeam();
-  },
   methods: {
-
-    async getAllTeam(){
-      const apiUrl = 'http://localhost:8080/getTeam';
-      try {
-        const response = await axios.get(apiUrl,{
-          headers: {
-            token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InJvb3QifQ.0Ia3eD-FWd4Ik2bfP3AGoGjcpupkBqo9_OQqxWB9ksA"
-          }
-        });
-        // console.log(response.data);
-        this.groups = response.data;
-        // let list = response.data;
-        // for (let i = 0; i < list.length; i++) {
-        //   const user = await this.getUserDetailsById(list[i].leaderId);
-        //
-        //   const combinedItem = {
-        //     name: list[i].name,
-        //     description: user.name,
-        //   };
-        //
-        //   list[i] = combinedItem;
-        // }
-        // this.groups = list;
-        this.$message.info("success");
-      } catch (error) {
-        this.$message.error(error.toString());
-        console.error('Error fetching files:', error);
-      }
-    },
     handleCommand() {
       this.createGroupDialogVisible = true;
     },
@@ -363,11 +284,11 @@ export default {
     closeGroupDetail() {
       this.ifOpenGroupDetail = false;
       this.newGroup = {
-        id:"",
-        name:"",
-        room:"",
-        members: [],
-        description:"",
+          id:"",
+          name:"",
+          room:"",
+          members: [],
+          description:"",
       }
     },
     resetNewGroupForm() {
@@ -379,40 +300,23 @@ export default {
     createNewFilter() {
       this.loading = true;
       //TODO: implement the logic for filtering
-      this.filter = {room: this.newFilter.room, type:this.newFilter.type, isTrue: true}
+      let filter = {room: this.newFilter.room, type:this.newFilter.type}
       alert("You select " + this.newFilter.type + ", " + this.newFilter.room);
       this.closeCreateFilter()
       this.loading = false;
     },
-    async createNewGroup() {
+    createNewGroup() {
       // TODO: implement the logic for creating a new group
-      this.$refs.newGroupForm.validate(async (valid) => {
+      this.$refs.newGroupForm.validate((valid) => {
         if (valid) {
           this.loading = true;
-          let group = {
-            id: "1001", name: this.newGroup.name,
-            description: this.newGroup.description, room: this.newGroup.room,
-            members: ["example_TBC"]
-          };
+          let group = {id:"1001", name:this.newGroup.name,
+            description:this.newGroup.description, room:this.newGroup.room,
+            members: ["example_TBC"] };
           this.groups.push(group);
-          let postData = {name:group.name, leaderId:1};
-          const apiUrl = 'https://localhost:8080/createTeam';
-          try {
-            const res = await axios.post(apiUrl, postData, {
-              headers: {
-                "Content-Type": "application/json"
-              },
-            });
-            console.log('Response from server:', res);
-            // this.postResult = this.JSON.stringify(result, null, 2);
-          } catch (err) {
-            // this.postResult = this.JSON.stringify(err.response?.data, null, 2) || err;
-            this.closeCreateGroupDialog();
-            this.loading = false;
-            this.$message.error(err.toString());
-          }
           this.closeCreateGroupDialog();
           this.loading = false;
+          alert("You created a new group with name " + group.name);
         } else {
           this.$message.error("Please fill in all the required fields.");
         }
@@ -470,7 +374,7 @@ export default {
   background-color: #426B1F;
 }
 .el-card:hover{
-//margin: 5px;
+  //margin: 5px;
   padding-left: 10px;
 }
 .el-main {

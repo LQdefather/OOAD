@@ -24,10 +24,12 @@
       "replies": [
         {
           "id": 1,
+          "author": "john",
           "text": "Reply to the first comment"
         },
         {
           "id": 2,
+          "author": "lmao",
           "text": "Another reply to the first comment"
         }
       ]
@@ -42,6 +44,7 @@
       "replies": [
         {
           "id": 1,
+          "author": "lam123",
           "text": "Reply to the second comment"
         }
       ]
@@ -56,10 +59,12 @@
       "replies": [
         {
           "id": 1,
+          "author": "cons178",
           "text": "Reply to the second comment"
         },
         {
           "id": 2,
+          "author": "123esther",
           "text": "Yes!"
         }
       ]
@@ -74,10 +79,12 @@
       "replies": [
         {
           "id": 1,
+          "author": "haha789",
           "text": "Thanks!"
         },
         {
           "id": 2,
+          "author": "pukitai12",
           "text": "I agree!"
         }
       ]
@@ -92,10 +99,12 @@
       "replies": [
         {
           "id": 1,
+          "author":  "weiyao12",
           "text": "Yes, it is!"
         },
         {
           "id": 2,
+          "author":"daniel99" ,
           "text": "Tell me more!"
         }
       ]
@@ -110,10 +119,12 @@
       "replies": [
         {
           "id": 1,
+          "author": "bananyeehaws",
           "text": "que shi queshi!"
         },
         {
           "id": 2,
+          "author": "pops44",
           "text": "I appreciate it."
         }
       ]
@@ -128,10 +139,12 @@
       "replies": [
         {
           "id": 1,
+          "author":"lol432",
           "text": "I will!"
         },
         {
           "id": 2,
+          "author": "ffdas432",
           "text": "You're doing great!"
         }
       ]
@@ -146,10 +159,12 @@
       "replies": [
         {
           "id": 1,
+          "author": "thahnmihn211",
           "text": "I will rent this!"
         },
         {
           "id": 2,
+          "author": "poilam43",
           "text": "Yeehawwww!"
         }
       ]
@@ -164,10 +179,12 @@
       "replies": [
         {
           "id": 1,
+          "author": "hockf32",
           "text": "DM"
         },
         {
           "id": 2,
+          "author":"gfsd876",
           "text": "DM jga"
         }
       ]
@@ -176,9 +193,9 @@
   ],
   "optionsTree": [
     {
-      "label": "Residential College",
+      "label": "first phase",
       "url": "./sustech/lakeside_dorm.jpg",
-      "value": 1,
+      "value": "first phase",
       "Building": [
         {
           "label": "B1",
@@ -271,7 +288,13 @@
       ]
     },
     {
-      "label": "Lychee Hills", "url": "./sustech/lychee.jpg", "value": 2, "Building": [
+      "label": "Li Yuan", "url": "./sustech/lychee.jpg", "value": "Li Yuan"
+    },
+    {
+      "label": "Xin Yuan", "url": "./sustech/joy_highland.png", "value": "Xin Yuan"
+    },
+    {
+      "label": "second phase", "url": "./sustech/student_condo.jpg", "value": "second phase", "Building": [
         {
           "label": "B1", "value": 1,"position": [113.99913918407441, 22.60212445711336],
           "Floors": [
@@ -316,3 +339,5 @@
     }
   ]
 }
+
+

@@ -38,29 +38,55 @@
       <el-dialog :visible.sync="dialogVisible" :before-close="handleClose">
         <h2>Comment</h2>
         <div v-for="comment in filteredComments" :key="comment.id" class="comment-item">
-          <p class="comment-info"><strong> {{ comment.author }}</strong></p>
-          <p class="comment-info"><strong>Rating:</strong> {{ comment.rating }}</p>
-          <p class="comment-info"><strong>Text:</strong> {{ comment.text }}</p>
-          <el-row >
-            <el-col :span="11" style="margin: 5px;">
-              <button @click="toggleReplies(comment.id)">{{ comment.showreply ? 'Untoggle Replies' : 'Toggle Replies' }}</button>
-            </el-col>
-            <el-col :span="11" style="margin: 5px;">
-              <button @click="addReply(comment.id)" style="background-color: darkgray;;color: white">{{ comment.addreply ? 'Cancel Reply' : 'Reply' }}</button>
-
+          <el-row>
+          <el-col :span="2">
+            <el-avatar src="../static/sustech/avatar.png"/>
+          </el-col>
+          <el-col :span="16">
+            <p class="comment-info"><strong> {{ comment.author }}</strong></p>
+          </el-col >
+            <el-col class="comment-right" :span="6">
+              <el-rate v-model="comment.rating" size="large" disabled/>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="20">
+              <p class="comment-info">{{ comment.text }}</p>
+            </el-col>
+            <el-col class="comment-right" :span="4">
+              <p @click="addReply(comment.id)">{{ comment.addreply ? 'Cancel Reply' : 'Reply' }}</p>
+            </el-col>
+          </el-row>
+<!--          <el-row >-->
+<!--            <el-col :span="11" style="margin: 5px;">-->
+<!--              <button @click="toggleReplies(comment.id)">{{ comment.showreply ? 'Untoggle Replies' : 'Toggle Replies' }}</button>-->
+<!--            </el-col>-->
+<!--            <el-col :span="11" style="margin: 5px;">-->
+<!--              <button @click="addReply(comment.id)" style="background-color: darkgray;;color: white">{{ comment.addreply ? 'Cancel Reply' : 'Reply' }}</button>-->
+
+<!--            </el-col>-->
+<!--          </el-row>-->
           <div v-if="comment.addreply" >
             <el-input v-model="newReply" placeholder="Please input" style="margin: 10px;"/>
             <button @click="submitReply(comment.id, comment.newReply)" >Submit Reply</button>
           </div>
-          <div v-if="comment.replies.length > 0 && comment.showreply === true">
-            <h4>Replies:</h4>
-            <ul>
-              <li v-for="reply in comment.replies" :key="reply.id">
-                {{ reply.text }}
-              </li>
-            </ul>
+          <div v-if="comment.replies.length > 0">
+            <div class="replycontainer" v-for="reply in comment.replies" :key="reply.id">
+              <el-row>
+              <el-col :span="2">
+                <el-avatar src="../static/sustech/avatar.png"/>
+              </el-col>
+              <el-col :span="10">
+                <p class="comment-info"><strong> {{ reply.author }}</strong></p>
+              </el-col >
+              </el-row>
+              <p>{{ reply.text }}</p>
+            </div>
+<!--            <ul>-->
+<!--              <li v-for="reply in comment.replies" :key="reply.id">-->
+<!--                {{ reply.text }}-->
+<!--              </li>-->
+<!--            </ul>-->
           </div>
         </div>
         <div style="margin: 10px; border-top: 1px solid #ccc;">
@@ -91,7 +117,7 @@
 
 <script>
 import data from '@/static/data.json';
-import {ref} from "vue";
+import axios from "axios";
 
 export default {
   name: 'ButtonGrids',
@@ -121,6 +147,17 @@ export default {
       },
     }
   },
+  devServer: {
+    devServer: {
+      proxy: {
+        '/dorm': {
+          target: 'http://localhost:8080/', // Replace with your Flask server address
+          changeOrigin: true,
+          ws: true,
+        },
+      },
+    },
+  },
   computed: {
     filteredComments() {
       // Filter comments based on the roomIds array
@@ -134,6 +171,18 @@ export default {
 
   },
   methods:{
+    async getDorms() {
+
+      const apiUrl = `http://localhost:8080/dorm `;
+
+      try {
+        // Get file tree
+        const response = await axios.get(apiUrl);
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error fetching files:', error);
+      }
+    },
     getRooms(floor) {
       this.rooms = floor.Room || []
       return floor.Room || [];
@@ -180,7 +229,11 @@ export default {
       this.comments[commentID-1].addreply = !this.comments[commentID-1].addreply
 
     }
-  }
+  },
+  created() {
+    // Call the getDorms method when the component is created
+    this.getDorms();
+  },
 }
 </script>
 
@@ -217,6 +270,7 @@ ElCarousel {
 .carousel-custom{
   border: 2px solid #b3d1c8;
   margin:0 auto;
+  margin-top: 20px;
   height: auto;
   width: 50%;
 }
@@ -240,6 +294,16 @@ button {
 
 .comment-info {
   margin-bottom: 5px; /* Add some spacing between each piece of comment information */
+}
+
+.comment-right{
+  margin-left: auto;
+  margin-right: 0;
+  text-align: right;
+}
+
+.replycontainer{
+  margin-left: 20px;
 }
 
 </style>

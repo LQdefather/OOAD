@@ -24,6 +24,10 @@ export default {
   name: "SliderCust",
   props: {
     // Define a prop for images
+    hierarchicalData: {
+      type: Array,
+      required: true
+    },
     images: Array,
   },
   data() {
