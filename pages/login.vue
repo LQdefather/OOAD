@@ -53,8 +53,8 @@ export default {
       axios.post('https://backend.susdorm.online/api/login/', this.loginForm)
         .then(response => {
           // 处理响应
-          this.$cookies.set('sessionid', response.data.sessionid, '7d','/', 'backend.susdorm.online',true, 'None')
-          alert(response.data.sessionid)
+          this.$cookies.set('sessionid', response.data.sessionid, '7d','/', 'www.susdorm.online',true, 'None')
+          // alert(response.data.sessionid)
           localStorage.setItem('pk', response.data.pk);
           this.$router.replace('/person');
         })
