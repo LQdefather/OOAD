@@ -49,6 +49,7 @@
               </div>
               <div style="font-family: '微软雅黑',serif; font-size: 17px;font-weight: normal; color:#eee;">
                 <span>{{ group.room }}</span>
+                <span>{{ group.type }}</span>
               </div>
             </el-card>
           </el-col>
@@ -172,7 +173,7 @@
         >
           <el-select v-model="newFilter.type" placeholder="Select your identity">
             <el-option label="master" value="master"></el-option>
-            <el-option label="PhD" value="PhD"></el-option>
+            <el-option label="PhD" value="doctor"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -437,7 +438,7 @@ export default {
           // this.avatarUrl = response.data[0]['avatar']; // this 现在正确指向 Vue 实例
           this.localUser.id = response.data[0]['studentId'];
           this.localUser.gender = response.data[0]['sex'];
-          this.localUser.type = response.data[0]['studentId'][3];
+          this.localUser.type = response.data[0]['degree'];
           this.localUser.team = response.data[0]['team'];
         })
         .catch(function (error) {
@@ -455,7 +456,7 @@ export default {
             id: list[i]['id'],
             name: list[i]['name'],
             room: list[i]['leader']['sex'],
-            type: list[i]['leader']['studentId'][3],
+            type: list[i]['leader']['degree'],
             members: list[i]['members'],
             leaderId: list[i]['leader']['studentId'],
             avatar: list[i]['leader']['avatar'],

@@ -39,7 +39,8 @@
                 <span>{{ group.name }}</span>
               </div>
               <div style="font-family: '微软雅黑',serif; font-size: 17px;font-weight: normal; color:#eee;">
-                <span>{{ group.room }}</span>
+                <span>{{ group.gender }}</span>
+                <span>{{ group.degree }}</span>
               </div>
             </el-card>
           </el-col>
@@ -106,13 +107,41 @@
              font-size: 40px;
              color: #000">{{newGroup.name}}</span>
             </el-row>
+            <el-row style="margin-top: 2px; margin-bottom: 2px">
+              <span style="font-family: '微软雅黑', serif;
+                font-size: 18px;
+                color: #000"
+              >Contact: {{newGroup.contact}}</span>
+            </el-row>
+            <el-row style="margin-top: 2px; margin-bottom: 2px">
+              <span style="font-family: '微软雅黑', serif;
+                font-size: 18px;
+                color: #000"
+              >
+                Gender:
+                <i v-if="newGroup.gender === 'male'" class="el-icon-male"></i>
+                <i v-if="newGroup.gender === 'female'" class="el-icon-female"></i>
+              </span>
+            </el-row>
+            <el-row style="margin-top: 2px; margin-bottom: 2px">
+              <span style="font-family: '微软雅黑', serif;
+                font-size: 18px;
+                color: #000"
+              >Degree: {{newGroup.degree}}</span>
+            </el-row>
+            <el-row style="margin-top: 2px; margin-bottom: 2px">
+              <span style="font-family: '微软雅黑', serif;
+                font-size: 18px;
+                color: #000"
+              >Team:   {{newGroup.team}}</span>
+            </el-row>
           </el-col>
         </el-row>
       </el-main>
       <el-main class="el-dialog__body">
         <el-row>
           <el-col span="4" align="center">
-            <span style="font-size: 20px; font-weight: bold">GroupID:</span>
+            <span style="font-size: 20px; font-weight: bold">StudentID:</span>
           </el-col>
           <el-col span="16" align="left">
             <span style="font-size: 18px;"> {{newGroup.id}}</span>
@@ -120,13 +149,28 @@
         </el-row>
         <el-row>
           <el-col span="4" align="center">
+            <span style="font-size: 20px; font-weight: bold">Schedule:</span>
+          </el-col>
+          <el-col span="16" align="left">
+            <span style="font-size: 18px;"> {{newGroup.day}}</span>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col span="4" align="center">
+            <span style="font-size: 20px; font-weight: bold">Habits:</span>
+          </el-col>
+          <el-col span="16" align="left">
+            <span style="font-size: 18px;"> {{newGroup.habits}}</span>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col span="4" align="center">
             <div>
-              <span style="font-size: 20px; font-weight: bold">Member:</span>
+              <span style="font-size: 20px; font-weight: bold">Interest:</span>
             </div>
           </el-col>
-          <el-col span="3" v-for="(k, index) in newGroup.members" :key="index">
-            <el-avatar :size="100" style="font-weight: bold;font-size: 40px" :src="k.avatar" align="center"></el-avatar>
-            <div style="font-size: 18px;" align="center">{{ k.name }}</div>
+          <el-col span="2" v-for="(k, index) in newGroup.interests" :key="index">
+            <el-tag type="danger" style="font-size: 18px;" align="center">{{ k }}</el-tag>
           </el-col>
         </el-row>
       </el-main>
@@ -249,35 +293,7 @@ export default {
         degree: group.degree,
       }
       this.isAbleApply = false;
-      this.isAbleLeave = false;
-      this.isAbleAdd = false;
       this.isAbleChat = false;
-      this.isAbleEdit = false;
-      this.isAbleDisband = false;
-      this.isAbleChat = false;
-      this.isAbleAdd = false;
-      this.isAbleDelete = false;
-      this.userType = "visitor"
-      if (localStorage.getItem('pk') === this.newGroup.id){
-        this.userType = "member";
-      }
-      if (this.localUser.id === this.newGroup.leaderId){
-        this.userType = "creator";
-      }
-      if (this.userType === "visitor") {
-        this.isAbleApply = group.members.length < 4;
-      }
-      else if (this.userType === "member") {
-        this.isAbleLeave = true;
-        this.isAbleChat = true;
-      }
-      else if (this.userType === "creator"){
-        this.isAbleEdit = true;
-        this.isAbleDisband = true;
-        this.isAbleChat = true;
-        this.isAbleAdd = true;
-        this.isAbleDelete = true;
-      }
       this.ifOpenPersonDetail = true;
     },
     openFilter() {
@@ -323,56 +339,6 @@ export default {
     chatGroup(row) {
       // TODO: implement the logic for chatting with a group
       alert("You are about to enter the chat room of " + row.name);
-    },
-    leaveGroup() {
-      try{
-        // 发送POST请求
-        const response = axios.post('https://backend.susdorm.online/api/leave-team/', '');
-        // 处理后端响应
-        console.log('Backend Response:', response);
-        this.$message.success("You left the team.");
-      } catch (error) {
-        // 处理请求错误
-        console.error('Error sending data to backend:', error);
-        this.$message.success("Some error evoked when you left the team.");
-      }
-      this.closeGroupDetail();
-    },
-    async joinGroup(id) {
-      try{
-        const dataToSend = {
-          id: id,
-        };
-        // 发送POST请求
-        const response = await axios.post('https://backend.susdorm.online/api/join-team/', dataToSend);
-        if (response.status === 200){
-          this.$message.success("Your application to this team had been sent.");
-        }
-        // 处理后端响应
-        console.log('Backend Response:', response.data);
-      } catch (error) {
-        // 处理请求错误
-        this.$message.error("ERROR: You cannot join this team due to gender or other reason.");
-        console.error('Error sending data to backend:', error);
-      }
-      // alert("Your application for " + id + " has been sent.");
-      this.closeGroupDetail();
-    },
-    async deleteGroup() {
-      try{
-        // 发送POST请求
-        const response = await axios.post('https://backend.susdorm.online/api/leave-team/', '');
-        // 处理后端响应
-        console.log('Backend Response:', response.data);
-        if (response.status === 200){
-          this.$message.success("You disband your team.");
-        }
-      } catch (error) {
-        // 处理请求错误
-        console.error('Error sending data to backend:', error);
-        this.$message.success("Some error evoked when you disband the team.");
-      }
-      this.closeGroupDetail();
     },
     closeCreateGroupDialog() {
       this.createGroupDialogVisible = false;
@@ -420,59 +386,6 @@ export default {
     },
     ifFilter(){
 
-    },
-    async createNewGroup() {
-      this.$refs.newGroupForm.validate(async (valid) => {
-        if (valid) {
-          this.loading = true;
-          const dataToSend = {
-            name: this.newGroup.name
-          };
-          // 发送POST请求
-          axios.post('https://backend.susdorm.online/api/create-team/', dataToSend)
-            .then(response => {
-              console.log('Backend Response:', response.data);
-              if (response.status === 200){
-                this.$message.success("Your team had been created!")
-              }
-            })
-            .catch(error => {
-              // 处理错误
-              this.$message.error("Some error evoked when you created the team.");
-              console.error("Error:", error);
-            });
-          // 处理后端响应
-
-          this.closeCreateGroupDialog();
-          this.loading = false;
-        } else {
-          this.$message.error("Please fill in all the required fields.");
-        }
-      });
-    },
-    async editGroup() {
-      this.$refs.newGroupForm2.validate(async (valid) => {
-        if (valid) {
-          this.loading = true;
-          try{
-            const dataToSend = {
-              name: this.newGroup.name
-            };
-            // 发送POST请求
-            const response = axios.post('https://backend.susdorm.online/api/update-team/', dataToSend);
-            // 处理后端响应
-            console.log('Backend Response:', response);
-          } catch (error) {
-            // 处理请求错误
-            console.error('Error sending data to backend:', error);
-          }
-          this.closeEditGroupDialog();
-          this.loading = false;
-          this.closeGroupDetail();
-        } else {
-          this.$message.error("Please fill in all the required fields.");
-        }
-      });
     },
   },
   computed: {
@@ -544,8 +457,8 @@ export default {
   text-align: center;
 }
 .el-row {
-  margin-top: 30px;
-  margin-bottom: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 </style>
 <style>
