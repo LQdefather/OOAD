@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="flex-container">
-    <div class="flex-item">
+    <div>
       <choose />
     </div>
     <div class="flex-item">
@@ -29,7 +29,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 
 .flex-container {

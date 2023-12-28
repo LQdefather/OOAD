@@ -6,8 +6,10 @@
       <div slot="header" class="clearfix">
         <span>个人信息</span>
       </div>
-      <div class="profile-info">
+      <div>
         <el-avatar class="avatar" :src="avatarUrl" alt="User Avatar"></el-avatar>
+      </div>
+      <div class="profile-info">
         <div class="info">
           <p><strong>姓名:</strong> {{ userInfo.name }}</p>
           <p><strong>性别:</strong> {{ userInfo.gender }}</p>
@@ -265,9 +267,11 @@ export default {
 }
 
 .info-card {
-  width: 80%;
+  width: 50%;
   margin: auto; /* Center card in the middle of the page */
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); /* Slight shadow for depth */
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
 .profile-info {

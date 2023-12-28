@@ -1,6 +1,7 @@
 <template>
   <div class="select-partner">
-    <el-container style="width:75%; justify-content: center; align-items: center; margin:auto">
+    <choose/>
+    <el-container style="width:75%; justify-content: center; align-items: center; margin:auto; margin-top: 30px">
       <el-main
         style="border-radius: 20px; margin:auto; border: 5px solid #C0C0C0"
       >

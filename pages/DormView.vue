@@ -1,7 +1,7 @@
 <!-- App.vue -->
 <template>
   <div id="app" class="flex-container">
-    <div class="flex-item">
+    <div>
       <choose />
     </div>
     <div class="flex-item">
