@@ -3,7 +3,7 @@
     <!-- 个人信息展示部分 -->
     <choose/>
     <el-card class="info-card">
-      <div slot="header" class="clearfix">
+      <div slot="header" class="clearfix header-color">
         <span>个人信息</span>
       </div>
       <div>
@@ -325,5 +325,9 @@ export default {
 /* Adjustments for buttons */
 .el-button {
   margin: 10px 5px;
+}
+
+.header-color {
+  background-color: #ffffff; /* 替换为你想要的颜色 */
 }
 </style>
