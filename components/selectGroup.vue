@@ -30,7 +30,7 @@
         </el-row>
         <el-row :gutter="10" :justify="'center'" offset="10">
           <el-col :span="6" class="grid" >
-            <el-card shadow="hover" @click.native="handleCommand()" >
+            <el-card shadow="hover" @click.native="handleCommand()" style="margin-top: 20px; margin-bottom: 20px">
               <div>
                 <el-avatar :size="150" icon="el-icon-plus" style="font-size: 80px;"></el-avatar>
               </div>
@@ -40,7 +40,7 @@
             </el-card>
           </el-col>
           <el-col :span="6" class="grid" v-for="(group,index) in groupShow" :key="index" align="middle">
-            <el-card shadow="hover" @click.native="handleGroupCommand(group)"  :id="group.id">
+            <el-card shadow="hover" @click.native="handleGroupCommand(group)"  :id="group.id" style="margin-top: 20px; margin-bottom: 20px">
               <div>
                 <el-avatar :size="150" style="font-weight: bold;font-size: 40px" :src="group.avatar"></el-avatar>
               </div>
