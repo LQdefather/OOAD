@@ -1,150 +1,161 @@
 <template>
   <div v-if="showForm">
-    <el-collapse class="">
-      <el-collapse-item title="点击筛洗" name="1" class="filter-style">
-      <div>
-      <el-row>
-        <el-col :span="2">
-          <h3>Location:</h3>
-        </el-col>
-        <el-col :span="4">
-          <el-radio-group v-if="this.hierarchicalData" v-model="locationFilter" @change="handleLocationChange">
-            <el-radio v-for="location in Object.keys(this.hierarchicalData)" :key="location" :label="location">{{location}}</el-radio>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="3">
-        <h3>Selection Date</h3>
-        </el-col>
-        <el-col :span="8">
-          <div class="demo-date-picker">
+    <el-row>
+      <el-col :span="22">
+        <el-collapse class="">
+          <el-collapse-item title="点击筛洗" name="1" class="filter-style">
+            <div>
+              <el-row>
+                <el-col :span="1">
+                  <h3>Location:</h3>
+                </el-col>
+                <el-col :span="7">
+                  <el-radio-group v-if="this.hierarchicalData" v-model="locationFilter" @change="handleLocationChange">
+                    <el-radio v-for="location in Object.keys(this.hierarchicalData)" :key="location" :label="location">{{location}}</el-radio>
+                  </el-radio-group>
+                </el-col>
+                <el-col :span="2">
+                  <h3>Selection Date</h3>
+                </el-col>
+                <el-col :span="8">
+                  <div class="demo-date-picker">
 
-              <el-date-picker
-                v-model="timeRange"
-                type="daterange"
-                range-separator="To"
-                start-placeholder="Start date"
-                end-placeholder="End date"
-                :size="size"
-                :disabled-date="disabledDate"
-              />
+                    <el-date-picker
+                      v-model="timeRange"
+                      type="daterange"
+                      range-separator="To"
+                      start-placeholder="Start date"
+                      end-placeholder="End date"
+                      :size="size"
+                      :disabled-date="disabledDate"
+                    />
 
-          </div>
-        </el-col>
-      </el-row>
-      </div>
+                  </div>
+                </el-col>
+              </el-row>
 
-    <el-row >
 
-      <el-col v-if="locationFilter && this.hierarchicalData[locationFilter]" :span="10">
-        <el-row>
-          <el-col :span="4">
-            <h3>Building:</h3>
-          </el-col>
-          <el-col :span="6">
-            <el-select value="building" v-model="filterBuilding" id="filterBuilding" value-key="id" placeholder="Select Building">
-              <el-option
-                v-for="option in Object.keys(this.hierarchicalData[locationFilter])"
-                :key="option"
-                :label="option"
-                :value="option"
-              />
-            </el-select>
-          </el-col>
-        </el-row>
+            <el-row >
+
+              <el-col v-if="locationFilter && this.hierarchicalData[locationFilter]" :span="10">
+                <el-row>
+                  <el-col :span="4">
+                    <h3>Building:</h3>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-select value="building" v-model="filterBuilding" id="filterBuilding" value-key="id" placeholder="Select Building">
+                      <el-option
+                        v-for="option in Object.keys(this.hierarchicalData[locationFilter])"
+                        :key="option"
+                        :label="option"
+                        :value="option"
+                      />
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </el-col>
+
+              <el-col v-else :span="8">
+                <el-row>
+                  <el-col :span="4">
+                    <h3>Building:</h3>
+                  </el-col>
+                  <el-col :span="6">
+                    <el-select value="" id="filterBuilding" value-key="id" placeholder="Select Floor">
+                      <el-option
+                        v-for="option in []"
+                      />
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </el-col>
+
+
+              <el-col :span="2">
+                <h3>Student Type</h3>
+              </el-col>
+              <el-col :span="6">
+                <el-radio-group v-model="studentType" style="margin-top: 10px">
+                  <el-radio value="master" :label="1">Masters</el-radio>
+                  <el-radio value="doctor" :label="2">Doctoral</el-radio>
+                </el-radio-group>
+              </el-col>
+
+              <el-row v-if="this.hierarchicalData[locationFilter] && this.hierarchicalData[locationFilter][filterBuilding] && locationFilter && filterBuilding" :span="12">
+                <el-row>
+                  <el-col :span="2">
+                    <h3>Floor:</h3>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-select value="floor" v-model="floorFilter" id="filterFloor" value-key="id" placeholder="Select Floor">
+                      <el-option
+                        v-for="option in Object.keys(this.hierarchicalData[locationFilter][filterBuilding])"
+                        :key="option"
+                        :label="option"
+                        :value="option"
+                      />
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </el-row>
+
+              <el-row v-else>
+                <el-row>
+                  <el-col :span="2">
+                    <h3>Floor:</h3>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-select value="" id="filterFloor" value-key="id" placeholder="Select Floor">
+                      <el-option
+                        v-for="option in []"
+                      />
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </el-row>
+            </el-row>
+
+
+              <el-row>
+                <el-col :span=2>
+                  <h3>Room Type:</h3>
+                </el-col>
+                <el-col :span=6>
+                  <div class="mt-1">
+                    <el-checkbox v-model="roomType.single_room" label="Single" border />
+                    <el-checkbox v-model="roomType.double_room" label="Double" border />
+                    <el-checkbox v-model="roomType.triple_room" label="Triple" border />
+                    <el-checkbox v-model="roomType.quadruple_room" label="Quadruple" border />
+                  </div>
+                </el-col>
+
+                <el-col :span="2">
+                  <h3>Gender: </h3>
+                </el-col>
+                <el-col :span="8">
+                  <el-radio-group v-model="gender">
+                    <el-radio value="male" :label="1">Male</el-radio>
+                    <el-radio value="female" :label="2">Female</el-radio>
+                  </el-radio-group>
+                </el-col>
+                <el-col :span="2" style="margin-left: auto">
+                  <el-button @click="filterData">Filter!</el-button>
+                </el-col>
+                <el-col :span="2" style="margin-left: auto">
+                  <el-button @click="resetFilter">Reset!</el-button>
+                </el-col>
+              </el-row>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
       </el-col>
-
-      <el-col v-else :span="8">
-        <el-row>
-          <el-col :span="4">
-            <h3>Building:</h3>
-          </el-col>
-          <el-col :span="6">
-            <el-select value="" id="filterBuilding" value-key="id" placeholder="Select Floor">
-              <el-option
-                v-for="option in []"
-              />
-            </el-select>
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="3">
-        <h3>Student Type</h3>
-      </el-col>
-      <el-col :span="6">
-        <el-radio-group v-model="studentType">
-          <el-radio value="master" :label="1">Masters</el-radio>
-          <el-radio value="doctor" :label="2">Doctoral</el-radio>
-        </el-radio-group>
-      </el-col>
-
-      <el-col v-if="this.hierarchicalData[locationFilter] && this.hierarchicalData[locationFilter][filterBuilding] && locationFilter && filterBuilding" :span="12">
-        <el-row>
-          <el-col :span="4">
-            <h3>Floor:</h3>
-          </el-col>
-          <el-col :span="8">
-            <el-select value="floor" v-model="floorFilter" id="filterFloor" value-key="id" placeholder="Select Floor">
-              <el-option
-                v-for="option in Object.keys(this.hierarchicalData[locationFilter][filterBuilding])"
-                :key="option"
-                :label="option"
-                :value="option"
-              />
-            </el-select>
-          </el-col>
-        </el-row>
-      </el-col>
-
-      <el-col v-else :span="12">
-        <el-row>
-          <el-col :span="4">
-            <h3>Floor:</h3>
-          </el-col>
-          <el-col :span="8">
-            <el-select value="" id="filterFloor" value-key="id" placeholder="Select Floor">
-              <el-option
-                v-for="option in []"
-              />
-            </el-select>
-          </el-col>
-        </el-row>
+      <el-col style="margin-top: 10px" :span="2">
+        <el-checkbox v-model="isMultiSelect" size="large">大量收藏</el-checkbox>
       </el-col>
     </el-row>
 
     <div>
-      <el-row>
-        <el-col :span=2>
-          <h3>Room Type:</h3>
-        </el-col>
-        <el-col :span=10>
-          <div class="mt-4">
-            <el-checkbox v-model="roomType.single_room" label="Single" border />
-            <el-checkbox v-model="roomType.double_room" label="Double" border />
-            <el-checkbox v-model="roomType.quadruple_room" label="Quadruple" border />
-          </div>
-        </el-col>
-
-        <el-col :span="2">
-          <h3>Gender: </h3>
-        </el-col>
-        <el-col :span="8">
-          <el-radio-group v-model="gender">
-            <el-radio value="male" :label="1">Male</el-radio>
-            <el-radio value="female" :label="2">Female</el-radio>
-          </el-radio-group>
-        </el-col>
-        <el-col :span="2">
-        <el-button @click="filterData">Filter!</el-button>
-        </el-col>
-        <el-col :span="2">
-          <el-button @click="resetFilter">Reset!</el-button>
-        </el-col>
-      </el-row>
-    </div>
-      </el-collapse-item>
-    </el-collapse>
-    <div>
-      <RoomDisplay :filtered-data='this.filteredData'></RoomDisplay>
+      <RoomDisplay :is-multi-select='this.isMultiSelect' :filtered-data='this.filteredData'></RoomDisplay>
     </div>
   </div>
 </template>
@@ -216,8 +227,10 @@ export default {
       roomType: {
         single_room: ref(true),
         quadruple_room: ref(true),
+        triple_room: ref(true),
         double_room: ref(true),
       },
+      isMultiSelect: false
     };
   },
 
@@ -242,6 +255,7 @@ export default {
       this.locationFilter = null
       this.timeRange = [new Date(), new Date('9999-12-31')]
       this.filterBuilding = null
+      this.isMultiSelect = false
 
       this.filterData()
 
@@ -281,16 +295,17 @@ export default {
 
               const isGenderMatch = this.gender=== null || currentRoomGender === this.gender;
 
-              const isDateMatch = this.timeRange===null || (new Date(this.timeRange[0]) >= new Date(room.start) && new Date(room.end) <= new Date(this.timeRange[1]) )
+              const isDateMatch = this.timeRange===null || (new Date(this.timeRange[0])<= new Date(room.start) && new Date(room.end) <= new Date(this.timeRange[1]) )
               const isDegreeMatch = this.studentType===null || currentDegree === room.degree
               console.log("Student type")
               console.log(this.studentType)
               const isSingleMatch = this.roomType.single_room ===null || (this.roomType.single_room && room.type === 'single_room');
               const isDoubleMatch = this.roomType.double_room ===null || (this.roomType.double_room && room.type === 'double_room');
+              const isTripleMatch = this.roomType.triple_room ===null || (this.roomType.triple_room && room.type === 'triple_room');
               const isQuadrupleMatch = this.roomType.quadruple_room ===null || (this.roomType.quadruple_room && room.type === 'quadruple_room');
 
               // Combine the room type conditions using logical OR
-              const isRoomTypeMatch = isSingleMatch || isDoubleMatch || isQuadrupleMatch;
+              const isRoomTypeMatch = isSingleMatch || isDoubleMatch || isTripleMatch || isQuadrupleMatch;
 
               // console.log(new Date(this.timeRange[0]))
               // console.log(new Date(this.timeRange[1]))

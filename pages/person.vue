@@ -266,7 +266,7 @@ export default {
       const formData = new FormData();
       formData.append('avatar', this.selectedFile);
 
-      axios.post('https://backend.susdorm.online/api/change-avatar/', formData)
+      axios.post('https://backend.susdorm.online/api/change-avatar/', formData, {withCredentials: true})
         .then(response => {
           // 处理响应
           alert("修改成功")

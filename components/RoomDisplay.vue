@@ -6,18 +6,18 @@
         <div class="title-container">
           <el-row >
             <el-col class="title-styles" style="text-align: left" :span="10">
-            <h1 class="location-head-style">{{ location }}</h1>
+              <h1 class="location-head-style">{{ location }}</h1>
             </el-col>
           </el-row>
         </div>
-              <!-- Iterate over buildings in the current location -->
+        <!-- Iterate over buildings in the current location -->
         <div class="building-floor-style">
-              <div v-if="filteredData[location]" v-for="building in Object.keys(filteredData[location])" :key="building">
-                <div>
-                <h2 class="building-header">Building {{ building }}</h2>
-                <ElCarousel height="700px" arrow="always" trigger="click">
-                  <ElCarouselItem v-for="floor in Object.keys(filteredData[location][building])" :key="floor">
-                    <div>
+          <div v-if="filteredData[location]" v-for="building in Object.keys(filteredData[location])" :key="building">
+            <div>
+              <h2 style="margin-left: 30px;" class="building-header">Building {{ building }}</h2>
+              <el-carousel  class="carousel-style" :height="cardHeight" arrow="always" trigger="click">
+                <ElCarouselItem class="carousel-item-style" v-for="floor in Object.keys(filteredData[location][building])" :key="floor">
+                  <div >
                     <el-row>
                       <el-col :span="22">
                         <h2 class="floor-header">Floor {{ floor }}</h2>
@@ -27,41 +27,67 @@
                       </el-col>
                     </el-row>
                     <!-- Iterate over rooms in the current floor -->
-                    <el-row class="room-container">
-                      <el-col
+                    <div id="carId">
+                    <el-row id="card-container" class="room-container">
+                      <el-col v-for="(room, index) in filteredData[location][building][floor]" :key="room.id" :span="6">
+                        <!-- Start a new row for every 4th element -->
+                        <el-row v-if="index % 4 === 0">
 
-                        v-for="room in filteredData[location][building][floor]"
-                        :key="room.id"
-                        :span="4"
-                      >
-                        <el-card  :body-style="{ padding: '0px' }" >
-                          <div  class="card-content-container">
-                            <img
-                              @click="handleComment(room.id, room.roomLayout)"
-                              :src="getImageSrc(room.type)"
-                              class="image"
-                              alt=""/>
-                              <h2>{{ room.roomNumber }}</h2>
-                              <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
-                              <p style="text-transform: capitalize">{{room.degree}} Students</p>
+                            <el-card :body-style="{ padding: '0px' }" >
+                              <div  class="card-content-container">
+                                <img
+                                  @click="handleComment(room.id, room.roomLayout)"
+                                  :src="getImageSrc(room.type)"
+                                  class="image"
+                                  alt=""/>
+                                <h2>{{ room.roomNumber }}</h2>
+                                <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
+                                <p style="text-transform: capitalize">{{room.degree}} Students</p>
 
-                            <p v-if="!isBookmarked(room.id)" @click="collectRoom(room.id)" class="collection-header">收藏</p>
-                            <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
-                          </div>
-                        </el-card>
+                                <p v-if="!isBookmarked(room.id) && !isMultiSelect" @click="collectRoom(room.id)" class="collection-header">收藏</p>
+                                <el-checkbox size="large" v-else-if="isMultiSelect" v-model="selectedMultipleRoom[room.id]"></el-checkbox>
+                                <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
+                              </div>
+                            </el-card>
+
+                        </el-row>
+                        <el-row v-else>
+                            <el-card :body-style="{ padding: '0px' }" >
+                              <div  class="card-content-container">
+                                <img
+                                  @click="handleComment(room.id, room.roomLayout)"
+                                  :src="getImageSrc(room.type)"
+                                  class="image"
+                                  alt=""/>
+                                <h2>{{ room.roomNumber }}</h2>
+                                <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
+                                <p style="text-transform: capitalize">{{room.degree}} Students</p>
+
+                                <p v-if="!isBookmarked(room.id) && !isMultiSelect" @click="collectRoom(room.id)" class="collection-header">收藏</p>
+                                <el-checkbox size="large" v-else-if="isMultiSelect" v-model="selectedMultipleRoom[room.id]"></el-checkbox>
+                                <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
+                              </div>
+                            </el-card>
+                        </el-row>
                       </el-col>
                     </el-row>
+
                     </div>
-                  </ElCarouselItem>
-                </ElCarousel>
                   </div>
-              </div>
+                </ElCarouselItem>
+              </el-carousel>
+            </div>
+          </div>
 
         </div>
+      </div>
     </div>
-    </div>
+
     <div v-else>
       <p class="desc">No results :(</p>
+    </div>
+    <div v-if="isMultiSelect" class="submit-button">
+    <el-button style="font-size: 30px;padding: 30px; color: white;background-color: #007bff; border-radius: 10px" @click="submitMultipleCollections()" >Submit Collected Rooms</el-button>
     </div>
 
     <CommentSection  @closeComment="handleReceiveComment" :room-image="this.roomLayout" :dialogVisible="this.showComment" :room-id="this.roomId"/>
@@ -82,6 +108,7 @@
 <script>
 import axios from "axios";
 import {MessageBox} from "element-ui";
+import {max} from "ramda";
 
 export default {
   name: 'RoomDisplay',
@@ -90,6 +117,10 @@ export default {
       type: Array,
       required: true,
     },
+    isMultiSelect:{
+      type: Boolean,
+      required: true
+    }
   },
   data() {
     return {
@@ -100,7 +131,9 @@ export default {
       showComment: false,
       showFloorPlan:false,
       showGroups: false,
-      displayRoom: true
+      displayRoom: true,
+      cardHeight: "",
+      selectedMultipleRoom:{}
     };
   },
   mounted(){
@@ -115,13 +148,24 @@ export default {
         });
         const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
 
+
         console.log("Bookmarked Rooms");
         console.log(bookmarkedRoomsArray);
+
       })
       .catch(error => {
 
         this.error = error.message || 'Error getting book mark dorm';
       });
+
+    // Weird bug: SetTimeout actually allows us to compute the height
+    setTimeout(this.CalculateHeight, 0)
+
+  },
+  computed: {
+    getMaxCardHeight() {
+      return this.cardHeight; // Adjust the default height as needed
+    },
   },
   watch: {
     filteredData: function (newVal, oldVal) {
@@ -136,10 +180,23 @@ export default {
       // For example, update some internal state or trigger a method
       this.handleDataChange(newVal);
     },
+    isMultiSelect: function(newVal, oldVal){
+
+        // if newVal for multiselect is false, delete all collected items
+        if(!newVal){
+          console.log("Emptying collected multiple rooms")
+          this.selectedMultipleRoom = {}
+        }
+    }
   },
   methods: {
     isBookmarked(roomId){
       return this.bookMarkedRooms.includes(roomId)
+    },
+    CalculateHeight() {
+      const cardElements = document.getElementById('card-container');
+      this.cardHeight = `${cardElements.clientHeight + 100}px`;
+      console.log(this.cardHeight)
     },
     removeUnderscore(text) {
       // Your custom text transformation logic
@@ -199,6 +256,58 @@ export default {
     handleReceiveComment(){
       this.showComment = false
     },
+    submitMultipleCollections(){
+      if (Object.keys(this.selectedMultipleRoom).length > 0) {
+        for (const roomId in this.selectedMultipleRoom) {
+          if (this.selectedMultipleRoom[roomId]) {
+            console.log(roomId);
+
+            axios.post('https://backend.susdorm.online/api/book-dorm/', { id: roomId }, { withCredentials: true })
+              .then(response => {
+              })
+              .catch(error => {
+                // Error handling
+                console.error('Error:', error.response.data);
+                // You can also extract more information from the error if needed
+                // For example, error.response contains the server response
+                MessageBox.alert('Error when adding room: '+{ roomId} + ': '+error.response.data.non_field_errors[0], 'Error', {
+                  confirmButtonText: 'OK',
+                  type: 'error'
+                });
+              });
+
+            // Add your logic here for each selected room
+          }
+        }
+
+        this.bookMarkedRooms = []
+
+        axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
+          .then(response => {
+            // console.log(response.data)
+            response.data.forEach(item => {
+
+              const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
+              this.bookMarkedRooms.push(id)
+
+            });
+            const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
+
+            // console.log("Bookmarked Rooms");
+            // console.log(bookmarkedRoomsArray);
+          })
+          .catch(error => {
+
+            this.error = error.message || 'Error getting book mark dorm';
+          });
+
+      } else {
+        MessageBox.alert('Error: No rooms selected', 'Error', {
+          confirmButtonText: 'OK',
+          type: 'error',
+        });
+      }
+    },
     collectRoom(roomID){
       axios.defaults.withCredentials = true
       axios.post('https://backend.susdorm.online/api/book-dorm/', { id: roomID }, { withCredentials: true })
@@ -213,7 +322,7 @@ export default {
 
           axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
             .then(response => {
-              console.log(response.data)
+              // console.log(response.data)
               response.data.forEach(item => {
 
                 const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
@@ -222,8 +331,8 @@ export default {
               });
               const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
 
-              console.log("Bookmarked Rooms");
-              console.log(bookmarkedRoomsArray);
+              // console.log("Bookmarked Rooms");
+              // console.log(bookmarkedRoomsArray);
             })
             .catch(error => {
 
@@ -242,19 +351,11 @@ export default {
         });
     },
 
-    // hasBuilding(location,building){
-    //   return this.filteredData[location][building][floor].length !== 0;
-    // },
-    //
-    // hasRooms(location,building,floor){
-    //   return this.filteredData[location][building][floor].length !== 0;
-    //
-    // },
 
     handleComment(roomId,roomImage){
       console.log("selected Room",roomId)
       this.showComment = true,
-      this.roomLayout = roomImage
+        this.roomLayout = roomImage
       this.roomId = roomId
     },
     getImageSrc(type) {
@@ -280,7 +381,9 @@ export default {
 
 <style scoped>
 .title-container {
-  font-family: "Arial Black",sans-serif;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  /* If 'Helvetica Neue' is not available, fallback to Arial, and then to a generic sans-serif font. */
+  font-weight: bold; /* You can adjust the font weight as needed. */
 }
 
 .icon-style{
@@ -297,7 +400,7 @@ export default {
   color: white;
 
   /* Add the gradient background */
-  background: linear-gradient(to right, transparent 0%, #306a00 20%);
+  background: linear-gradient(to left, transparent 0%, #306a00 50%);
   /* Adjust the gradient colors as needed */
 
   /* Optionally, you can add more styling to enhance the gradient effect */
@@ -308,6 +411,10 @@ export default {
   margin-top: 20px;
   height: 200px;
   width: 200px;
+}
+
+.el-card{
+  height: 100%;
 }
 
 .el-card:hover {
@@ -327,7 +434,7 @@ export default {
 
 .location-head-style{
   margin-top: 10px;
-  margin-left: 10px;
+  margin-left: 30px;
   margin-bottom: 0;
 
 }
@@ -351,12 +458,15 @@ export default {
   margin-top: 20px;
   margin-bottom: 100px;
   height: 100%;
+
+
 }
 
 .building-header{
-  font-size: 30px;
-  border-bottom: 1px solid #000; /* You can adjust the color and thickness of the underline */
+  font-size: 30px; /* You can adjust the color and thickness of the underline */
   display: inline-block; /* Ensure the underline only spans the width of the text */
+  color:  #306a00;
+  font-weight: bold;
   margin-top: 20px;
   margin-bottom: 20px; /* Add some space between the text and the underline */
 }
@@ -368,7 +478,7 @@ export default {
 .floor-header{
   font-size: 20px;
   text-align: center;
-  //display: inline-block; /* Ensure the underline only spans the width of the text */
+//display: inline-block; /* Ensure the underline only spans the width of the text */
   margin-bottom: 20px; /* Add some space between the text and the underline */
 }
 
@@ -381,5 +491,26 @@ export default {
 
   text-align: center;
 }
+
+.carousel-style{
+  margin: 30px 30px;
+  border: 2px solid #306a00; /* Green color for the border */
+  padding: 10px; /* Add padding if needed */
+  border-radius: 10px;
+
+}
+
+.carousel-item-style{
+  height: 100%;
+}
+
+.submit-button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  margin-top: 20px; /* Adjust margin as needed */
+}
+
 
 </style>

@@ -114,6 +114,7 @@ export default {
 
           console.log("Bookmarked Rooms");
           console.log(bookmarkedRoomsArray);
+
         })
         .catch(error => {
 
