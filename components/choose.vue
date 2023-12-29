@@ -69,7 +69,7 @@ export default {
       this.activeIndex = key;
     },
     getAvatar(){
-      axios.get('https://backend.susdorm.online/api/get-avatar/')
+      axios.get('https://backend.susdorm.online/api/get-avatar/', {withCredentials:true})
         .then((response) => {  // 使用箭头函数
           this.avatarUrl = response.data['avatar'];
         })

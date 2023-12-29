@@ -4,11 +4,8 @@
     <div v-if="filteredData.length !==0">
       <div v-for="location in Object.keys(this.filteredData)">
         <div class="title-container">
-          <el-row class="title-styles">
-            <el-col :span="0.5">
-              <img class="icon-style" src="@/static/dorm/location.png" alt="@/static/dorm/location.png">
-            </el-col>
-            <el-col style="text-align: left" :span="22">
+          <el-row >
+            <el-col class="title-styles" style="text-align: left" :span="10">
             <h1 class="location-head-style">{{ location }}</h1>
             </el-col>
           </el-row>
@@ -18,7 +15,7 @@
               <div v-if="filteredData[location]" v-for="building in Object.keys(filteredData[location])" :key="building">
                 <div>
                 <h2 class="building-header">Building {{ building }}</h2>
-                <ElCarousel height='500px' arrow="always" trigger="click">
+                <ElCarousel height="700px" arrow="always" trigger="click">
                   <ElCarouselItem v-for="floor in Object.keys(filteredData[location][building])" :key="floor">
                     <div>
                     <el-row>
@@ -107,7 +104,7 @@ export default {
     };
   },
   mounted(){
-    axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+    axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
       .then(response => {
         console.log(response.data)
         response.data.forEach(item => {
@@ -159,7 +156,7 @@ export default {
           });
           this.bookMarkedRooms = []
 
-          axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+          axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
             .then(response => {
               console.log(response.data)
               response.data.forEach(item => {
@@ -214,7 +211,7 @@ export default {
 
           this.bookMarkedRooms = []
 
-          axios.get('https://backend.susdorm.online/api/bookmark-dorms/')
+          axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
             .then(response => {
               console.log(response.data)
               response.data.forEach(item => {
@@ -292,12 +289,19 @@ export default {
   height: 50px;
 }
 
-.title-styles{
+.title-styles {
   text-transform: capitalize;
   border-bottom: 2px solid #ccc;
   padding-bottom: 5px;
   font-size: 20px;
-  color: black;
+  color: white;
+
+  /* Add the gradient background */
+  background: linear-gradient(to right, transparent 0%, #306a00 20%);
+  /* Adjust the gradient colors as needed */
+
+  /* Optionally, you can add more styling to enhance the gradient effect */
+  overflow: hidden;
 }
 
 .image{
@@ -323,6 +327,7 @@ export default {
 
 .location-head-style{
   margin-top: 10px;
+  margin-left: 10px;
   margin-bottom: 0;
 
 }
@@ -343,8 +348,9 @@ export default {
 }
 
 .building-floor-style{
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-top: 20px;
+  margin-bottom: 100px;
+  height: 100%;
 }
 
 .building-header{
