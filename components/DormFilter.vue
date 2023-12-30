@@ -286,19 +286,24 @@ export default {
               continue; // Skip if floor filter is set and doesn't match
             }
 
-            filteredData[location][building][floor] = [];
+            filteredData[location][building][floor] = {rooms:[], floorPlan: null};
 
             for (const room of this.hierarchicalData[location][building][floor]) {
               // Check if filters are set and room matches the criteria
+
+              if(room.floorPlan){
+                filteredData[location][building][floor].floorPlan = room.floorPlan; // Add it to filteredData
+              }
+
               const currentRoomGender = room.sex === 'male' ? 1 : 2;
               const currentDegree = this.studentType === 1 ? 'master' :this.studentType === 2 ? 'doctor' : 'unknown'
 
               const isGenderMatch = this.gender=== null || currentRoomGender === this.gender;
 
-              const isDateMatch = this.timeRange===null || (new Date(this.timeRange[0])<= new Date(room.start) && new Date(room.end) <= new Date(this.timeRange[1]) )
+              const isDateMatch = this.timeRange===null || ( new Date(this.timeRange[0])>= new Date(room.start) && new Date(room.end) <= new Date(this.timeRange[1]) )
               const isDegreeMatch = this.studentType===null || currentDegree === room.degree
-              console.log("Student type")
-              console.log(this.studentType)
+              // console.log("Student type")
+              // console.log(this.studentType)
               const isSingleMatch = this.roomType.single_room ===null || (this.roomType.single_room && room.type === 'single_room');
               const isDoubleMatch = this.roomType.double_room ===null || (this.roomType.double_room && room.type === 'double_room');
               const isTripleMatch = this.roomType.triple_room ===null || (this.roomType.triple_room && room.type === 'triple_room');
@@ -313,17 +318,17 @@ export default {
               // console.log(new Date(room.end))
               // console.log(new Date(this.timeRange[0]) >= new Date(room.start))
 
-              if (isGenderMatch && isRoomTypeMatch && isDateMatch && isDegreeMatch) {
+              if (isGenderMatch && isRoomTypeMatch && isDateMatch && isDegreeMatch && !room.selected) {
                 // If all filters match, add `the room to filteredData
-                filteredData[location][building][floor].push(room);
+                filteredData[location][building][floor].rooms.push(room);
               }else {
                 console.log("Room not put:")
                 console.log(room)
               }
             }
 
-            console.log(filteredData[location][building][floor].length)
-            if (filteredData[location][building][floor].length ===0){
+            // console.log(filteredData[location][building][floor].length)
+            if (filteredData[location][building][floor].rooms.length ===0){
               delete filteredData[location][building][floor]
             }
 
@@ -356,7 +361,7 @@ export default {
         .then(response => {
           this.APIFormData = response.data;
           this.APIFormData.forEach(item => {
-            const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
+            const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan, selected, bookmarkTeamCount } = item;
 
             if (!this.hierarchicalData[zone]) {
               this.hierarchicalData[zone] = {};
@@ -369,9 +374,12 @@ export default {
               this.hierarchicalData[zone][building][floor] = [];
             }
 
+
+
             this.hierarchicalData[zone][building][floor].push({
-              id, roomNumber,type,sex, start,end,degree, roomLayout, floorPlan
+              id, roomNumber,type,sex, start,end,degree, roomLayout, floorPlan,selected, bookmarkTeamCount
             });
+
           });
 
           this.showForm = true;

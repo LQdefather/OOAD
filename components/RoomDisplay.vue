@@ -16,20 +16,20 @@
             <div>
               <h2 style="margin-left: 30px;" class="building-header">Building {{ building }}</h2>
               <el-carousel  class="carousel-style" :height="cardHeight" arrow="always" trigger="click">
-                <ElCarouselItem class="carousel-item-style" v-for="floor in Object.keys(filteredData[location][building])" :key="floor">
-                  <div >
+                <ElCarouselItem  class="carousel-item-style" v-for="floor in Object.keys(filteredData[location][building])" :key="floor">
+                  <div class="card-container">
                     <el-row>
                       <el-col :span="22">
                         <h2 class="floor-header">Floor {{ floor }}</h2>
                       </el-col>
                       <el-col class="show-floor-plan" :span="2">
-                        <el-button @click="showFloorPlan = true">View Floor plan</el-button>
+                        <el-button @click="handleFloorPlan(filteredData[location][building][floor])">View Floor plan</el-button>
                       </el-col>
                     </el-row>
                     <!-- Iterate over rooms in the current floor -->
                     <div id="carId">
-                    <el-row id="card-container" class="room-container">
-                      <el-col v-for="(room, index) in filteredData[location][building][floor]" :key="room.id" :span="6">
+                    <el-row  class="room-container">
+                      <el-col v-for="(room, index) in filteredData[location][building][floor].rooms" :key="room.id" :span="6">
                         <!-- Start a new row for every 4th element -->
                         <el-row v-if="index % 4 === 0">
 
@@ -39,11 +39,11 @@
                                   @click="handleComment(room.id, room.roomLayout)"
                                   :src="getImageSrc(room.type)"
                                   class="image"
-                                  alt=""/>
+                                  :alt="require('../static/dorm/noimage.png')"/>
                                 <h2>{{ room.roomNumber }}</h2>
                                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
                                 <p style="text-transform: capitalize">{{room.degree}} Students</p>
-
+                                <p>Stored by: {{room.bookmarkTeamCount}} students</p>
                                 <p v-if="!isBookmarked(room.id) && !isMultiSelect" @click="collectRoom(room.id)" class="collection-header">收藏</p>
                                 <el-checkbox size="large" v-else-if="isMultiSelect" v-model="selectedMultipleRoom[room.id]"></el-checkbox>
                                 <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
@@ -62,7 +62,7 @@
                                 <h2>{{ room.roomNumber }}</h2>
                                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
                                 <p style="text-transform: capitalize">{{room.degree}} Students</p>
-
+                                <p>Stored by: {{room.bookmarkTeamCount}} students</p>
                                 <p v-if="!isBookmarked(room.id) && !isMultiSelect" @click="collectRoom(room.id)" class="collection-header">收藏</p>
                                 <el-checkbox size="large" v-else-if="isMultiSelect" v-model="selectedMultipleRoom[room.id]"></el-checkbox>
                                 <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
@@ -94,9 +94,9 @@
     <el-dialog  :visible.sync="showFloorPlan" :close-on-click-modal="true"
                 :close-on-press-escape="true"
                 :before-close="handleCloseFloorPlan">
-      <div class="floor-plan-image">
+      <div v-if="currentFloorPlan" class="floor-plan-image">
         <h1>Floor plan</h1>
-        <img  src="@/static/samplefloorplan.png" alt="@/static/samplefloorplan.png">
+        <img :src="currentFloorPlan" alt="@/static/samplefloorplan.png">
       </div>
 
     </el-dialog>
@@ -133,7 +133,8 @@ export default {
       showGroups: false,
       displayRoom: true,
       cardHeight: "",
-      selectedMultipleRoom:{}
+      selectedMultipleRoom:{},
+      currentFloorPlan: ''
     };
   },
   mounted(){
@@ -146,11 +147,11 @@ export default {
           this.bookMarkedRooms.push(id)
 
         });
-        const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
-
-
-        console.log("Bookmarked Rooms");
-        console.log(bookmarkedRoomsArray);
+        // const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
+        //
+        //
+        // console.log("Bookmarked Rooms");
+        // console.log(bookmarkedRoomsArray);
 
       })
       .catch(error => {
@@ -179,6 +180,8 @@ export default {
       // You can perform additional actions with the new value if needed
       // For example, update some internal state or trigger a method
       this.handleDataChange(newVal);
+      setTimeout(this.CalculateHeight, 0)
+
     },
     isMultiSelect: function(newVal, oldVal){
 
@@ -193,10 +196,38 @@ export default {
     isBookmarked(roomId){
       return this.bookMarkedRooms.includes(roomId)
     },
+    handleFloorPlan(floor){
+      this.showFloorPlan = true
+      console.log(floor)
+      if(floor.floorPlan){
+        console.log("Curretn floor Plan selected")
+        console.log(floor.floorPlan)
+        this.currentFloorPlan = floor.floorPlan
+
+      }else {
+        this.currentFloorPlan = ''
+      }
+    },
     CalculateHeight() {
-      const cardElements = document.getElementById('card-container');
-      this.cardHeight = `${cardElements.clientHeight + 100}px`;
-      console.log(this.cardHeight)
+      const cardElements = document.getElementsByClassName("card-container");
+      const cardArray = [...cardElements]; // Convert HTMLCollection to array
+
+      let maxHeight = 0;
+
+      // Loop through each element and find the maximum height
+      cardArray.forEach(element => {
+        const elementHeight = element.clientHeight;
+        console.log("Current height");
+        console.log(elementHeight);
+        if (elementHeight > maxHeight) {
+          maxHeight = elementHeight;
+        }
+      });
+
+      // Set this.cardHeight to the maximum height + 100px
+      this.cardHeight = `${maxHeight + 100}px`;
+      console.log(maxHeight);
+      console.log(this.cardHeight);
     },
     removeUnderscore(text) {
       // Your custom text transformation logic
