@@ -423,7 +423,7 @@ export default {
     //   return response.data;
     // },
     async getOwnBookmark(){
-      axios.get('https://backend.susdorm.online/api/user-information/',)
+      axios.get('https://backend.susdorm.online/api/user-information/',{ withCredentials: true })
         .then((response) => {  // 使用箭头函数
           // this.avatarUrl = response.data[0]['avatar']; // this 现在正确指向 Vue 实例
           this.bookmark = response.data
@@ -433,7 +433,7 @@ export default {
         });
     },
     async getUserInfo(){
-      axios.get('https://backend.susdorm.online/api/user-information/?pk=' + localStorage.getItem('pk'))
+      axios.get('https://backend.susdorm.online/api/user-information/?pk=' + localStorage.getItem('pk'),{ withCredentials: true })
         .then((response) => {  // 使用箭头函数
           // this.avatarUrl = response.data[0]['avatar']; // this 现在正确指向 Vue 实例
           this.localUser.id = response.data[0]['studentId'];

@@ -343,7 +343,7 @@ export default {
     async getAllTag(){
       const apiUrl = 'https://backend.susdorm.online/api/all-interests/';
       try {
-        const response = await axios.get(apiUrl,);
+        const response = await axios.get(apiUrl,{ withCredentials: true });
         // console.log(response.data);
         let list = response.data;
         for (let i = 0; i < list.length; i++) {
@@ -361,7 +361,7 @@ export default {
     async getAllUser(){
       const apiUrl = 'https://backend.susdorm.online/api/all-profiles/';
       try {
-        const response = await axios.get(apiUrl,);
+        const response = await axios.get(apiUrl,{ withCredentials: true });
         // console.log(response.data);
         let list = response.data;
         for (let i = 0; i < list.length; i++) {

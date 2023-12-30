@@ -186,7 +186,7 @@ export default {
           dorm_id: this.roomId
         };
 
-        axios.get('https://backend.susdorm.online/api/comment', { params })
+        axios.get('https://backend.susdorm.online/api/comment', { params },{ withCredentials: true })
           .then(response => {
 
             const comments = response.data
