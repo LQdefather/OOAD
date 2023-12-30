@@ -2,29 +2,31 @@
   <div class="profile">
     <!-- 个人信息展示部分 -->
     <choose/>
-    <el-card class="info-card">
-      <div slot="header" class="clearfix header-color">
-        <span>个人信息</span>
-      </div>
-      <div>
-        <el-avatar class="avatar" :src="avatarUrl" alt="User Avatar"></el-avatar>
-      </div>
-      <div class="profile-info">
-        <div class="info">
-          <p><strong>姓名:</strong> {{ userInfo.name }}</p>
-          <p><strong>性别:</strong> {{ userInfo.gender }}</p>
-          <p><strong>作息时间:</strong> {{ userInfo.day }}</p>
-          <p><strong>个人简介:</strong> {{ userInfo.habits }}</p>
-          <p><strong>联系方式:</strong> {{ userInfo.contact }}</p>
-          <p><strong>兴趣爱好:</strong> {{ userInfo.interests }}</p>
+    <div class="bg">
+      <el-card class="info-card">
+        <div slot="header" class="clearfix header-color">
+          <span>个人信息</span>
         </div>
-      </div>
-      <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
+        <div>
+          <el-avatar class="avatar" :src="avatarUrl" alt="User Avatar"></el-avatar>
+        </div>
+        <div class="profile-info">
+          <div class="info">
+            <p><strong>姓名:</strong> {{ userInfo.name }}</p>
+            <p><strong>性别:</strong> {{ userInfo.gender }}</p>
+            <p><strong>作息时间:</strong> {{ userInfo.day }}</p>
+            <p><strong>个人简介:</strong> {{ userInfo.habits }}</p>
+            <p><strong>联系方式:</strong> {{ userInfo.contact }}</p>
+            <p><strong>兴趣爱好:</strong> {{ userInfo.interests }}</p>
+          </div>
+        </div>
+        <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
 
-      <!-- 修改信息按钮 -->
-      <el-button type="primary" @click="showEditInfoDialog">修改信息</el-button>
-      <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
-    </el-card>
+        <!-- 修改信息按钮 -->
+        <el-button type="primary" @click="showEditInfoDialog">修改信息</el-button>
+        <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
+      </el-card>
+    </div>
     <!-- 上传头像按钮 -->
     <basis/>
 
@@ -200,7 +202,7 @@ export default {
       // 在这里保存修改后的用户信息
       this.editedUserInfo.wake = this.formatTime(this.selectedTimeW)
       this.editedUserInfo.sleep = this.formatTime(this.selectedTimeS)
-      axios.post('https://backend.susdorm.online/api/change-profile/', this.editedUserInfo)
+      axios.post('https://backend.susdorm.online/api/change-profile/', this.editedUserInfo,{withCredentials:true})
         .then(response => {
           // 处理响应
           alert('修改成功');
@@ -220,7 +222,7 @@ export default {
     },
     saveChangedPassword() {
       // 在这里保存修改后的密码
-      axios.put('https://backend.susdorm.online/api/change-password/'+localStorage.getItem('pk')+'/', this.passwordChange)
+      axios.put('https://backend.susdorm.online/api/change-password/'+localStorage.getItem('pk')+'/', this.passwordChange,{withCredentials:true})
         .then(response => {
           // 处理响应
           alert('修改成功');
@@ -266,7 +268,7 @@ export default {
       const formData = new FormData();
       formData.append('avatar', this.selectedFile);
 
-      axios.post('https://backend.susdorm.online/api/change-avatar/', formData)
+      axios.post('https://backend.susdorm.online/api/change-avatar/', formData,{withCredentials:true})
         .then(response => {
           // 处理响应
           alert("修改成功")
@@ -329,5 +331,15 @@ export default {
 
 .header-color {
   background-color: #ffffff; /* 替换为你想要的颜色 */
+}
+
+.bg{
+  background-image: url('static/assets/bg8.jpg'); /* 替换为您的图片路径 */
+  background-size: cover; /* 背景图片覆盖整个元素 */
+  background-position: center; /* 背景图片居中 */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 100px;
 }
 </style>

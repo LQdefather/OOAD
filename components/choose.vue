@@ -1,6 +1,6 @@
 <template>
   <div class="top-nav">
-    <el-header class="el-header">
+    <el-header class="header">
       <div class="nav-logo">
         <span class="nav-title">SUSDorm</span>
       </div>
@@ -42,10 +42,25 @@
         <i class="el-icon-search"></i>
         <span slot="title">查找用户</span>
       </el-menu-item>
+      <el-button icon="el-icon-message" class="message_button" circle @click="handleClick"></el-button>
       <div class="user-profile">
         <el-avatar class="avatar" :src="avatarUrl" alt="User Avatar"></el-avatar>
       </div>
     </el-menu>
+    <el-dialog :visible.sync="dialogVisible" title="消息">
+      <el-header>消息记录</el-header>
+      <el-main>
+        <el-timeline>
+          <el-timeline-item
+            v-for="message in allmessage"
+            :key="message.id"
+            :timestamp="message.created_at"
+            placement="top">
+            {{ message.content }}
+          </el-timeline-item>
+        </el-timeline>
+      </el-main>
+    </el-dialog>
   </div>
 </template>
 
@@ -58,6 +73,8 @@ export default {
     return {
       activeIndex: '', // 当前选中的菜单项
       avatarUrl:'',
+      dialogVisible: false,
+      allmessage:null,
     };
   },
   mounted() {
@@ -76,6 +93,17 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
+    },
+    handleClick() {
+      // 点击图标时，显示弹窗
+      axios.get('https://backend.susdorm.online/api/notifications/', {withCredentials:true})
+        .then((response) => {  // 使用箭头函数
+          this.allmessage = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      this.dialogVisible = true;
     }
 
   }
@@ -89,7 +117,7 @@ export default {
   /* 添加边框作为视觉点缀 */
 }
 
-.el-header {
+.header {
   background-image: url('static/assets/bg.png'); /* 替换为您的图片路径 */
   background-size: cover; /* 背景图片覆盖整个元素 */
   background-position: center; /* 背景图片居中 */
@@ -148,4 +176,10 @@ export default {
   color: #4A90E2; /* 图标使用亮色调 */
   margin-right: 5px; /* 图标与文字间距 */
 }
+
+.message_button{
+  margin-left: auto;
+  margin-right: -110px;
+}
+
 </style>
