@@ -8,6 +8,7 @@
     <!-- Display information when a label is clicked -->
     <div v-if="showRoute">
       <div id="my-panel"/>
+      <el-button @click="showRoute=false; initMap()">Cancel</el-button>
     </div>
     <el-dialog  :visible.sync="showBuilding"   :close-on-click-modal="true"
                 :close-on-press-escape="true"
@@ -19,7 +20,7 @@
           <img v-else :src="require('@/static/dorm/noimage.png')" alt="@/static/dorm/noimage.png">
           <h1>{{currentDescription}}</h1>
         </div>
-        <el-button @click="handleRoute">Details</el-button>
+        <el-button v-if="buildingType === 'dormitory'" @click="handleRoute">Details</el-button>
         <el-button @click="showRoute = true; showBuilding = false;initMap()">Show Route</el-button>
       </div>
 
@@ -57,11 +58,11 @@ export default {
       currentCoordinates: null,
       currentUserPosition: null,
       showRoute: false,
+      buildingType: null
     };
   },
   mounted() {
     // Initialize the map when the component is mounted
-    this.initMap();
     window._AMapSecurityConfig = {
       securityJsCode:'6dcf279b3051f93ca87a74cf70cca816',
     }
@@ -73,9 +74,9 @@ export default {
 
           // console.log("Received data")
           // console.log(response.data)
-          const { id,name,photo,zone, buildingDetails, xlocation,ylocation } = item
+          const { id,name,photo,zone, buildingDetails, xlocation,ylocation,type } = item
 
-          var houseIcon = {
+          var icon = {
             // 图标类型，现阶段只支持 image 类型
             type: 'image',
             // 图片 url
@@ -85,6 +86,52 @@ export default {
             // 图片相对 position 的锚点，默认为 bottom-center
             anchor: 'center',
           };
+
+          if(type==='dormitory'){
+            icon = {
+              // 图标类型，现阶段只支持 image 类型
+              type: 'image',
+              // 图片 url
+              image: require('@/static/house.png'),
+              // 图片尺寸
+              size: [64, 64],
+              // 图片相对 position 的锚点，默认为 bottom-center
+              anchor: 'center',
+            };
+          } else if(type==='sports'){
+            icon = {
+              // 图标类型，现阶段只支持 image 类型
+              type: 'image',
+              // 图片 url
+              image: require('@/static/icons/sports.png'),
+              // 图片尺寸
+              size: [64, 64],
+              // 图片相对 position 的锚点，默认为 bottom-center
+              anchor: 'center',
+            };
+          }else if(type==='cafeteria'){
+            icon = {
+              // 图标类型，现阶段只支持 image 类型
+              type: 'image',
+              // 图片 url
+              image: require('@/static/icons/cafeteria.png'),
+              // 图片尺寸
+              size: [64, 64],
+              // 图片相对 position 的锚点，默认为 bottom-center
+              anchor: 'center',
+            };
+          }else if(type==='library'){
+            icon = {
+              // 图标类型，现阶段只支持 image 类型
+              type: 'image',
+              // 图片 url
+              image: require('@/static/icons/library.png'),
+              // 图片尺寸
+              size: [64, 64],
+              // 图片相对 position 的锚点，默认为 bottom-center
+              anchor: 'center',
+            };
+          }
 
           var textStyeLabel = {
             backgroundColor: 'white',
@@ -106,9 +153,10 @@ export default {
             opacity: 1, // Set the desired opacity value
             zIndex: 5, // Set the desired zIndex value
             visible: true,
-            icon: houseIcon, // Set the desired icon
+            icon: icon, // Set the desired icon
             photo: photo,
             buildingDetails: buildingDetails,
+            type:type,
             text: {
               content: zone+ " " + name + " Building", // Set content to the name
               direction: 'right',
@@ -123,6 +171,8 @@ export default {
         });
 
         this.showForm = true;
+        this.initMap();
+
       })
       .catch(error => {
         this.APIFormData = '';
@@ -146,6 +196,7 @@ export default {
       this.currentImage = curData.photo
       this.currentDescription = curData.buildingDetails
       this.currentCoordinates = curData.position
+      this.buildingType = curData.type
       console.log(curData.area, curData.building)
       // this.$emit('dorm-selected', curData.area, curData.building);
 

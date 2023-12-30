@@ -5,8 +5,9 @@
       <choose />
     </div>
     <div class="flex-item">
-
-      <DormFilter :receivedZone="zone" :receivedBuilding="building"/>
+      <el-row>
+          <DormFilter :receivedZone="zone" :receivedBuilding="building"/>
+      </el-row>
     </div>
     <div>
       <basis />

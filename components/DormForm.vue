@@ -2,20 +2,21 @@
 <template>
   <div class="max-w-md bg-gray-100 p-6">
     <transition name="fade">
-      <form v-if="showForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md bordered-form" :key="uniqueFormKey">
+      <form v-if="showForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md bordered-form" style="align-items: center" :key="uniqueFormKey">
         <h1 style="text-align: center" class="text-2xl font-semibold mb-4">Select Dorm</h1>
 
-        <!--        <p class="block text-gray-700 font-bold">Current Room Gender: Male</p>-->
+
         <h2>Collected Dorms by Group</h2>
         <div class="card-grid">
-          <!-- Use v-for to iterate over cards and display them in the grid -->
-          <div v-if="showCard" v-for="room in bookMarkedRooms">
-            <el-card  :body-style="{ padding: '0px' }" >
+          <div style="" v-if="showCard" v-for="room in bookMarkedRooms">
+            <el-card  :class="{ 'selected-card': room.id === selectedRoomInfo.id }" >
               <div @click="handleSelectedOptions(room.id, room)" class="card-content-container">
                 <img
                   :src="room.roomLayout"
                   class="image"
-                  alt=""/>
+                  :alt="require('@/static/dorm/noimage.png')"/>
+                <h2>{{ room.zone }}</h2>
+                <h2>Building {{room.building}} Floor {{room.floor}}</h2>
                 <h2>{{ room.roomNumber }}</h2>
                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
                 <p style="text-transform: capitalize">{{room.degree}} Students</p>
@@ -28,27 +29,24 @@
         <!--          &lt;!&ndash;Note that selected-options is defined in Dropdown to emit data&ndash;&gt;-->
         <!--          <Dropdown id="dropdown1" :hierarchicalData="hierarchicalData" @selected-options="handleSelectedOptions"/>-->
         <!--        </div>-->
-        <div style="margin-bottom: 10px; margin-top: 10px" v-if="selectedOption">
+        <div class="selected-option" v-if="selectedOption">
           <el-row>
-            <el-col :span="6">
+            <el-col :span="24">
               <p>Selected room : {{selectedRoomInfo.roomNumber}}</p>
             </el-col>
-            <el-col :span="4">
+            <el-col :span="24">
               <el-button @click="selectedOption=null">Select Another Room</el-button>
             </el-col>
           </el-row>
+          <el-row class="submit-button-row" v-if="selectedOption">
+            <el-button @click="submitForm">Submit</el-button>
+          </el-row>
+          <el-row class="submit-button-row" v-else>
+            <el-button disabled>Submit</el-button>
+          </el-row>
         </div>
-        <div v-if="selectedOption">
-          <el-button @click="submitForm"
-          >
-            Submit
-          </el-button>
-        </div>
-        <div v-else>
-          <el-button disabled>
-            Submit
-          </el-button>
-        </div>
+
+
       </form>
 
     </transition>
@@ -61,7 +59,6 @@
 <script>
 
 import axios from "axios";
-import {validate} from "tough-cookie/lib/validators";
 import {MessageBox} from "element-ui";
 
 export default {
@@ -80,13 +77,15 @@ export default {
       hierarchicalData: [],
       bookMarkedRooms: [],
       academicPosition: '',
-      selectedRoomInfo: null,
+      selectedRoomInfo: {},
       selectedOption: null,
+      isSelected: false,
       showCard: true,
       progressNum: 0,
       submitted: false,
       showForm: false,
-      uniqueFormKey: "submit-form"
+      uniqueFormKey: "submit-form",
+      currentTeam: {}
     };
   },
   watch: {
@@ -99,14 +98,13 @@ export default {
   },
   mounted() {
     // Set showForm to true after the component has been mounted
-    setTimeout(() => {
+    setTimeout(async () => {
 
-      axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{withCredentials:true})
+      axios.get('https://backend.susdorm.online/api/bookmark-dorms/', {withCredentials: true})
         .then(response => {
           console.log(response.data)
           response.data.forEach(item => {
 
-            const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan } = item;
             this.bookMarkedRooms.push(item)
 
           });
@@ -114,41 +112,41 @@ export default {
 
           console.log("Bookmarked Rooms");
           console.log(bookmarkedRoomsArray);
+
         })
         .catch(error => {
 
           this.error = error.message || 'Error getting book mark dorm';
         });
 
-      // axios.get('https://backend.susdorm.online/api/user-information/')
-      //   .then(response => {
-      //     console.log(response.data)
-      //     response.data.forEach(item => {
-      //
-      //       const { team } = item;
-      //       this.bookMarkedRooms.push(item)
-      //
-      //     });
-      //     const bookmarkedRoomsArray = Array.from(this.bookMarkedRooms);
-      //
-      //     console.log("Bookmarked Rooms");
-      //     console.log(bookmarkedRoomsArray);
-      //   })
-      //   .catch(error => {
-      //
-      //     this.error = error.message || 'Error getting book mark dorm';
-      //   });
-
       this.showForm = true;
+
     }, 1000);
   },
   methods: {
 
     handleSelectedOptions(options, room) {
-      console.log('Method called')
-      this.selectedOption = options
-      this.selectedRoomInfo = room
-      console.log('Received selected options:', options);
+
+      if(!this.isSelected){
+        console.log('Method called')
+        this.isSelected = true
+        this.selectedOption = options
+        this.selectedRoomInfo = room
+        console.log('Received selected options:', options);
+      }else {
+
+        if(room.id === this.selectedOption){
+          this.isSelected = false
+          this.selectedOption = null
+          this.selectedRoomInfo = {}
+        }else {
+          this.isSelected = true
+          this.selectedOption = options
+          this.selectedRoomInfo = room
+        }
+
+      }
+
       // You can do further processing or update the parent component state here
     },
     removeUnderscore(text) {
@@ -201,7 +199,7 @@ export default {
 /* Style the form container */
 .max-w-md {
   flex-direction: column;
-  max-width: 750px; /* Adjust the maximum width as needed */
+  max-width: 100%; /* Adjust the maximum width as needed */
   margin: 0 auto;
   padding: 20px;
   background-color: #fff; /* Background color for the form container */
@@ -246,12 +244,13 @@ button[type="submit"] {
 
 .card-grid {
   display: flex;
+  width: 100%;
   flex-wrap: wrap;
   justify-content: space-around;
 }
 
 .el-card {
-  width: 200px;
+  width: 100%;
   margin: 10px;
 }
 
@@ -266,7 +265,7 @@ button[type="submit"] {
 
 .image {
   max-width: 100%;
-  max-height: 80px;
+  max-height: 200px;
 }
 
 /* Style the submit button on hover */
@@ -286,17 +285,33 @@ button[type="submit"]:hover {
   width: 100%;
 }
 
-.fade-enter-active{
-  transition: opacity 1s ease;
+.el-card:hover {
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  background: lightgray;
+  transform: scale(1.1); /* Increase scale when the card is selected */
+  transition: transform 0.3s; /* Add a transition effect on transform property */
 }
 
-.fade-enter {
-  opacity: 0;
+.selected-card {
+  transform: scale(1.1); /* Increase scale when the card is selected */
+  transition: transform 0.3s; /* Add a transition effect on transform property */
 }
 
-.fade-leave-to {
-  opacity: 0;
+.selected-option{
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: 30px; /* Adjust margin for spacing */
+   margin-bottom: 10px;
+ }
+
+.submit-button-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
+
 
 </style>
 
