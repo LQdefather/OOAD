@@ -11,11 +11,15 @@
           <div style="" v-if="showCard" v-for="room in bookMarkedRooms">
             <el-card  :class="{ 'selected-card': room.id === selectedRoomInfo.id }" >
               <div @click="handleSelectedOptions(room.id, room)" class="card-content-container">
-                <img
-                  :src="room.roomLayout"
+                <img v-if="room.interiorImage"
+                  :src="room.interiorImage"
                   class="image"
                   :alt="require('@/static/dorm/noimage.png')"/>
-                <h2>{{ room.zone }}</h2>
+                <img v-else
+                     :src="require('@/static/dorm/noimage.png')"
+                     class="image"
+                     :alt="require('@/static/dorm/noimage.png')"/>
+                <h2 style='text-transform: capitalize;'>{{ room.zone }}</h2>
                 <h2>Building {{room.building}} Floor {{room.floor}}</h2>
                 <h2>{{ room.roomNumber }}</h2>
                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
@@ -31,19 +35,14 @@
         <!--        </div>-->
         <div class="selected-option" v-if="selectedOption">
           <el-row>
-            <el-col :span="24">
-              <p>Selected room : {{selectedRoomInfo.roomNumber}}</p>
+            <el-col :span="12" class="selected-room-info">
+              <p>Selected room: {{selectedRoomInfo.roomNumber}}</p>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="12">
               <el-button @click="selectedOption=null">Select Another Room</el-button>
             </el-col>
           </el-row>
-          <el-row class="submit-button-row" v-if="selectedOption">
-            <el-button @click="submitForm">Submit</el-button>
-          </el-row>
-          <el-row class="submit-button-row" v-else>
-            <el-button disabled>Submit</el-button>
-          </el-row>
+          <el-button @click="submitForm" class="submit-button">Submit</el-button>
         </div>
 
 
@@ -124,7 +123,6 @@ export default {
     }, 1000);
   },
   methods: {
-
     handleSelectedOptions(options, room) {
 
       if(!this.isSelected){
@@ -294,6 +292,7 @@ button[type="submit"]:hover {
 }
 
 .selected-card {
+  background: lightgray;
   transform: scale(1.1); /* Increase scale when the card is selected */
   transition: transform 0.3s; /* Add a transition effect on transform property */
 }
@@ -302,14 +301,25 @@ button[type="submit"]:hover {
    display: flex;
    justify-content: center;
    align-items: center;
-   margin-top: 30px; /* Adjust margin for spacing */
-   margin-bottom: 10px;
+   margin-top: 40px; /* Adjust margin for spacing */
+   margin-bottom: 40px;
  }
 
-.submit-button-row {
+.selected-option {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.submit-button {
   margin-top: 10px;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 

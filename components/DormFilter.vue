@@ -10,7 +10,7 @@
                   <h3>Location:</h3>
                 </el-col>
                 <el-col :span="7">
-                  <el-radio-group v-if="this.hierarchicalData" v-model="locationFilter" @change="handleLocationChange">
+                  <el-radio-group v-if="this.hierarchicalData" v-model="locationFilter">
                     <el-radio v-for="location in Object.keys(this.hierarchicalData)" :key="location" :label="location">{{location}}</el-radio>
                   </el-radio-group>
                 </el-col>
@@ -26,7 +26,6 @@
                       range-separator="To"
                       start-placeholder="Start date"
                       end-placeholder="End date"
-                      :size="size"
                       :disabled-date="disabledDate"
                     />
 
@@ -37,18 +36,18 @@
 
             <el-row >
 
-              <el-col v-if="locationFilter && this.hierarchicalData[locationFilter]" :span="10">
+              <el-col v-if="this.hierarchicalData[locationFilter]" :span="8">
                 <el-row>
                   <el-col :span="4">
                     <h3>Building:</h3>
                   </el-col>
                   <el-col :span="6">
-                    <el-select value="building" v-model="filterBuilding" id="filterBuilding" value-key="id" placeholder="Select Building">
+                    <el-select value="item" v-if="this.hierarchicalData[locationFilter]" v-model="filterBuilding" id="filterBuilding" value-key="id" placeholder="Select Building">
                       <el-option
-                        v-for="option in Object.keys(this.hierarchicalData[locationFilter])"
-                        :key="option"
-                        :label="option"
-                        :value="option"
+                        v-for="item in Object.keys(this.hierarchicalData[locationFilter])"
+                        :key="item"
+                        :label="item"
+                        :value="item"
                       />
                     </el-select>
                   </el-col>
@@ -74,19 +73,19 @@
               <el-col :span="2">
                 <h3>Student Type</h3>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="5">
                 <el-radio-group v-model="studentType" style="margin-top: 10px">
                   <el-radio value="master" :label="1">Masters</el-radio>
                   <el-radio value="doctor" :label="2">Doctoral</el-radio>
                 </el-radio-group>
               </el-col>
 
-              <el-row v-if="this.hierarchicalData[locationFilter] && this.hierarchicalData[locationFilter][filterBuilding] && locationFilter && filterBuilding" :span="12">
+              <el-col v-if="this.hierarchicalData[locationFilter] && this.hierarchicalData[locationFilter][filterBuilding] && locationFilter && filterBuilding" :span="9">
                 <el-row>
-                  <el-col :span="2">
+                  <el-col :span="3">
                     <h3>Floor:</h3>
                   </el-col>
-                  <el-col :span="4">
+                  <el-col :span="5">
                     <el-select value="floor" v-model="floorFilter" id="filterFloor" value-key="id" placeholder="Select Floor">
                       <el-option
                         v-for="option in Object.keys(this.hierarchicalData[locationFilter][filterBuilding])"
@@ -97,23 +96,23 @@
                     </el-select>
                   </el-col>
                 </el-row>
-              </el-row>
+              </el-col>
 
-              <el-row v-else>
-                <el-row>
-                  <el-col :span="2">
-                    <h3>Floor:</h3>
-                  </el-col>
-                  <el-col :span="4">
-                    <el-select value="" id="filterFloor" value-key="id" placeholder="Select Floor">
-                      <el-option
-                        v-for="option in []"
-                      />
-                    </el-select>
-                  </el-col>
-                </el-row>
+            <el-col v-else :span="9">
+              <el-row>
+                <el-col :span="3">
+                  <h3>Floor:</h3>
+                </el-col>
+                <el-col :span="5">
+                  <el-select value="" id="filterFloor" value-key="id" placeholder="Select Floor">
+                    <el-option
+                      v-for="option in []"
+                    />
+                  </el-select>
+                </el-col>
               </el-row>
-            </el-row>
+            </el-col>
+          </el-row>
 
 
               <el-row>
@@ -150,7 +149,7 @@
         </el-collapse>
       </el-col>
       <el-col style="margin-top: 10px" :span="2">
-        <el-checkbox v-model="isMultiSelect" size="large">大量收藏</el-checkbox>
+        <el-checkbox v-model="isMultiSelect">大量收藏</el-checkbox>
       </el-col>
     </el-row>
 
@@ -188,14 +187,25 @@ export default {
   },
   name: 'DormFilter',
   watch: {
+    locationFilter:function (newVal, oldVal) {
+
+      if(newVal){
+        console.log("Current buildings after selecting location")
+        console.log(Object.keys(this.hierarchicalData[newVal]))
+      }
+
+
+    },
     receivedZone: function (newVal, oldVal) {
       this.locationFilter = newVal
+
       console.log('Prop changed for receivedZone: ', newVal, ' | was: ', oldVal);
     },
     receivedBuilding: function (newVal, oldVal) {
       this.filterBuilding = newVal
       console.log('Prop changed for receivedBuilding: ', newVal, ' | was: ', oldVal);
 
+      // this is mainly to do the page jump after selecting from map
       if( this.locationFilter && this.filterBuilding){
         console.log("Able to filter!")
 
@@ -235,11 +245,6 @@ export default {
   },
 
   methods:{
-    handleLocationChange(){
-
-      this.filterBuilding = null,
-      this.floorFilter = null
-    },
     disabledDate(time) {
       const date = new Date();
       const previousDate = date.setDate(date.getDate() - 1);
@@ -265,7 +270,8 @@ export default {
 
       // Iterate over the hierarchicalData to filter based on selected options
 
-      // console.log(this.hierarchicalData)
+      console.log("Original Data")
+      console.log(this.hierarchicalData)
       for (const location in this.hierarchicalData) {
 
         if (this.locationFilter != null && location !== this.locationFilter) {
@@ -361,7 +367,7 @@ export default {
         .then(response => {
           this.APIFormData = response.data;
           this.APIFormData.forEach(item => {
-            const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan, selected, bookmarkTeamCount } = item;
+            const { id,zone, building, type, floor, roomNumber,sex, start, end, degree,roomLayout, floorPlan, selected, bookmarkTeamCount,interiorImage } = item;
 
             if (!this.hierarchicalData[zone]) {
               this.hierarchicalData[zone] = {};
@@ -377,7 +383,7 @@ export default {
 
 
             this.hierarchicalData[zone][building][floor].push({
-              id, roomNumber,type,sex, start,end,degree, roomLayout, floorPlan,selected, bookmarkTeamCount
+              id, roomNumber,type,sex, start,end,degree, roomLayout, floorPlan,selected, bookmarkTeamCount,interiorImage
             });
 
           });

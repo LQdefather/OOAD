@@ -35,11 +35,17 @@
 
                             <el-card :body-style="{ padding: '0px' }" >
                               <div  class="card-content-container">
-                                <img
+                                <img v-if="room.interiorImage"
                                   @click="handleComment(room.id, room.roomLayout)"
-                                  :src="getImageSrc(room.type)"
+                                  :src="room.interiorImage"
                                   class="image"
-                                  :alt="require('../static/dorm/noimage.png')"/>
+                                  alt="/static/dorm/noimage.png"/>
+                                <img v-else
+                                  @click="handleComment(room.id, room.roomLayout)"
+                                  :src="require('../static/dorm/noimage.png')"
+                                  class="image"
+                                  alt=""
+                                />
                                 <h2>{{ room.roomNumber }}</h2>
                                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
                                 <p style="text-transform: capitalize">{{room.degree}} Students</p>
@@ -54,11 +60,17 @@
                         <el-row v-else>
                             <el-card :body-style="{ padding: '0px' }" >
                               <div  class="card-content-container">
-                                <img
-                                  @click="handleComment(room.id, room.roomLayout)"
-                                  :src="getImageSrc(room.type)"
-                                  class="image"
-                                  alt=""/>
+                                <img v-if="room.interiorImage"
+                                     @click="handleComment(room.id, room.roomLayout)"
+                                     :src="room.interiorImage"
+                                     class="image"
+                                     alt="/static/dorm/noimage.png"/>
+                                <img v-else
+                                     @click="handleComment(room.id, room.roomLayout)"
+                                     :src="require('../static/dorm/noimage.png')"
+                                     class="image"
+                                     alt=""
+                                />
                                 <h2>{{ room.roomNumber }}</h2>
                                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
                                 <p style="text-transform: capitalize">{{room.degree}} Students</p>
@@ -397,6 +409,12 @@ export default {
         return require('../static/dorm/dorm2.jpg');
       }else if(type === 'double_room'){
         return require('../static/dorm/dorm3.jpg');
+
+      }else if(type === 'triple_room'){
+        return require('../static/dorm/dorm3.jpg');
+
+      }else {
+        return require('../static/dorm/noimage.png');
 
       }
     },

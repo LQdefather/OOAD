@@ -60,6 +60,11 @@
     </div>
   <div v-else>
     <el-dialog title="No Comment" :visible.sync="dialogVisible" :before-close="handleClose">
+      <el-collapse class="">
+        <el-collapse-item title="Room Layout" name="1" >
+          <img :src="roomImage" :alt="roomImage" class="centered-image">
+        </el-collapse-item>
+      </el-collapse>
       <p>No comment</p>
       <div style="margin: 10px; border-top: 1px solid #ccc;">
         <button @click="addComment= !addComment" style="background-color: burlywood; margin-top: 20px">{{ addComment ? 'Cancel Comment' : 'Comment' }}</button>
