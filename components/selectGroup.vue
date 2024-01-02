@@ -199,49 +199,60 @@
       custom-class="customDialog"
       :before-close="clearNew"
     >
-      <el-main class="el-dialog__header">
-        <el-row style="margin-top: 2px; margin-bottom: 2px">
-          <el-col span="4" align="left">
-            <el-avatar :size="150" style="font-weight: bold;font-size: 40px" :src="newGroup.avatar"></el-avatar>
-          </el-col>
-          <el-col span="18" align="left">
-            <el-row style="margin-top: 2px; margin-bottom: 2px">
-              <span style="font-family: 'Calibri',serif;
-             font-weight: bolder;
-             font-size: 40px;
-             color: #000">{{newGroup.name}}</span>
-            </el-row>
-<!--            <el-row style="margin-top: 2px; margin-bottom: 2px">-->
-<!--              <span style="font-family: '微软雅黑', serif;-->
-<!--                font-weight: lighter;-->
-<!--                font-size: 18px;-->
-<!--                color: #000"-->
-<!--              >{{newGroup.description}}</span>-->
-<!--            </el-row>-->
-          </el-col>
-        </el-row>
-      </el-main>
-      <el-main class="el-dialog__body">
-        <el-row>
-          <el-col span="4" align="center">
-            <span style="font-size: 20px; font-weight: bold">GroupID:</span>
-          </el-col>
-          <el-col span="16" align="left">
-            <span style="font-size: 18px;"> {{newGroup.id}}</span>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col span="4" align="center">
-            <div>
-              <span style="font-size: 20px; font-weight: bold">Member:</span>
-            </div>
-          </el-col>
-          <el-col span="3" v-for="(k, index) in newGroup.members" :key="index">
-            <el-avatar :size="100" style="font-weight: bold;font-size: 40px" :src="k.avatar" align="center"></el-avatar>
-            <div style="font-size: 18px;" align="center">{{ k.name }}</div>
-          </el-col>
-        </el-row>
-      </el-main>
+      <el-row style="margin-top: 2px; margin-bottom: 2px">
+        <el-col span="4" align="left">
+          <el-avatar :size="150" style="font-weight: bold;font-size: 40px" :src="newGroup.avatar"></el-avatar>
+        </el-col>
+        <el-col span="18" align="left">
+          <el-row style="margin-top: 2px; margin-bottom: 2px">
+            <span style="font-family: 'Calibri',serif;
+           font-weight: bolder;
+           font-size: 40px;
+           color: #000">{{newGroup.name}}</span>
+          </el-row>
+          <el-row style="margin-top: 2px; margin-bottom: 2px" v-if="isAbleChat">
+            <el-col span="4" align="left">
+              <span style="font-size: 20px; font-family: '微软雅黑', serif; color: #000" class="el-icon-star-on">Collected:</span>
+            </el-col>
+            <el-col span="16" align="left">
+              <el-row style="margin-top: 2px; margin-bottom: 2px">
+                <el-col :span="8" class="grid" v-for="(room,index) in bookmark" :key="index" align="middle">
+                  <el-card shadow="hover" :id="room.id" style="margin-top: 2px; margin-bottom: 2px; height: 80px; border-radius: 2px; border: 0px; background-color: #f8f5f3">
+                    <div style="font-family: '微软雅黑', serif; font-size: 20px; font-weight: bold; color:#000;">
+                      <span>{{ room.roomNumber }}</span>
+                    </div>
+                    <div style="font-family: '微软雅黑', serif; font-size: 10px; font-weight: normal; color:#323131;">
+                      <span>{{ room.zone }}</span>
+                      <span>{{ room.building }}</span>
+                    </div>
+                  </el-card>
+                </el-col>
+              </el-row>
+            </el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col span="4" align="center">
+          <span style="font-size: 20px; font-weight: bold">GroupID:</span>
+        </el-col>
+        <el-col span="16" align="left">
+          <span style="font-size: 18px;"> {{newGroup.id}}</span>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col span="4" align="center">
+          <div>
+            <span style="font-size: 20px; font-weight: bold">Member:</span>
+          </div>
+        </el-col>
+        <el-col span="3" v-for="(k, index) in newGroup.members" :key="index">
+          <el-avatar :size="100" style="font-weight: bold;font-size: 40px" :src="k.avatar" align="center"></el-avatar>
+          <div style="font-size: 18px;" align="center">{{ k.name }}</div>
+        </el-col>
+      </el-row>
+
 
       <div align="center">
         <span slot="footer" class="dialog-footer">
@@ -325,24 +336,24 @@ export default {
         team: 0,
       },
       groups: [
-        {
-          id: "100020231001",
-          name: "sus",
-          room: "Male",
-          members: ["Alice", "Bob", "Charlie"],
-        },
-        {
-          id: "200000150056",
-          name: "dorm",
-          room: "Male",
-          members: ["David"],
-        },
-        {
-          id: "356221002122",
-          name: "developer",
-          room: "Female",
-          members: ["Grace", "Harry"],
-        },
+        // {
+        //   id: "100020231001",
+        //   name: "sus",
+        //   room: "Male",
+        //   members: ["Alice", "Bob", "Charlie"],
+        // },
+        // {
+        //   id: "200000150056",
+        //   name: "dorm",
+        //   room: "Male",
+        //   members: ["David"],
+        // },
+        // {
+        //   id: "356221002122",
+        //   name: "developer",
+        //   room: "Female",
+        //   members: ["Grace", "Harry"],
+        // },
       ],
       userType: "visitor",
       createGroupDialogVisible: false,
@@ -379,58 +390,33 @@ export default {
       bookmark:[],
     };
   },
-  // devServer: {
-  //   proxy: {
-  //     '/getTeam': {
-  //       target: 'https://localhost:8080/', // Replace with your Flask server address
-  //       changeOrigin: true,
-  //       ws: true,
-  //     },
-  //   },
-  // },
   mounted() {
     this.getUserInfo();
     this.getAllTeam();
     this.getOwnBookmark();
   },
   methods: {
-    // async getUserDetailsById(userId) {
-    //   const apiUrl = 'https://localhost:8080/users/${userId}'
-    //   try {
-    //     const response = await axios.get(apiUrl,{
-    //       headers: {
-    //         token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InJvb3QifQ.0Ia3eD-FWd4Ik2bfP3AGoGjcpupkBqo9_OQqxWB9ksA"
-    //       }
-    //     });
-    //     // console.log(response.data);
-    //     let list = response.data;
-    //     for (let i = 0; i < list.length; i++) {
-    //       const user = await this.getUserDetailsById(list[i].leaderId);
-    //
-    //       const combinedItem = {
-    //         name: list[i].name,
-    //         description: user.name,
-    //       };
-    //
-    //       list[i] = combinedItem;
-    //     }
-    //     this.groups = list;
-    //     this.$message.info("success");
-    //   } catch (error) {
-    //     this.$message.error(error.toString());
-    //     console.error('Error fetching files:', error);
-    //   }
-    //   return response.data;
-    // },
     async getOwnBookmark(){
-      axios.get('https://backend.susdorm.online/api/user-information/',{ withCredentials: true })
-        .then((response) => {  // 使用箭头函数
-          // this.avatarUrl = response.data[0]['avatar']; // this 现在正确指向 Vue 实例
-          this.bookmark = response.data
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      try {
+        const response = await axios.get('https://backend.susdorm.online/api/bookmark-dorms/',{ withCredentials: true });
+        // console.log(response.data);
+        let list = response.data;
+        for (let i = 0; i < list.length; i++) {
+          list[i] = {
+            id :list[i]['id'],
+            type: list[i]['type'],
+            zone: list[i]['zone'],
+            roomNumber:list[i]['roomNumber'],
+            building:list[i]['building'],
+            roomLayout: list[i]['roomLayout']
+          };
+        }
+        this.bookmark = list;
+        // this.$message.success("success");
+      } catch (error) {
+        this.$message.error(error.toString());
+        console.log(error);
+      }
     },
     async getUserInfo(){
       axios.get('https://backend.susdorm.online/api/user-information/?pk=' + localStorage.getItem('pk'),{ withCredentials: true })
@@ -464,7 +450,7 @@ export default {
           };
         }
         this.groups = list;
-        this.$message.info("success");
+        // this.$message.success("success");
       } catch (error) {
         this.$message.error(error.toString());
         console.error('Error fetching files:', error);
@@ -482,7 +468,6 @@ export default {
       this.isAbleChat = false;
       this.isAbleEdit = false;
       this.isAbleDisband = false;
-      this.isAbleChat = false;
       this.isAbleAdd = false;
       this.isAbleDelete = false;
       this.userType = "visitor"
@@ -555,11 +540,12 @@ export default {
         const response = axios.post('https://backend.susdorm.online/api/leave-team/', '',{withCredentials:true});
         // 处理后端响应
         console.log('Backend Response:', response);
+        window.location.href = window.location.href
         this.$message.success("You left the team.");
       } catch (error) {
         // 处理请求错误
         console.error('Error sending data to backend:', error);
-        this.$message.success("Some error evoked when you left the team.");
+        this.$message.error("Some error evoked when you left the team.");
       }
       this.closeGroupDetail();
     },
@@ -570,11 +556,12 @@ export default {
         };
         // 发送POST请求
         const response = await axios.post('https://backend.susdorm.online/api/join-team/', dataToSend,{withCredentials:true});
-        if (response.status === 200){
-          this.$message.success("Your application to this team had been sent.");
-        }
         // 处理后端响应
         console.log('Backend Response:', response.data);
+        if (response.status === 200){
+          window.location.href = window.location.href
+          // this.$message.success("Your application to this team had been sent.");
+        }
       } catch (error) {
         // 处理请求错误
         this.$message.error("ERROR: You cannot join this team due to gender or other reason.");
@@ -590,12 +577,13 @@ export default {
         // 处理后端响应
         console.log('Backend Response:', response.data);
         if (response.status === 200){
+          window.location.href = window.location.href
           this.$message.success("You disband your team.");
         }
       } catch (error) {
         // 处理请求错误
         console.error('Error sending data to backend:', error);
-        this.$message.success("Some error evoked when you disband the team.");
+        this.$message.error("Some error evoked when you disband the team.");
       }
       this.closeGroupDetail();
     },
@@ -644,42 +632,24 @@ export default {
 
     },
     async createNewGroup() {
+      let flag = false
       this.$refs.newGroupForm.validate(async (valid) => {
         if (valid) {
           this.loading = true;
-          // this.groups.push(group);
-          // let postData = {name:group.name, leaderId:1};
-          // const apiUrl = 'https://localhost:8080/createTeam';
-          // try {
-          //   const res = await axios.post(apiUrl, postData, {
-          //     headers: {
-          //       "Content-Type": "application/json"
-          //     },
-          //   });
-          //   console.log('Response from server:', res);
-          //   // this.postResult = this.JSON.stringify(result, null, 2);
-          // } catch (err) {
-          //   // this.postResult = this.JSON.stringify(err.response?.data, null, 2) || err;
-          //   this.closeCreateGroupDialog();
-          //   this.loading = false;
-          //   this.$message.error(err.toString());
-          // }
+          try {
             const dataToSend = {
               name: this.newGroup.name
             };
             // 发送POST请求
-            axios.post('https://backend.susdorm.online/api/create-team/', dataToSend,{withCredentials:true})
-          .then(response => {
-              console.log('Backend Response:', response.data);
-              if (response.status === 200){
-                this.$message.success("Your team had been created!")
-              }
-            })
-              .catch(error => {
+            const response = axios.post('https://backend.susdorm.online/api/create-team/', dataToSend, {withCredentials: true});
+            console.log('Backend Response:', response);
+            this.$message.success("Your team had been created!")
+            flag = true
+          }catch(error) {
                 // 处理错误
                 this.$message.error("Some error evoked when you created the team.");
                 console.error("Error:", error);
-              });
+              }
             // 处理后端响应
 
           this.closeCreateGroupDialog();
@@ -688,28 +658,15 @@ export default {
           this.$message.error("Please fill in all the required fields.");
         }
       });
+      if (flag){
+        window.location.href = window.location.href
+      }
     },
     async editGroup() {
+      let flag = false
       this.$refs.newGroupForm2.validate(async (valid) => {
         if (valid) {
           this.loading = true;
-          // this.groups.push(group);
-          // let postData = {name:group.name, leaderId:1};
-          // const apiUrl = 'https://localhost:8080/createTeam';
-          // try {
-          //   const res = await axios.post(apiUrl, postData, {
-          //     headers: {
-          //       "Content-Type": "application/json"
-          //     },
-          //   });
-          //   console.log('Response from server:', res);
-          //   // this.postResult = this.JSON.stringify(result, null, 2);
-          // } catch (err) {
-          //   // this.postResult = this.JSON.stringify(err.response?.data, null, 2) || err;
-          //   this.closeCreateGroupDialog();
-          //   this.loading = false;
-          //   this.$message.error(err.toString());
-          // }
           try{
             const dataToSend = {
               name: this.newGroup.name
@@ -718,6 +675,7 @@ export default {
             const response = axios.post('https://backend.susdorm.online/api/update-team/', dataToSend,{withCredentials:true});
             // 处理后端响应
             console.log('Backend Response:', response);
+            flag = true
           } catch (error) {
             // 处理请求错误
             console.error('Error sending data to backend:', error);
@@ -729,6 +687,20 @@ export default {
           this.$message.error("Please fill in all the required fields.");
         }
       });
+      if (flag){
+        window.location.href = window.location.href
+      }
+    },
+    getImageSrc(type) {
+      // Add your logic here to determine the image source based on the type
+      if (type === 'quadruple_room') {
+        return require('../static/dorm/dorm1.jpg');
+      } else if (type === 'single_room') {
+        return require('../static/dorm/dorm2.jpg');
+      }else if(type === 'double_room'){
+        return require('../static/dorm/dorm3.jpg');
+
+      }
     },
   },
   computed: {
@@ -804,13 +776,32 @@ export default {
   margin-top: 30px;
   margin-bottom: 20px;
 }
+.card-content-container:hover{
+  padding-right: 10px;
+}
 </style>
 <style>
+.image {
+  width: 100%;
+  display: block;
+}
 .customDialog {
   background: #F5EFEC;
   width: 70%;
   height: 80%;
   border-radius: 20px;
+}
+.mycard {
+  position: relative
+}
+.mycard .word {
+  position: absolute;
+  left: 25px;
+  top: 250px;
+  width: 275px;
+  height: 265px;
+  box-sizing: border-box;
+  padding: 10px;background:rgba(0,0,0,.5)
 }
 </style>
 

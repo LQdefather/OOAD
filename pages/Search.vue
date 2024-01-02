@@ -241,6 +241,12 @@
       <div align="center">
         <span slot="footer" class="dialog-footer">
           <el-button
+            type="info"
+            @click="openDetail(newGroup.pk)"
+          >
+            More Detail
+          </el-button>
+          <el-button
             type="danger"
             @click="closeGroupDetail"
           >
@@ -249,6 +255,31 @@
         </span>
       </div>
 
+    </el-dialog>
+    <el-dialog
+      title="Comments"
+      :visible.sync="detailVisible"
+      width="50%"
+      :before-close="closeDetail">
+      <div v-for="comment in comments" :key="comment.id" class="comment-item " >
+        <el-row>
+          <el-col :span="2" >
+            <el-avatar :src="comment.avatar"/>
+          </el-col>
+          <el-col :span="17">
+            <p class="comment-info" v-if="!comment.replyTo"><strong> {{ comment.name }}</strong></p>
+            <p class="comment-info" v-if="comment.replyTo"><strong> {{ comment.name }}</strong> _@Anonymous User</p>
+          </el-col >
+          <el-col class="comment-right" :span="5" v-if="!comment.replyTo">
+            <el-rate v-model="comment.rating" size="large" disabled/>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="20">
+            <p class="comment-info">{{ comment.comment }}</p>
+          </el-col>
+        </el-row>
+      </div>
     </el-dialog>
     <div class="bot">
       <basis/>
@@ -311,7 +342,8 @@ export default {
         team: null,
         degree: '',
         wake: '',
-        sleep: ''
+        sleep: '',
+        pk: '',
       },
       newFilter: {
         tag:[],
@@ -333,6 +365,9 @@ export default {
       ifOpenPersonDetail: false,
       ifOpenFilter: false,
       filterDialogVisible: false,
+      detailVisible: false,
+      comments: [],
+      allComments: [],
     };
   },
   mounted() {
@@ -366,6 +401,7 @@ export default {
         let list = response.data;
         for (let i = 0; i < list.length; i++) {
           list[i] = {
+            pk: list[i]['pk'],
             id: list[i]['studentId'],
             avatar: list[i]['avatar'],
             name: list[i]['name'],
@@ -399,9 +435,35 @@ export default {
           }
         }
         this.groups = list;
-        this.$message.success("success");
+        // this.$message.success("success");
       } catch (error) {
         this.$message.error(error.toString());
+        console.error('Error fetching files:', error);
+      }
+    },
+    async getOneComment(pk){
+      const apiUrl = 'https://backend.susdorm.online/api/user-comments/';
+      try {
+        const dataToSend = {
+          pk: pk,
+        };
+        const response = await axios.post(apiUrl, dataToSend, { withCredentials: true });
+        // console.log(response.data);
+        let list = response.data;
+        for (let i = 0; i < list.length; i++) {
+          list[i] = {
+            id: list[i]['id'],
+            avatar: list[i]['avatar'],
+            name: list[i]['name'],
+            comment: list[i]['comment'],
+            rating: list[i]['rating'],
+            time: list[i]['time'],
+            replyTo: list[i]['replyTo']
+          };
+        }
+        this.comments = list;
+      } catch (error) {
+        this.$message.error(pk + error.toString());
         console.error('Error fetching files:', error);
       }
     },
@@ -421,7 +483,8 @@ export default {
         team: group.team,
         degree: group.degree,
         wake: group.wake,
-        sleep: group.sleep
+        sleep: group.sleep,
+        pk: group.pk,
       }
       this.isAbleApply = false;
       this.isAbleChat = false;
@@ -436,6 +499,13 @@ export default {
     },
     closeFilter(done) {
       this.resetNewFilter();
+      done();
+    },
+    openDetail(pk) {
+      this.detailVisible = true;
+      this.getOneComment(pk);
+    },
+    closeDetail(done) {
       done();
     },
     handleClose(done){
@@ -455,7 +525,8 @@ export default {
         team: null,
         degree: '',
         wake: '',
-        sleep: ''
+        sleep: '',
+        pk: '',
       };
       done();
     },
@@ -489,6 +560,7 @@ export default {
     closeGroupDetail() {
       this.ifOpenPersonDetail = false;
       this.newGroup = {
+        pk: '',
         id: '',
         avatar: '',
         name: '',
