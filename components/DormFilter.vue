@@ -159,7 +159,7 @@
   </div>
 </template>
 
-<script>
+<script >
 import axios from "axios";
 import {ref} from "vue";
 
@@ -172,6 +172,7 @@ export default {
       }
     }
   },
+
   // devServer: {
   //   proxy: {
   //     '/api': {
@@ -240,15 +241,15 @@ export default {
         triple_room: ref(true),
         double_room: ref(true),
       },
-      isMultiSelect: false
+      isMultiSelect: false,
+
     };
   },
 
   methods:{
     disabledDate(time) {
-      const date = new Date();
-      const previousDate = date.setDate(date.getDate() - 1);
-      return time.getTime() < previousDate;
+      // Disable dates before today
+      return time.getTime() < new Date().setHours(0, 0, 0, 0);
     },
     resetFilter(){
       this.roomType.single_room = true
@@ -306,7 +307,8 @@ export default {
 
               const isGenderMatch = this.gender=== null || currentRoomGender === this.gender;
 
-              const isDateMatch = this.timeRange===null || ( new Date(this.timeRange[0])>= new Date(room.start) && new Date(room.end) <= new Date(this.timeRange[1]) )
+              console.log(new Date())
+              const isDateMatch = this.timeRange===null || ( new Date(this.timeRange[0])>= new Date(room.start) && new Date(room.end) <= new Date(this.timeRange[1]) &&  new Date(room.end) >= new Date())
               const isDegreeMatch = this.studentType===null || currentDegree === room.degree
               // console.log("Student type")
               // console.log(this.studentType)
