@@ -17,7 +17,20 @@
             <p><strong>作息时间:</strong> {{ userInfo.day }}</p>
             <p><strong>个人简介:</strong> {{ userInfo.habits }}</p>
             <p><strong>联系方式:</strong> {{ userInfo.contact }}</p>
-            <p><strong>兴趣爱好:</strong> {{ userInfo.interests }}</p>
+            <el-row>
+              <el-col :span="24">
+                <div class="tags-container">
+                  <el-tag
+                    v-for="(k, index) in userInfo.interests"
+                    :key="index"
+                    type="primary"
+                    class="interest-tag"
+                  >
+                    {{ k }}
+                  </el-tag>
+                </div>
+              </el-col>
+            </el-row>
           </div>
         </div>
         <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
@@ -209,6 +222,7 @@ export default {
         })
         .catch(error => {
           // 处理错误
+          this.$message.error('修改失败！请检查信息是否正确！');
           console.error("Error:", error);
         });
       this.getUserInfo();
@@ -229,6 +243,7 @@ export default {
         })
         .catch(error => {
           // 处理错误
+          this.$message.error('修改失败！请检查密码是否输入正确！');
           console.error("Error:", error);
         });
       this.changePasswordDialogVisible = false;
@@ -248,9 +263,9 @@ export default {
         return false;
       }
 
-      const isLt2M = file.size / 1024 / 1024 < 20;
+      const isLt2M = file.size / 1024 / 1024 < 10;
       if (!isLt2M) {
-        this.$message.error('上传的图片大小不能超过 20MB！');
+        this.$message.error('上传的图片大小不能超过 10MB！');
         return false;
       }
 
@@ -276,6 +291,7 @@ export default {
         })
         .catch(error => {
           // 处理错误
+          this.$message.error('修改失败！');
           console.error("Error:", error);
         });
 
@@ -341,5 +357,17 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 100px;
+}
+.tags-container {
+  display: flex; /* 使标签水平排列 */
+  flex-wrap: wrap; /* 允许标签在容器宽度不足时换行 */
+  justify-content: flex-start; /* 左对齐标签 */
+  gap: 10px; /* 在标签之间添加一些空间 */
+}
+
+.interest-tag {
+  margin-bottom: 10px; /* 在标签下方添加一些空间 */
+  font-size: 14px; /* 调整字体大小 */
+  text-align: center; /* 确保文本在标签内居中 */
 }
 </style>

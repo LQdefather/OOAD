@@ -65,6 +65,7 @@ export default {
         })
         .catch(error => {
           // 处理错误
+          this.$message.error('用户名或密码错误！');
           console.error("Error:", error);
         });
        // this.$router.replace('/person');

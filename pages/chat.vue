@@ -8,6 +8,7 @@
         <!-- 更新消息布局，移除头像和名字 -->
         <div v-for="message in messages" :key="message.id" class="message-card" :class="{'self-message': message.currentUser}">
           <!-- 仅在消息不是当前用户发出时显示用户名 -->
+          <div class="message-timestamp">{{ formattedTime(message.time) }}</div>
           <div v-if="!message.currentUser" class="message-header">
             <img :src="message.avatar" class="user-avatar"/>
             <span class="user-name">{{ message.trueName }}:</span>
@@ -66,6 +67,17 @@ export default {
         console.error('Error sending message:', error);
       }
     },
+    formattedTime(timestamp) {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    },
   },
 };
 </script>
@@ -83,6 +95,7 @@ export default {
   height: 500px;
   overflow-y: auto;
   margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 .message-card {
@@ -144,4 +157,22 @@ export default {
   padding: 10px;
   border-radius: 10px;
 }
+
+.message-timestamp {
+  color: #a0a0a0;  /* 时间戳字体颜色 */
+  font-size: 0.8em; /* 时间戳字体大小 */
+  margin-right: 10px; /* 与消息内容的间距 */
+  text-align: center;
+}
+
+.chat-header {
+  background-color: rgb(75, 74, 74); /* 背景颜色 */
+  color: white; /* 字体颜色 */
+  padding: 10px; /* 内边距 */
+  font-size: 1.2em; /* 字体大小 */
+  text-align: center; /* 文本居中 */
+  border-top-left-radius: 4px; /* 顶部左边角圆角 */
+  border-top-right-radius: 4px; /* 顶部右边角圆角 */
+}
+
 </style>
