@@ -159,7 +159,7 @@
     >
       <el-form :model="newFilter" ref="newFilterForm" label-width="120px">
         <el-form-item
-          label="Room Type"
+          label="Gender"
           prop="room"
         >
           <el-select v-model="newFilter.room" placeholder="Select a room type">
@@ -406,7 +406,7 @@ export default {
             id :list[i]['id'],
             type: list[i]['type'],
             zone: list[i]['zone'],
-            roomNumber:list[i]['roomNumber'],
+            roomNumber: list[i]['floor'] + '-' + list[i]['roomNumber'],
             building:list[i]['building'],
             roomLayout: list[i]['roomLayout']
           };
@@ -494,6 +494,7 @@ export default {
       this.ifOpenGroupDetail = true;
     },
     openFilter() {
+      this.newFilter = this.filter;
       this.filterDialogVisible = true;
     },
     clearFilterForm() {
@@ -545,7 +546,7 @@ export default {
       } catch (error) {
         // 处理请求错误
         console.error('Error sending data to backend:', error);
-        this.$message.error("Some error evoked when you left the team.");
+        this.$message.error("ERROR: " + error.response.data['non_field_errors']);
       }
       this.closeGroupDetail();
     },
@@ -564,7 +565,7 @@ export default {
         }
       } catch (error) {
         // 处理请求错误
-        this.$message.error("ERROR: You cannot join this team due to gender or other reason.");
+        this.$message.error("ERROR: " + error.response.data['non_field_errors']);
         console.error('Error sending data to backend:', error);
       }
       // alert("Your application for " + id + " has been sent.");
@@ -583,7 +584,7 @@ export default {
       } catch (error) {
         // 处理请求错误
         console.error('Error sending data to backend:', error);
-        this.$message.error("Some error evoked when you disband the team.");
+        this.$message.error("ERROR: " + error.response.data['non_field_errors']);
       }
       this.closeGroupDetail();
     },
@@ -624,7 +625,7 @@ export default {
       this.loading = true;
       //TODO: implement the logic for filtering
       this.filter = {room: this.newFilter.room, type:this.newFilter.type, isTrue: true}
-      alert("You select " + this.newFilter.type + ", " + this.newFilter.room);
+      // alert("You select " + this.newFilter.type + ", " + this.newFilter.room);
       this.closeCreateFilter()
       this.loading = false;
     },
@@ -647,7 +648,7 @@ export default {
             flag = true
           }catch(error) {
                 // 处理错误
-                this.$message.error("Some error evoked when you created the team.");
+                this.$message.error("ERROR: " + error.response.data['non_field_errors']);
                 console.error("Error:", error);
               }
             // 处理后端响应
