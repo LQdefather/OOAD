@@ -58,7 +58,6 @@ export default {
           // this.$cookies.set('sessionid', response.data.sessionid, '7d')
           // document.cookie = 'sessionid=' + response.data.sessionid
           this.$cookies.set('sessionid', response.data.sessionid, '7d','/', '.susdorm.online',true, 'None')
-          alert(response.data.sessionid)
 
           localStorage.setItem('pk', response.data.pk);
           this.$router.replace('/person');
