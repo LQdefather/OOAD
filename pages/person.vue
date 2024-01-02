@@ -218,7 +218,7 @@ export default {
       axios.post('https://backend.susdorm.online/api/change-profile/', this.editedUserInfo,{withCredentials:true})
         .then(response => {
           // 处理响应
-          alert('修改成功');
+          this.$message.success('修改成功!');
         })
         .catch(error => {
           // 处理错误
@@ -239,7 +239,7 @@ export default {
       axios.put('https://backend.susdorm.online/api/change-password/'+localStorage.getItem('pk')+'/', this.passwordChange,{withCredentials:true})
         .then(response => {
           // 处理响应
-          alert('修改成功');
+          this.$message.success('修改成功!');
         })
         .catch(error => {
           // 处理错误
@@ -286,7 +286,7 @@ export default {
       axios.post('https://backend.susdorm.online/api/change-avatar/', formData,{withCredentials:true})
         .then(response => {
           // 处理响应
-          alert("修改成功")
+          this.$message.success('修改成功!');
           this.getUserInfo();
         })
         .catch(error => {
