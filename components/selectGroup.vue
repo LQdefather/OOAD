@@ -546,7 +546,7 @@ export default {
       } catch (error) {
         // 处理请求错误
         console.error('Error sending data to backend:', error);
-        this.$message.error("Some error evoked when you left the team.");
+        this.$message.error("ERROR: " + error.response.data['non_field_errors']);
       }
       this.closeGroupDetail();
     },
@@ -565,7 +565,7 @@ export default {
         }
       } catch (error) {
         // 处理请求错误
-        this.$message.error("ERROR: You cannot join this team due to gender or other reason.");
+        this.$message.error("ERROR: " + error.response.data['non_field_errors']);
         console.error('Error sending data to backend:', error);
       }
       // alert("Your application for " + id + " has been sent.");
@@ -584,7 +584,7 @@ export default {
       } catch (error) {
         // 处理请求错误
         console.error('Error sending data to backend:', error);
-        this.$message.error("Some error evoked when you disband the team.");
+        this.$message.error("ERROR: " + error.response.data['non_field_errors']);
       }
       this.closeGroupDetail();
     },
@@ -648,7 +648,7 @@ export default {
             flag = true
           }catch(error) {
                 // 处理错误
-                this.$message.error("Some error evoked when you created the team.");
+                this.$message.error("ERROR: " + error.response.data['non_field_errors']);
                 console.error("Error:", error);
               }
             // 处理后端响应
