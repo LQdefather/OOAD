@@ -33,7 +33,6 @@
             </el-row>
           </div>
         </div>
-        <el-button type="info" @click="showEditInfoDialog" plain>查看评论</el-button>
         <el-button type="success" @click="showUploadAvatarDialog" plain>上传头像</el-button>
 
         <!-- 修改信息按钮 -->
@@ -50,7 +49,7 @@
     <el-dialog
       title="修改个人信息"
       :visible.sync="editInfoDialogVisible"
-      width="50%"
+      width="45%"
     >
       <div class="edit-info-form">
         <el-form ref="editInfoForm" :model="editedUserInfo">
