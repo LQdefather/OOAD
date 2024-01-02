@@ -23,7 +23,7 @@
                         <h2 class="floor-header">Floor {{ floor }}</h2>
                       </el-col>
                       <el-col class="show-floor-plan" :span="2">
-                        <el-button @click="handleFloorPlan(filteredData[location][building][floor])">View Floor plan</el-button>
+                        <el-button type="info" @click="handleFloorPlan(filteredData[location][building][floor])">View Floor plan</el-button>
                       </el-col>
                     </el-row>
                     <!-- Iterate over rooms in the current floor -->
@@ -449,7 +449,7 @@ export default {
   color: white;
 
   /* Add the gradient background */
-  background: linear-gradient(to left, transparent 0%, #306a00 50%);
+  background: linear-gradient(to left, transparent 0%, #1d7304 70%);
   /* Adjust the gradient colors as needed */
 
   /* Optionally, you can add more styling to enhance the gradient effect */
@@ -489,7 +489,7 @@ export default {
 }
 
 .show-floor-plan{
-  text-align: right;
+  text-align: center;
 }
 
 .floor-plan-image {
@@ -514,7 +514,7 @@ export default {
 .building-header{
   font-size: 30px; /* You can adjust the color and thickness of the underline */
   display: inline-block; /* Ensure the underline only spans the width of the text */
-  color:  #306a00;
+  color:  #1d7304;
   font-weight: bold;
   margin-top: 20px;
   margin-bottom: 20px; /* Add some space between the text and the underline */
@@ -543,8 +543,8 @@ export default {
 
 .carousel-style{
   margin: 30px 30px;
-  border: 2px solid #306a00; /* Green color for the border */
-  padding: 10px; /* Add padding if needed */
+  border: 2px solid #494949; /* Green color for the border */
+  padding: 20px; /* Add padding if needed */
   border-radius: 10px;
 
 }

@@ -9,8 +9,8 @@
                 <el-col :span="1">
                   <h3>Location:</h3>
                 </el-col>
-                <el-col :span="7">
-                  <el-radio-group v-if="this.hierarchicalData" v-model="locationFilter">
+                <el-col :span="9">
+                  <el-radio-group style="margin-left: 40px; margin-top: 20px" v-if="this.hierarchicalData" v-model="locationFilter">
                     <el-radio v-for="location in Object.keys(this.hierarchicalData)" :key="location" :label="location">{{location}}</el-radio>
                   </el-radio-group>
                 </el-col>
@@ -36,7 +36,7 @@
 
             <el-row >
 
-              <el-col v-if="this.hierarchicalData[locationFilter]" :span="8">
+              <el-col v-if="this.hierarchicalData[locationFilter]" :span="10">
                 <el-row>
                   <el-col :span="4">
                     <h3>Building:</h3>
@@ -54,7 +54,7 @@
                 </el-row>
               </el-col>
 
-              <el-col v-else :span="8">
+              <el-col v-else :span="10">
                 <el-row>
                   <el-col :span="4">
                     <h3>Building:</h3>
@@ -73,14 +73,14 @@
               <el-col :span="2">
                 <h3>Student Type</h3>
               </el-col>
-              <el-col :span="5">
-                <el-radio-group v-model="studentType" style="margin-top: 10px">
+              <el-col :span="4">
+                <el-radio-group  v-model="studentType" style="margin-top: 20px">
                   <el-radio value="master" :label="1">Masters</el-radio>
                   <el-radio value="doctor" :label="2">Doctoral</el-radio>
                 </el-radio-group>
               </el-col>
 
-              <el-col v-if="this.hierarchicalData[locationFilter] && this.hierarchicalData[locationFilter][filterBuilding] && locationFilter && filterBuilding" :span="9">
+              <el-col v-if="this.hierarchicalData[locationFilter] && this.hierarchicalData[locationFilter][filterBuilding] && locationFilter && filterBuilding" :span="8">
                 <el-row>
                   <el-col :span="3">
                     <h3>Floor:</h3>
@@ -98,7 +98,7 @@
                 </el-row>
               </el-col>
 
-            <el-col v-else :span="9">
+            <el-col v-else :span="8">
               <el-row>
                 <el-col :span="3">
                   <h3>Floor:</h3>
@@ -119,8 +119,8 @@
                 <el-col :span=2>
                   <h3>Room Type:</h3>
                 </el-col>
-                <el-col :span=6>
-                  <div class="mt-1">
+                <el-col :span=8>
+                  <div class="">
                     <el-checkbox v-model="roomType.single_room" label="Single" border />
                     <el-checkbox v-model="roomType.double_room" label="Double" border />
                     <el-checkbox v-model="roomType.triple_room" label="Triple" border />
@@ -132,19 +132,22 @@
                   <h3>Gender: </h3>
                 </el-col>
                 <el-col :span="8">
-                  <el-radio-group v-model="gender">
+                  <el-radio-group style="margin-top: 20px" v-model="gender">
                     <el-radio value="male" :label="1">Male</el-radio>
                     <el-radio value="female" :label="2">Female</el-radio>
                   </el-radio-group>
                 </el-col>
-                <el-col :span="2" style="margin-left: auto">
-                  <el-button @click="filterData">Filter!</el-button>
-                </el-col>
-                <el-col :span="2" style="margin-left: auto">
-                  <el-button @click="resetFilter">Reset!</el-button>
-                </el-col>
+
               </el-row>
             </div>
+            <el-row >
+              <el-col :span="12" style="margin-left:auto; text-align: center;">
+                <el-button type="primary" @click="filterData">Filter!</el-button>
+              </el-col>
+              <el-col :span="12" style="margin-right:auto;text-align: center;">
+                <el-button type="warning" @click="resetFilter">Reset!</el-button>
+              </el-col>
+            </el-row>
           </el-collapse-item>
         </el-collapse>
       </el-col>
