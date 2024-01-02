@@ -81,7 +81,7 @@
               </el-col>
 
               <el-col v-if="this.hierarchicalData[locationFilter] && this.hierarchicalData[locationFilter][filterBuilding] && locationFilter && filterBuilding" :span="8">
-                <el-row>
+
                   <el-col :span="3">
                     <h3>Floor:</h3>
                   </el-col>
@@ -95,11 +95,10 @@
                       />
                     </el-select>
                   </el-col>
-                </el-row>
               </el-col>
 
             <el-col v-else :span="8">
-              <el-row>
+
                 <el-col :span="3">
                   <h3>Floor:</h3>
                 </el-col>
@@ -110,7 +109,7 @@
                     />
                   </el-select>
                 </el-col>
-              </el-row>
+
             </el-col>
           </el-row>
 

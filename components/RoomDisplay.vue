@@ -48,8 +48,10 @@
                                 />
                                 <h2>{{ room.roomNumber }}</h2>
                                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
-                                <p style="text-transform: capitalize">{{room.degree}} Students</p>
+                                <p style="text-transform: capitalize">{{room.sex}}: {{room.degree}} Students</p>
                                 <p>Stored by: {{room.bookmarkTeamCount}} students</p>
+                                <p>Time: {{formattedTime(room.start)}} - {{formattedTime(room.end)}}</p>
+
                                 <p v-if="!isBookmarked(room.id) && !isMultiSelect" @click="collectRoom(room.id)" class="collection-header">收藏</p>
                                 <el-checkbox size="large" v-else-if="isMultiSelect" v-model="selectedMultipleRoom[room.id]"></el-checkbox>
                                 <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
@@ -75,6 +77,7 @@
                                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
                                 <p style="text-transform: capitalize">{{room.degree}} Students</p>
                                 <p>Stored by: {{room.bookmarkTeamCount}} students</p>
+                                <p>Time: {{formattedTime(room.start)}} - {{formattedTime(room.end)}}</p>
                                 <p v-if="!isBookmarked(room.id) && !isMultiSelect" @click="collectRoom(room.id)" class="collection-header">收藏</p>
                                 <el-checkbox size="large" v-else-if="isMultiSelect" v-model="selectedMultipleRoom[room.id]"></el-checkbox>
                                 <p v-else @click="undoCollect(room.id)" class="collection-header">已被收藏</p>
@@ -207,6 +210,17 @@ export default {
   methods: {
     isBookmarked(roomId){
       return this.bookMarkedRooms.includes(roomId)
+    },
+    formattedTime(timestamp) {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     },
     handleFloorPlan(floor){
       this.showFloorPlan = true
@@ -464,12 +478,13 @@ export default {
 
 .el-card{
   height: 100%;
+  border: 1px solid #bbbbbb;
 }
 
 .el-card:hover {
   cursor: pointer;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  background: lightgray;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  background: #d2d2d2;
 }
 
 .card-content-container {
