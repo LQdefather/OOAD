@@ -159,7 +159,7 @@
     >
       <el-form :model="newFilter" ref="newFilterForm" label-width="120px">
         <el-form-item
-          label="Room Type"
+          label="Gender"
           prop="room"
         >
           <el-select v-model="newFilter.room" placeholder="Select a room type">
@@ -406,7 +406,7 @@ export default {
             id :list[i]['id'],
             type: list[i]['type'],
             zone: list[i]['zone'],
-            roomNumber:list[i]['roomNumber'],
+            roomNumber: list[i]['floor'] + '-' + list[i]['roomNumber'],
             building:list[i]['building'],
             roomLayout: list[i]['roomLayout']
           };
@@ -494,6 +494,7 @@ export default {
       this.ifOpenGroupDetail = true;
     },
     openFilter() {
+      this.newFilter = this.filter;
       this.filterDialogVisible = true;
     },
     clearFilterForm() {
@@ -624,7 +625,7 @@ export default {
       this.loading = true;
       //TODO: implement the logic for filtering
       this.filter = {room: this.newFilter.room, type:this.newFilter.type, isTrue: true}
-      alert("You select " + this.newFilter.type + ", " + this.newFilter.room);
+      // alert("You select " + this.newFilter.type + ", " + this.newFilter.room);
       this.closeCreateFilter()
       this.loading = false;
     },

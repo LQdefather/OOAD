@@ -266,12 +266,12 @@
           <el-col :span="2" >
             <el-avatar :src="comment.avatar"/>
           </el-col>
-          <el-col :span="17">
+          <el-col :span="14">
             <p class="comment-info" v-if="!comment.replyTo"><strong> {{ comment.name }}</strong></p>
-            <p class="comment-info" v-if="comment.replyTo"><strong> {{ comment.name }}</strong> _@Anonymous User</p>
+            <p class="comment-info" v-if="comment.replyTo"><strong> {{ comment.name }}</strong> _@<el-avatar :size="20" :src="comment.replyToUserAvatar"/>{{comment.replyToUserName}}</p>
           </el-col >
-          <el-col class="comment-right" :span="5" v-if="!comment.replyTo">
-            <el-rate v-model="comment.rating" size="large" disabled/>
+          <el-col class="comment-right" :span="8" v-if="!comment.replyTo" align="right">
+            <strong>{{comment.dorm}}</strong>{{' ' + comment.zone}}<el-rate v-model="comment.rating" size="large" disabled/>
           </el-col>
         </el-row>
         <el-row>
@@ -279,6 +279,10 @@
             <p class="comment-info">{{ comment.comment }}</p>
           </el-col>
         </el-row>
+        <el-row :span="4" class="comment-time">
+          <span>{{ formattedTime(comment.time) }}</span>
+        </el-row>
+        <el-divider></el-divider>
       </div>
     </el-dialog>
     <div class="bot">
@@ -367,7 +371,6 @@ export default {
       filterDialogVisible: false,
       detailVisible: false,
       comments: [],
-      allComments: [],
     };
   },
   mounted() {
@@ -458,7 +461,11 @@ export default {
             comment: list[i]['comment'],
             rating: list[i]['rating'],
             time: list[i]['time'],
-            replyTo: list[i]['replyTo']
+            replyTo: list[i]['replyTo'],
+            replyToUserAvatar: list[i]['replyToUserAvatar'],
+            replyToUserName: list[i]['replyToUserName'],
+            zone: list[i]['dormZone'] + '-' + list[i]['dormBuilding'],
+            dorm: list[i]['dormFloor'] + '-' + list[i]['dormRoomNumber'],
           };
         }
         this.comments = list;
@@ -586,8 +593,35 @@ export default {
       this.closeCreateFilter()
       this.loading = false;
     },
-    ifFilter(){
+    timeAgo(timestamp) {
+      const currentDate = new Date();
+      const commentDate = new Date(timestamp);
+      const timeDifference = currentDate - commentDate;
+      const seconds = Math.floor(timeDifference / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
 
+      if (days > 0) {
+        return `${days} day${days > 1 ? 's' : ''} ago`;
+      } else if (hours > 0) {
+        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+      } else if (minutes > 0) {
+        return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+      } else {
+        return 'Just now';
+      }
+    },
+    formattedTime(timestamp) {
+      const date = new Date(timestamp);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     },
   },
   computed: {
@@ -679,6 +713,12 @@ export default {
 }
 .bot{
   margin-top: 50px;
+}
+.comment-time {
+  text-align: right;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #888; /* Adjust the color as needed */
+  margin-top: -10px; /* Adjust the margin-top to align with the top of the comment-info */
 }
 </style>
 
