@@ -33,11 +33,12 @@
             </el-row>
           </div>
         </div>
-        <el-button type="info" @click="showUploadAvatarDialog">上传头像</el-button>
+        <el-button type="info" @click="showEditInfoDialog" plain>查看评论</el-button>
+        <el-button type="success" @click="showUploadAvatarDialog" plain>上传头像</el-button>
 
         <!-- 修改信息按钮 -->
-        <el-button type="primary" @click="showEditInfoDialog">修改信息</el-button>
-        <el-button type="danger" @click="showChangePasswordDialog">修改密码</el-button>
+        <el-button type="primary" @click="showEditInfoDialog" plain>修改信息</el-button>
+        <el-button type="danger" @click="showChangePasswordDialog" plain>修改密码</el-button>
       </el-card>
     </div>
     <!-- 上传头像按钮 -->
@@ -75,8 +76,21 @@
           <el-form-item label="联系方式" prop="contact">
             <el-input v-model="editedUserInfo.contact"></el-input>
           </el-form-item>
-          <el-form-item label="兴趣爱好" prop="interests">
-            <el-input v-model="editedUserInfo.interests"></el-input>
+          <el-form-item label="兴趣标签" prop="interests">
+            <el-row :gutter="20"> <!-- 添加 gutter 为列提供间隔 -->
+              <el-col :span="5"> <!-- 每个输入框占据6/24的空间 -->
+                <el-input v-model="editedUserInfo.interests[0]"></el-input>
+              </el-col>
+              <el-col :span="5">
+                <el-input v-model="editedUserInfo.interests[1]"></el-input>
+              </el-col>
+              <el-col :span="5">
+                <el-input v-model="editedUserInfo.interests[2]"></el-input>
+              </el-col>
+              <el-col :span="5">
+                <el-input v-model="editedUserInfo.interests[3]"></el-input>
+              </el-col>
+            </el-row>
           </el-form-item>
         </el-form>
       </div>
@@ -153,7 +167,7 @@ export default {
         day: '11:00-7:00',
         contact: 'john.doe@example.com',
         habits: 'Hello, I am John Doe.',
-        interests: [],
+        interests: ['','','',''],
       },
       avatarPreview: null,
       editInfoDialogVisible: false,
@@ -165,7 +179,7 @@ export default {
         sleep:'',
         contact: '',
         habits: '',
-        interests: [],
+        interests: ['','','',''],
       },
       changePasswordDialogVisible: false,
       passwordChange: {
@@ -215,6 +229,14 @@ export default {
       // 在这里保存修改后的用户信息
       this.editedUserInfo.wake = this.formatTime(this.selectedTimeW)
       this.editedUserInfo.sleep = this.formatTime(this.selectedTimeS)
+      for(var i = 0; i < this.editedUserInfo.interests.length; i++) {
+        var obj = this.editedUserInfo.interests[i];
+        if(obj.length > 8) {
+          this.$message.error('标签长度不能超过8')
+          return;
+        }
+      }
+
       axios.post('https://backend.susdorm.online/api/change-profile/', this.editedUserInfo,{withCredentials:true})
         .then(response => {
           // 处理响应
@@ -309,7 +331,7 @@ export default {
 }
 
 .info-card {
-  width: 40%;
+  width: 45%;
   margin: auto; /* Center card in the middle of the page */
   box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1); /* Slight shadow for depth */
   margin-top: 30px;
@@ -349,14 +371,26 @@ export default {
   background-color: #ffffff; /* 替换为你想要的颜色 */
 }
 
-.bg{
-  background-image: url('static/assets/bg8.jpg'); /* 替换为您的图片路径 */
+.bg {
+  position: relative; /* 为伪元素定位做准备 */
+  background-image: url('static/assets/bg7.jpg'); /* 替换为您的图片路径 */
   background-size: cover; /* 背景图片覆盖整个元素 */
   background-position: center; /* 背景图片居中 */
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 100px;
+}
+
+.bg::before {
+  content: ""; /* 伪元素需要内容来显示 */
+  position: absolute; /* 绝对定位于父元素 */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.1); /* 调整这里的颜色和透明度 */
+  z-index: -1; /* 确保伪元素在内容之后 */
 }
 .tags-container {
   display: flex; /* 使标签水平排列 */

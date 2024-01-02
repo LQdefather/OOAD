@@ -3,24 +3,26 @@
     <div>
       <choose/>
     </div>
-    <el-card class="chat-room">
-      <div class="message-container">
-        <!-- 更新消息布局，移除头像和名字 -->
-        <div v-for="message in messages" :key="message.id" class="message-card" :class="{'self-message': message.currentUser}">
-          <!-- 仅在消息不是当前用户发出时显示用户名 -->
-          <div class="message-timestamp">{{ formattedTime(message.time) }}</div>
-          <div v-if="!message.currentUser" class="message-header">
-            <img :src="message.avatar" class="user-avatar"/>
-            <span class="user-name">{{ message.trueName }}:</span>
+    <div class="bg">
+      <el-card class="chat-room">
+        <div class="message-container">
+          <!-- 更新消息布局，移除头像和名字 -->
+          <div v-for="message in messages" :key="message.id" class="message-card" :class="{'self-message': message.currentUser}">
+            <!-- 仅在消息不是当前用户发出时显示用户名 -->
+            <div class="message-timestamp">{{ formattedTime(message.time) }}</div>
+            <div v-if="!message.currentUser" class="message-header">
+              <img :src="message.avatar" class="user-avatar"/>
+              <span class="user-name">{{ message.trueName }}:</span>
+            </div>
+            <div class="message-content">{{ message.text }}</div>
           </div>
-          <div class="message-content">{{ message.text }}</div>
         </div>
-      </div>
-      <div class="input-container">
-        <el-input v-model="currentMessage" placeholder="输入消息..." @keyup.enter="sendMessage"></el-input>
-        <el-button type="primary" @click="sendMessage">发送</el-button>
-      </div>
-    </el-card>
+        <div class="input-container">
+          <el-input v-model="currentMessage" placeholder="输入消息..." @keyup.enter="sendMessage"></el-input>
+          <el-button type="primary" @click="sendMessage">发送</el-button>
+        </div>
+      </el-card>
+    </div>
     <div>
       <basis/>
     </div>
@@ -173,6 +175,13 @@ export default {
   text-align: center; /* 文本居中 */
   border-top-left-radius: 4px; /* 顶部左边角圆角 */
   border-top-right-radius: 4px; /* 顶部右边角圆角 */
+}
+
+.bg {
+  background-image: url('static/assets/bg7.jpg'); /* 替换为您的图片路径 */
+  background-size: cover; /* 背景图片覆盖整个元素 */
+  background-position: center; /* 背景图片居中 */
+  padding: 100px;
 }
 
 </style>
