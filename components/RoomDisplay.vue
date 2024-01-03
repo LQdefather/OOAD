@@ -75,7 +75,7 @@
                                 />
                                 <h2>{{ room.roomNumber }}</h2>
                                 <h2 style="text-transform: capitalize">{{ removeUnderscore(room.type) }}</h2>
-                                <p style="text-transform: capitalize">{{room.degree}} Students</p>
+                                <p style="text-transform: capitalize">{{room.sex}}: {{room.degree}} Students</p>
                                 <p>Stored by: {{room.bookmarkTeamCount}} students</p>
                                 <p>Time: {{formattedTime(room.start)}} - {{formattedTime(room.end)}}</p>
                                 <p v-if="!isBookmarked(room.id) && !isMultiSelect" @click="collectRoom(room.id)" class="collection-header">收藏</p>
